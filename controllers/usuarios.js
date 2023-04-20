@@ -1,22 +1,28 @@
 const { response, request } = require('express');
+const usuarioDB = require('../querys/usuarios');
 
-const usuariosGet = (req = request, res = response) => {
-  const { page = 1, limit = 5 } = req.query;
-  res.status(200).json({
-    msg: 'Get API - controlador',
-    page,
-    limit,
-  });
+const usuariosGet = async (req, res = response) => {
+  try {
+    res.json(await usuarioDB.getUsuariosDB());
+  } catch (error) {
+    console.error(' Error en la petición de base de datos');
+  }
 };
 
-const usuariosPost = (req, res = response) => {
-  const { nombre, edad } = req.body;
-
-  res.json({
-    msg: 'Post API - controlador',
-    nombre,
-    edad,
-  });
+const usuariosPost = async (req, res = response) => {
+  try {
+    res.json(await usuarioDB.postUsuariosDB(req.body));
+  } catch (error) {
+    console.error('Error en la petición de base de datos');
+  }
+};
+const loginUser = async (req, res = response) => {
+  try {
+    const { email, password } = req.body;
+    res.json(await usuarioDB.loginUser(email, password));
+  } catch (error) {
+    console.error('Error en la peticón de la base de datos');
+  }
 };
 
 const usuariosPut = (req, res = response) => {
@@ -45,4 +51,5 @@ module.exports = {
   usuariosPut,
   usuariosPatch,
   usuariosDelete,
+  loginUser,
 };

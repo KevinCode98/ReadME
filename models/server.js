@@ -3,6 +3,7 @@ const cors = require('cors');
 
 class Server {
   constructor() {
+    this.conexion;
     this.app = express();
     this.port = process.env.PORT;
 

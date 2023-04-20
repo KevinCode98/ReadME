@@ -5,11 +5,13 @@ const {
   usuariosPut,
   usuariosPatch,
   usuariosDelete,
+  loginUser,
 } = require('../controllers/usuarios');
 
 const router = Router();
 
 router.get('/', usuariosGet);
+router.get('/login', loginUser);
 router.post('/', usuariosPost);
 router.put('/:id', usuariosPut);
 router.patch('/', usuariosPatch);

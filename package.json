@@ -10,8 +10,16 @@
   "author": "Kevin Guillermo Carrillo González - Max Ivan Valencia Ortiz",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.13.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "http": "^0.0.1-security",
+    "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "prisma": "^4.13.0"
   }
 }
