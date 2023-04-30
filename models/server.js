@@ -8,7 +8,11 @@ class Server {
     this.port = process.env.PORT;
 
     // Path de rutas
+    this.alumnosPath = '/api/alumnos';
+    this.profesoresPath = '/api/profesores';
     this.usuariosPath = '/api/usuarios';
+    this.tutoradosPath = '/api/tutorados';
+    this.autoresPath = '/api/autores';
 
     // Middlewares
     this.middlewares();
@@ -29,7 +33,11 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.usuariosPath, require('../routes/user'));
+    this.app.use(this.alumnosPath, require('../routes/alumnos'));
+    this.app.use(this.profesoresPath, require('../routes/profesores'));
+    this.app.use(this.usuariosPath, require('../routes/usuario'));
+    this.app.use(this.tutoradosPath, require('../routes/tutorados'));
+    this.app.use(this.autoresPath, require('../routes/autores'));
   }
 
   listen() {

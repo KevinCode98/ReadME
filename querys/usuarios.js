@@ -3,13 +3,12 @@ const bcryptjs = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
-const getUsuariosDB = async (page = 1) => {
+const usuariosGet = async () => {
   const usuarios = await prisma.USUARIOS.findMany({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
-      PATERNO: true,
-      MATERNO: true,
+      APELLIDO: true,
       TIPO_USUARIO: true,
       EMAIL: true,
       APODO: true,
@@ -19,41 +18,22 @@ const getUsuariosDB = async (page = 1) => {
   return usuarios;
 };
 
-const postUsuariosDB = async (usuario) => {
-  const { password, email } = usuario;
-
-  // Verificar si el correo existe
-  const usuarioExiste = await prisma.USUARIOS.findFirst({
+const usuarioGet = async (id) => {
+  const usuario = await prisma.USUARIOS.findMany({
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDO: true,
+      TIPO_USUARIO: true,
+      EMAIL: true,
+      APODO: true,
+    },
     where: {
-      EMAIL: email,
+      ID_USUARIO: Number(id),
     },
   });
 
-  if (usuarioExiste)
-    return { msg: 'El usuario ya se encuentra en la base de datos' };
-
-  // Encriptar la contraseña
-  const salt = bcryptjs.genSaltSync();
-  usuario.password = bcryptjs.hashSync(password, salt);
-
-  //Guardar en BD
-  const usuarioDB = await prisma.USUARIOS.create({
-    data: {
-      NOMBRE: usuario.nombre,
-      PATERNO: usuario.paterno,
-      MATERNO: usuario.materno,
-      FECHA_NAC: new Date(usuario.nacimiento),
-      TIPO_USUARIO: usuario.tipo,
-      EMAIL: usuario.email,
-      PWD: usuario.password,
-      FECHA_ALTA: new Date(),
-      APODO: usuario.apodo,
-      FOTO: usuario.foto,
-      NIVEL: usuario.nivel,
-    },
-  });
-
-  return usuarioDB;
+  return usuario;
 };
 
 const loginUser = async (email, password) => {
@@ -62,24 +42,32 @@ const loginUser = async (email, password) => {
     where: {
       EMAIL: email,
     },
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDO: true,
+      TIPO_USUARIO: true,
+      EMAIL: true,
+      PWD: true,
+      APODO: true,
+    },
   });
 
   if (!usuarioExiste) return { msg: 'Datos invalidos' };
 
   // Comparar contraseñas con la base de datos
   let comparacionContra = bcryptjs.compareSync(password, usuarioExiste.PWD);
-  if (comparacionContra) return usuarioExiste;
+  if (comparacionContra) {
+    delete usuarioExiste.PWD;
+    return usuarioExiste;
+  }
   return { msg: 'Datos invalidos' };
 };
-
-const patchUsuarioDB = ({ id, username, password }) => {};
-
-async function putUsuarioDB({ id, username, password }) {}
 
 async function deleteUsuarioDB({ id }) {}
 
 module.exports = {
-  getUsuariosDB,
-  postUsuariosDB,
   loginUser,
+  usuarioGet,
+  usuariosGet,
 };

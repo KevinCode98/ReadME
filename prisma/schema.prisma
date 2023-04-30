@@ -7,137 +7,162 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ASIGNACIONES {
-  ID_ASIGNACION  Int       @id
-  ID_SALA        Int?
-  ID_LECTURA     Int?
-  TITULO         String?   @db.VarChar(30)
-  INDICACION     String?   @db.VarChar(50)
-  FECHA_CREACION DateTime? @db.Date
-  SALAS          SALAS?    @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_4")
-  LECTURAS       LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_5")
+model ABIERTAS {
+  ID_ABIERTA  Int       @id @default(autoincrement())
+  ID_SALA     Int
+  ID_PREGUNTA Int
+  ID_USUARIO  Int
+  CORRECTA    Boolean
+  RESPUESTA   String?   @db.VarChar(255)
+  PREGUNTAS   PREGUNTAS @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: Cascade, map: "ABIERTAS_PREGUNTAS_ID_PREGUNTA_fk")
+  SALAS       SALAS     @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: Cascade, map: "ABIERTAS_SALAS_ID_SALA_fk")
+  USUARIOS    USUARIOS  @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "ABIERTAS_USUARIOS_ID_USUARIO_fk")
 
+  @@index([ID_PREGUNTA], map: "ABIERTAS_PREGUNTAS_ID_PREGUNTA_fk")
+  @@index([ID_SALA], map: "ABIERTAS_SALAS_ID_SALA_fk")
+  @@index([ID_USUARIO], map: "ABIERTAS_USUARIOS_ID_USUARIO_fk")
+}
+
+model ASIGNACIONES {
+  ID_ASIGNACION   Int            @id @default(autoincrement())
+  ID_SALA         Int?
+  ID_LECTURA      Int?
+  ID_QUESTIONARIO Int?
+  TITULO          String?        @db.VarChar(50)
+  INDICACION      String?        @db.VarChar(100)
+  FECHA_CREACION  DateTime?      @db.Date
+  LECTURAS        LECTURAS?      @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: Cascade, map: "ASIGNACIONES_LECTURAS_ID_LECTURA_fk")
+  QUESTIONARIOS   QUESTIONARIOS? @relation(fields: [ID_QUESTIONARIO], references: [ID_QUESTIONARIO], onDelete: Cascade, map: "ASIGNACIONES_QUESTIONARIOS_ID_QUESTIONARIO_fk")
+  SALAS           SALAS?         @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: Cascade, map: "ASIGNACIONES_SALAS_ID_SALA_fk")
+
+  @@index([ID_QUESTIONARIO], map: "ASIGNACIONES_QUESTIONARIOS_ID_QUESTIONARIO_fk")
   @@index([ID_SALA], map: "FK_REFERENCE_4")
   @@index([ID_LECTURA], map: "FK_REFERENCE_5")
 }
 
 model AUTORES {
-  ID_AUTOR        Int        @id
-  NOMBRE          String?    @db.VarChar(30)
-  PATERNO         String?    @db.VarChar(30)
-  MATERNO         String?    @db.VarChar(30)
+  ID_AUTOR        Int        @id @default(autoincrement())
+  NOMBRE          String?    @db.VarChar(100)
   FECHA_NAC       DateTime?  @db.Date
   FECHA_DEFUNCION DateTime?  @db.Date
-  NACIONALIDAD    String?    @db.VarChar(15)
+  NACIONALIDAD    String?    @db.VarChar(50)
+  APELLIDO        String?    @db.VarChar(100)
   LECTURAS        LECTURAS[]
 }
 
 model HISTORIAL {
-  ID_HISTORIAL Int       @id
+  ID_HISTORIAL Int       @id @default(autoincrement())
   ID_USUARIO   Int?
   ID_LECTURA   Int?
   AVANCE       Int?
   TIEMPO_FINAL Int?
   FECHA_INICIO DateTime? @db.DateTime(0)
   FECHA_FINAL  DateTime? @db.DateTime(0)
-  USUARIOS     USUARIOS? @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_8")
-  LECTURAS     LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_9")
+  LECTURAS     LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: Cascade, map: "HISTORIAL_LECTURAS_ID_LECTURA_fk")
+  USUARIOS     USUARIOS? @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "HISTORIAL_USUARIOS_ID_USUARIO_fk")
 
   @@index([ID_USUARIO], map: "FK_REFERENCE_8")
   @@index([ID_LECTURA], map: "FK_REFERENCE_9")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model INSCRITOS {
-  ID_SALA    Int?
-  ID_USUARIO Int?
-  SALAS      SALAS?    @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_6")
-  USUARIOS   USUARIOS? @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_7")
+  ID_INSCRITO Int      @id @default(autoincrement())
+  ID_SALA     Int
+  ID_USUARIO  Int
+  ACEPTADO    Boolean
+  SALAS       SALAS    @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: Cascade, map: "INSCRITOS_SALAS_ID_SALA_fk")
+  USUARIOS    USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "INSCRITOS_USUARIOS_ID_USUARIO_fk")
 
   @@index([ID_SALA], map: "FK_REFERENCE_6")
   @@index([ID_USUARIO], map: "FK_REFERENCE_7")
-  @@ignore
 }
 
 model LECTURAS {
-  ID_LECTURA          Int             @id
+  ID_LECTURA          Int             @id @default(autoincrement())
   ID_AUTOR            Int?
-  TITULO              String?         @db.VarChar(30)
+  TITULO              String?         @db.VarChar(50)
   FECHA_PUBLICACION   DateTime?       @db.Date
-  GENERO              String?         @db.VarChar(10)
+  GENERO              String?         @db.VarChar(30)
   TEXTO               String?         @db.Text
   CORRIENTE_LITERARIA String?         @db.VarChar(30)
   PUNTUACION          Float?          @db.Float
   ASIGNACIONES        ASIGNACIONES[]
   HISTORIAL           HISTORIAL[]
-  AUTORES             AUTORES?        @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
-  PROGRESOS           PROGRESOS[]     @ignore
+  AUTORES             AUTORES?        @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: Cascade, map: "LECTURAS_AUTORES_ID_AUTOR_fk")
+  PROGRESOS           PROGRESOS[]
   QUESTIONARIOS       QUESTIONARIOS[]
 
   @@index([ID_AUTOR], map: "FK_REFERENCE_3")
 }
 
 model PREGUNTAS {
-  ID_PREGUNTA   Int             @id
-  DESCRIPCION   String?         @db.VarChar(255)
-  NIVEL         Int?
-  QUESTIONARIOS QUESTIONARIOS[]
+  ID_PREGUNTA     Int           @id @default(autoincrement())
+  ID_QUESTIONARIO Int
+  DESCRIPCION     String?       @db.VarChar(255)
+  ABIERTA         Boolean
+  ABIERTAS        ABIERTAS[]
+  QUESTIONARIOS   QUESTIONARIOS @relation(fields: [ID_QUESTIONARIO], references: [ID_QUESTIONARIO], onDelete: Cascade, map: "PREGUNTAS_QUESTIONARIOS_ID_QUESTIONARIO_fk")
+  RESPUESTAS      RESPUESTAS[]
+
+  @@index([ID_QUESTIONARIO], map: "PREGUNTAS_QUESTIONARIOS_ID_QUESTIONARIO_fk")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model PROGRESOS {
-  ID_USUARIO Int?
-  ID_LECTURA Int?
-  TIEMPO     Int?
-  FECHA      DateTime? @db.Date
-  USUARIOS   USUARIOS? @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_10")
-  LECTURAS   LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_11")
+  ID_PROGRESO Int       @id @default(autoincrement())
+  ID_USUARIO  Int?
+  ID_LECTURA  Int?
+  TIEMPO      Int?
+  FECHA       DateTime? @db.Date
+  LECTURAS    LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "PROGRESOS_LECTURAS_ID_LECTURA_fk")
+  USUARIOS    USUARIOS? @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "PROGRESOS_USUARIOS_ID_USUARIO_fk")
 
   @@index([ID_USUARIO], map: "FK_REFERENCE_10")
   @@index([ID_LECTURA], map: "FK_REFERENCE_11")
-  @@ignore
 }
 
 model QUESTIONARIOS {
-  ID_QUESTIONARIO Int          @id
+  ID_QUESTIONARIO Int            @id @default(autoincrement())
   ID_LECTURA      Int?
-  ID_PREGUNTA     Int?
-  LECTURAS        LECTURAS?    @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_12")
-  PREGUNTAS       PREGUNTAS?   @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_13")
-  RESPUESTAS      RESPUESTAS[]
+  DESCRIPCION     String         @db.VarChar(255)
+  NIVEL           Int?
+  ASIGNACIONES    ASIGNACIONES[]
+  PREGUNTAS       PREGUNTAS[]
+  LECTURAS        LECTURAS?      @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: Cascade, map: "QUESTIONARIOS_LECTURAS_ID_LECTURA_fk")
 
   @@index([ID_LECTURA], map: "FK_REFERENCE_12")
-  @@index([ID_PREGUNTA], map: "FK_REFERENCE_13")
 }
 
 model RESPUESTAS {
-  ID_RESPUESTA    Int            @id
-  ID_QUESTIONARIO Int?
-  TEXTO_RESPUESTA String?        @db.VarChar(255)
-  QUESTIONARIOS   QUESTIONARIOS? @relation(fields: [ID_QUESTIONARIO], references: [ID_QUESTIONARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_14")
+  ID_RESPUESTA    Int       @id @default(autoincrement())
+  ID_PREGUNTA     Int
+  TEXTO_RESPUESTA String?   @db.VarChar(255)
+  ID_USUARIO      Int
+  PREGUNTAS       PREGUNTAS @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: Cascade, map: "RESPUESTAS_PREGUNTAS_ID_PREGUNTA_fk")
 
-  @@index([ID_QUESTIONARIO], map: "FK_REFERENCE_14")
+  @@index([ID_PREGUNTA], map: "FK_REFERENCE_14")
 }
 
 model SALAS {
-  ID_SALA        Int            @id
-  ID_RESPONSABLE Int?
-  DESCRIPCION    String?        @db.VarChar(30)
+  ID_SALA        Int            @id @unique(map: "SALAS_pk2") @default(autoincrement())
+  ID_USUARIO     Int
+  DESCRIPCION    String?        @db.VarChar(100)
   FECHA_CREACION DateTime?      @db.DateTime(0)
+  HASH           String         @unique(map: "SALAS_pk") @db.VarChar(50)
+  ABIERTAS       ABIERTAS[]
   ASIGNACIONES   ASIGNACIONES[]
-  INSCRITOS      INSCRITOS[]    @ignore
-  USUARIOS       USUARIOS?      @relation(fields: [ID_RESPONSABLE], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_2")
+  INSCRITOS      INSCRITOS[]
+  USUARIOS       USUARIOS       @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "SALAS_USUARIOS_ID_USUARIO_fk")
 
-  @@index([ID_RESPONSABLE], map: "FK_REFERENCE_2")
+  @@index([ID_USUARIO], map: "FK_REFERENCE_2")
 }
 
 model TUTORES {
   ID_TUTOR    Int       @id @default(autoincrement())
   ID_TUTORADO Int?
-  NOMBRE      String?   @db.VarChar(30)
-  PATERNO     String?   @db.VarChar(30)
-  MATERNO     String?   @db.VarChar(30)
+  NOMBRE      String?   @db.VarChar(100)
+  APELLIDO    String?   @db.VarChar(100)
   PARENTESCO  String?   @db.VarChar(10)
+  EMAIL       String    @db.VarChar(100)
   USUARIOS    USUARIOS? @relation(fields: [ID_TUTORADO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_1")
 
   @@index([ID_TUTORADO], map: "FK_REFERENCE_1")
@@ -145,20 +170,20 @@ model TUTORES {
 
 model USUARIOS {
   ID_USUARIO   Int         @id @default(autoincrement())
-  NOMBRE       String?     @db.VarChar(30)
-  PATERNO      String?     @db.VarChar(30)
-  MATERNO      String?     @db.VarChar(30)
+  NOMBRE       String?     @db.VarChar(100)
+  APELLIDO     String?     @db.VarChar(100)
   FECHA_NAC    DateTime?   @db.Date
   TIPO_USUARIO String?     @db.VarChar(25)
-  EMAIL        String?     @db.VarChar(30)
+  EMAIL        String?     @db.VarChar(100)
   PWD          String?     @db.VarChar(255)
   FECHA_ALTA   DateTime?   @db.DateTime(0)
   APODO        String?     @db.VarChar(15)
   FOTO         String?     @db.Text
   NIVEL        String?     @db.VarChar(10)
+  ABIERTAS     ABIERTAS[]
   HISTORIAL    HISTORIAL[]
-  INSCRITOS    INSCRITOS[] @ignore
-  PROGRESOS    PROGRESOS[] @ignore
+  INSCRITOS    INSCRITOS[]
+  PROGRESOS    PROGRESOS[]
   SALAS        SALAS[]
   TUTORES      TUTORES[]
 }

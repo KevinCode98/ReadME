@@ -1,5 +1,6 @@
 const { response, request } = require('express');
 const usuarioDB = require('../querys/usuarios');
+const { validationResult } = require('express-validator');
 
 const usuariosGet = async (req, res = response) => {
   try {
@@ -10,6 +11,9 @@ const usuariosGet = async (req, res = response) => {
 };
 
 const usuariosPost = async (req, res = response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json(errors);
+
   try {
     res.json(await usuarioDB.postUsuariosDB(req.body));
   } catch (error) {
@@ -17,9 +21,14 @@ const usuariosPost = async (req, res = response) => {
   }
 };
 const loginUser = async (req, res = response) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) return res.status(400).json(errors);
+
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
-    res.json(await usuarioDB.loginUser(email, password));
+    return res.json(await usuarioDB.loginUser(email, password));
   } catch (error) {
     console.error('Error en la peticón de la base de datos');
   }
@@ -39,6 +48,15 @@ const usuariosPatch = (req, res = response) => {
   });
 };
 
+const usuarioGet = async (req, res = response) => {
+  const id = req.params.id;
+  try {
+    return res.json(await usuarioDB.usuarioGet(id));
+  } catch (error) {
+    console.error('Error en la petición de la base de datos');
+  }
+};
+
 const usuariosDelete = (req, res = response) => {
   res.json({
     msg: 'Delete API - controlador',
@@ -48,8 +66,7 @@ const usuariosDelete = (req, res = response) => {
 module.exports = {
   usuariosGet,
   usuariosPost,
-  usuariosPut,
-  usuariosPatch,
   usuariosDelete,
+  usuarioGet,
   loginUser,
 };

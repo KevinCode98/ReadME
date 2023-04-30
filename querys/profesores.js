@@ -1,0 +1,82 @@
+const { PrismaClient } = require('@prisma/client');
+const bcryptjs = require('bcryptjs');
+
+const prisma = new PrismaClient();
+
+const getProfesores = async () => {
+  const profesores = await prisma.USUARIOS.findMany({
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDO: true,
+      EMAIL: true,
+      APODO: true,
+    },
+    where: {
+      TIPO_USUARIO: 'Profesor',
+    },
+  });
+
+  return profesores;
+};
+
+const getProfesor = async (id) => {
+  const profesor = await prisma.USUARIOS.findMany({
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDO: true,
+      EMAIL: true,
+      APODO: true,
+    },
+    where: {
+      TIPO_USUARIO: 'Profesor',
+      ID_USUARIO: Number(id),
+    },
+  });
+
+  return profesor;
+};
+
+const postProfesor = async (profesor) => {
+  const { email, password } = profesor;
+
+  // Verificar si el correo existe
+  const profesorExiste = await prisma.USUARIOS.findFirst({
+    where: {
+      EMAIL: email,
+    },
+  });
+
+  if (profesorExiste)
+    return { msg: 'El usuario ya se encuentra en la base de datos' };
+
+  // Encriptar la contraseña
+  const salt = bcryptjs.genSaltSync();
+  profesor.password = bcryptjs.hashSync(password, salt);
+
+  //Guardar en BD
+  const profesorDB = await prisma.USUARIOS.create({
+    data: {
+      NOMBRE: profesor.nombre,
+      APELLIDO: profesor.apellido,
+      FECHA_NAC: new Date(profesor.nacimiento),
+      TIPO_USUARIO: 'Profesor',
+      EMAIL: profesor.email,
+      PWD: profesor.password,
+      FECHA_ALTA: new Date(),
+      APODO: profesor.apodo,
+      FOTO: profesor.foto,
+      NIVEL: profesor.nivel,
+    },
+  });
+
+  delete profesorDB.PWD;
+  return profesorDB;
+};
+
+module.exports = {
+  getProfesores,
+  getProfesor,
+  postProfesor,
+};
