@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator');
 
 const usuariosGet = async (req, res = response) => {
   try {
-    res.json(await usuarioDB.getUsuariosDB());
+    res.json(await usuarioDB.usuariosGet());
   } catch (error) {
     console.error(' Error en la petición de base de datos');
   }
@@ -20,6 +20,7 @@ const usuariosPost = async (req, res = response) => {
     console.error('Error en la petición de base de datos');
   }
 };
+
 const loginUser = async (req, res = response) => {
   const errors = validationResult(req);
 
