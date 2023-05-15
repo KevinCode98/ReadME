@@ -8,7 +8,7 @@ const usuariosGet = async () => {
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       TIPO_USUARIO: true,
       EMAIL: true,
       APODO: true,
@@ -23,7 +23,7 @@ const usuarioGet = async (id) => {
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       TIPO_USUARIO: true,
       EMAIL: true,
       APODO: true,
@@ -45,7 +45,7 @@ const loginUser = async (email, password) => {
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       TIPO_USUARIO: true,
       EMAIL: true,
       PWD: true,

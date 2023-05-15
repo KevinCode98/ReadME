@@ -6,7 +6,7 @@ const tutoradoGet = async (id) => {
   const tutorado = await prisma.TUTORES.findMany({
     select: {
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       EMAIL: true,
       PARENTESCO: true,
     },
@@ -33,7 +33,7 @@ const tutoradoPost = async (tutorado) => {
   const tutoradoDB = await prisma.TUTORES.create({
     data: {
       NOMBRE: tutorado.nombre,
-      APELLIDO: tutorado.apellido,
+      APELLIDOS: tutorado.apellidos,
       EMAIL: tutorado.email,
       PARENTESCO: tutorado.parentesco,
       USUARIOS: {

@@ -21,7 +21,7 @@ router.post(
       min: 4,
     }),
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('apellido', 'El apellido es obligatorio').not().isEmpty(),
+    check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
     check('nacimiento', 'La fecha no es válida').isISO8601().toDate(),
   ],
   profesorPost

@@ -8,7 +8,7 @@ const getProfesores = async () => {
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       EMAIL: true,
       APODO: true,
     },
@@ -25,7 +25,7 @@ const getProfesor = async (id) => {
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       EMAIL: true,
       APODO: true,
     },
@@ -59,7 +59,7 @@ const postProfesor = async (profesor) => {
   const profesorDB = await prisma.USUARIOS.create({
     data: {
       NOMBRE: profesor.nombre,
-      APELLIDO: profesor.apellido,
+      APELLIDOS: profesor.apellidos,
       FECHA_NAC: new Date(profesor.nacimiento),
       TIPO_USUARIO: 'Profesor',
       EMAIL: profesor.email,

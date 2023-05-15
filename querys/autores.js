@@ -6,7 +6,7 @@ const getAutores = async () => {
     select: {
       ID_AUTOR: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       LECTURAS: true,
     },
   });
@@ -19,7 +19,7 @@ const getAutor = async (id) => {
     select: {
       ID_AUTOR: true,
       NOMBRE: true,
-      APELLIDO: true,
+      APELLIDOS: true,
       LECTURAS: true,
     },
     where: {
@@ -34,7 +34,7 @@ const postAutor = async (autor) => {
   const autorDB = await prisma.AUTORES.create({
     data: {
       NOMBRE: autor.nombre,
-      APELLIDO: autor.apellido,
+      APELLIDOS: autor.apellidos,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
       NACIONALIDAD: autor.nacionalidad,

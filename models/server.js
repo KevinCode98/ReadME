@@ -13,6 +13,8 @@ class Server {
     this.usuariosPath = '/api/usuarios';
     this.tutoradosPath = '/api/tutorados';
     this.autoresPath = '/api/autores';
+    this.lecturasPath = '/api/lecturas';
+    this.questionariosPath = '/api/questionarios';
 
     // Middlewares
     this.middlewares();
@@ -38,6 +40,8 @@ class Server {
     this.app.use(this.usuariosPath, require('../routes/usuario'));
     this.app.use(this.tutoradosPath, require('../routes/tutorados'));
     this.app.use(this.autoresPath, require('../routes/autores'));
+    this.app.use(this.lecturasPath, require('../routes/lecturas'));
+    this.app.use(this.questionariosPath, require('../routes/questionarios'));
   }
 
   listen() {

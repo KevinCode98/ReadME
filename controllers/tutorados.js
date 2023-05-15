@@ -16,8 +16,8 @@ const tutoradoPost = async (req, res = response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json(errors);
 
-  res.json(await tutoradoDB.tutoradoPost(req.body));
   try {
+    res.json(await tutoradoDB.tutoradoPost(req.body));
   } catch (error) {
     console.error('Error en la petición de la base de datos');
   }
