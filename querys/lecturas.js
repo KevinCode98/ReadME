@@ -4,7 +4,14 @@ const prisma = new PrismaClient();
 
 const getLecturas = async () => {
   let lecturas = await prisma.LECTURAS.findMany({
-    include: {
+    select: {
+      TITULO: true,
+      GENERO: true,
+      TEXTO: true,
+      ID_LECTURA: true,
+      FECHA_PUBLICACION: true,
+      CORRIENTE_LITERARIA: true,
+      PUNTUACION: true,
       AUTORES: {
         select: {
           NOMBRE: true,
@@ -18,19 +25,24 @@ const getLecturas = async () => {
 };
 
 const getLectura = async (id) => {
-  const lecturas = await prisma.LECTURAS.findMany({
+  const lectura = await prisma.LECTURAS.findUnique({
+    where: {
+      ID_LECTURA: Number(id),
+    },
     select: {
       TITULO: true,
       GENERO: true,
-      CORRIENTE_LITERARIA: true,
-      PUNTUACION: true,
-    },
-    where: {
-      ID_LECTURA: id,
+      TEXTO: true,
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+        },
+      },
     },
   });
 
-  return lecturas;
+  return lectura;
 };
 
 const postLectura = async (lectura) => {
@@ -60,6 +72,8 @@ const postLectura = async (lectura) => {
       },
     },
   });
+
+  return lecturaDB;
 };
 
 module.exports = {

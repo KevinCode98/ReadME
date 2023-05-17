@@ -15,6 +15,7 @@ class Server {
     this.autoresPath = '/api/autores';
     this.lecturasPath = '/api/lecturas';
     this.questionariosPath = '/api/questionarios';
+    this.preguntasPath = '/api/preguntas';
 
     // Middlewares
     this.middlewares();
@@ -42,6 +43,7 @@ class Server {
     this.app.use(this.autoresPath, require('../routes/autores'));
     this.app.use(this.lecturasPath, require('../routes/lecturas'));
     this.app.use(this.questionariosPath, require('../routes/questionarios'));
+    this.app.use(this.preguntasPath, require('../routes/preguntas'));
   }
 
   listen() {

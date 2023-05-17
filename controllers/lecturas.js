@@ -27,7 +27,6 @@ const lecturaPost = async (req, res = response) => {
   try {
     res.json(await lecturaDB.postLectura(req.body));
   } catch (error) {
-    console.log(error);
     console.error('Error en la petición de la base de datos');
   }
 };

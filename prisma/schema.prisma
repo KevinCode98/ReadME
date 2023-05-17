@@ -94,7 +94,7 @@ model PREGUNTAS {
   ID_PREGUNTA     Int           @id @default(autoincrement())
   ID_QUESTIONARIO Int
   DESCRIPCION     String        @db.VarChar(255)
-  ABIERTA         Boolean
+  CERRADA         Boolean
   CERRADAS        CERRADAS[]
   QUESTIONARIOS   QUESTIONARIOS @relation(fields: [ID_QUESTIONARIO], references: [ID_QUESTIONARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_15")
   RESPUESTAS      RESPUESTAS[]
