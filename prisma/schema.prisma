@@ -59,17 +59,16 @@ model HISTORIAL {
   @@index([ID_LECTURA], map: "FK_REFERENCE_9")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model INSCRITOS {
-  ID_SALA    Int
-  ID_USUARIO Int
-  ACEPTADO   Boolean
-  SALAS      SALAS    @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_6")
-  USUARIOS   USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_7")
+  ID_INSCRITOS Int      @id @default(autoincrement())
+  ID_SALA      Int
+  ID_USUARIO   Int
+  ACEPTADO     Boolean
+  SALAS        SALAS    @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_6")
+  USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_7")
 
   @@index([ID_SALA], map: "FK_REFERENCE_6")
   @@index([ID_USUARIO], map: "FK_REFERENCE_7")
-  @@ignore
 }
 
 model LECTURAS {
@@ -84,7 +83,7 @@ model LECTURAS {
   ASIGNACIONES        ASIGNACIONES[]
   HISTORIAL           HISTORIAL[]
   AUTORES             AUTORES         @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
-  PROGRESOS           PROGRESOS[]     @ignore
+  PROGRESOS           PROGRESOS[]
   QUESTIONARIOS       QUESTIONARIOS[]
 
   @@index([ID_AUTOR], map: "FK_REFERENCE_3")
@@ -102,18 +101,17 @@ model PREGUNTAS {
   @@index([ID_QUESTIONARIO], map: "FK_REFERENCE_15")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model PROGRESOS {
-  ID_USUARIO Int
-  ID_LECTURA Int
-  TIEMPO     Int
-  FECHA      DateTime @db.Date
-  USUARIOS   USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_10")
-  LECTURAS   LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_11")
+  ID_PROGRESOS Int      @id @default(autoincrement())
+  ID_USUARIO   Int
+  ID_LECTURA   Int
+  TIEMPO       Int
+  FECHA        DateTime @db.Date
+  USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_10")
+  LECTURAS     LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_11")
 
   @@index([ID_USUARIO], map: "FK_REFERENCE_10")
   @@index([ID_LECTURA], map: "FK_REFERENCE_11")
-  @@ignore
 }
 
 model QUESTIONARIOS {
@@ -143,10 +141,10 @@ model SALAS {
   ID_SALA        Int            @id @default(autoincrement())
   ID_RESPONSABLE Int
   DESCRIPCION    String         @db.VarChar(50)
-  FECHA_CREACION DateTime       @db.DateTime(0)
+  FECHA_CREACION DateTime       @db.Date
   HASH           String         @db.VarChar(255)
   ASIGNACIONES   ASIGNACIONES[]
-  INSCRITOS      INSCRITOS[]    @ignore
+  INSCRITOS      INSCRITOS[]
   USUARIOS       USUARIOS       @relation(fields: [ID_RESPONSABLE], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_2")
 
   @@index([ID_RESPONSABLE], map: "FK_REFERENCE_2")
@@ -178,8 +176,8 @@ model USUARIOS {
   APELLIDOS    String       @db.VarChar(100)
   CERRADAS     CERRADAS[]
   HISTORIAL    HISTORIAL[]
-  INSCRITOS    INSCRITOS[]  @ignore
-  PROGRESOS    PROGRESOS[]  @ignore
+  INSCRITOS    INSCRITOS[]
+  PROGRESOS    PROGRESOS[]
   RESPUESTAS   RESPUESTAS[]
   SALAS        SALAS[]
   TUTORES      TUTORES[]

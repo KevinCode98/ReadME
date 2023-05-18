@@ -6,7 +6,7 @@ const profesoresGet = async (req, res = response) => {
   try {
     res.json(await profesoresDB.getProfesores());
   } catch (error) {
-    console.error(' Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - profesoresGet');
   }
 };
 
@@ -16,7 +16,7 @@ const profesorGet = async (req, res = response) => {
   try {
     res.json(await profesoresDB.getProfesor(id));
   } catch (error) {
-    console.error('Error en la petición de la base de datos');
+    console.error('Error en la petición de base de datos - profesorGet');
   }
 };
 
@@ -27,7 +27,7 @@ const profesorPost = async (req, res = response) => {
   try {
     res.json(await profesoresDB.postProfesor(req.body));
   } catch (error) {
-    console.error('Error en la petición de la base de datos');
+    console.error('Error en la petición de base de datos - profesorPost');
   }
 };
 

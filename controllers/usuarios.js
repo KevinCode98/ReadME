@@ -4,9 +4,9 @@ const { validationResult } = require('express-validator');
 
 const usuariosGet = async (req, res = response) => {
   try {
-    res.json(await usuarioDB.usuariosGet());
+    res.json(await usuarioDB.getUsuarios());
   } catch (error) {
-    console.error(' Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - usuariosGet');
   }
 };
 
@@ -17,7 +17,7 @@ const usuariosPost = async (req, res = response) => {
   try {
     res.json(await usuarioDB.postUsuariosDB(req.body));
   } catch (error) {
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - usuariosPost');
   }
 };
 
@@ -31,7 +31,7 @@ const loginUser = async (req, res = response) => {
   try {
     return res.json(await usuarioDB.loginUser(email, password));
   } catch (error) {
-    console.error('Error en la peticón de la base de datos');
+    console.error('Error en la petición de base de datos - loginUser');
   }
 };
 
@@ -52,9 +52,9 @@ const usuariosPatch = (req, res = response) => {
 const usuarioGet = async (req, res = response) => {
   const id = req.params.id;
   try {
-    return res.json(await usuarioDB.usuarioGet(id));
+    return res.json(await usuarioDB.getUsuario(id));
   } catch (error) {
-    console.error('Error en la petición de la base de datos');
+    console.error('Error en la petición de base de datos - usuarioGet');
   }
 };
 

@@ -8,8 +8,7 @@ const questionarioGet = async (req, res = response) => {
   try {
     res.json(await questionarioDB.getQuestionario(id));
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - questionarioGet');
   }
 };
 
@@ -20,8 +19,7 @@ const questionarioPost = async (req, res = response) => {
   try {
     res.json(await questionarioDB.postQuestionario(req.body));
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - questionarioPost');
   }
 };
 

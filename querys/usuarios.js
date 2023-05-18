@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
-const usuariosGet = async () => {
+const getUsuarios = async () => {
   const usuarios = await prisma.USUARIOS.findMany({
     select: {
       ID_USUARIO: true,
@@ -18,7 +18,7 @@ const usuariosGet = async () => {
   return usuarios;
 };
 
-const usuarioGet = async (id) => {
+const getUsuario = async (id) => {
   const usuario = await prisma.USUARIOS.findMany({
     select: {
       ID_USUARIO: true,
@@ -68,6 +68,6 @@ async function deleteUsuarioDB({ id }) {}
 
 module.exports = {
   loginUser,
-  usuarioGet,
-  usuariosGet,
+  getUsuario,
+  getUsuarios,
 };

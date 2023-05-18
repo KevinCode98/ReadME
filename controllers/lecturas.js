@@ -6,7 +6,7 @@ const lecturasGet = async (req, res = responese) => {
   try {
     res.json(await lecturaDB.getLecturas());
   } catch (error) {
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - lecturaGet');
   }
 };
 
@@ -16,7 +16,7 @@ const lecturaGet = async (req, res = responese) => {
   try {
     res.json(await lecturaDB.getLectura(id));
   } catch (error) {
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - lecturasGet');
   }
 };
 
@@ -27,7 +27,7 @@ const lecturaPost = async (req, res = response) => {
   try {
     res.json(await lecturaDB.postLectura(req.body));
   } catch (error) {
-    console.error('Error en la petición de la base de datos');
+    console.error('Error en la petición de base de datos - lecturaPost');
   }
 };
 

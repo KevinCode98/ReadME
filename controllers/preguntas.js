@@ -8,7 +8,7 @@ const preguntaGet = async (req, res = response) => {
   try {
     res.json(await preguntaDB.getPregunta(id));
   } catch (error) {
-    console.error(' Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - preguntaGet');
   }
 };
 
@@ -19,8 +19,7 @@ const preguntaPost = async (req, res = response) => {
   try {
     res.json(await preguntaDB.postPregunta(req.body));
   } catch (error) {
-    console.log(error);
-    console.error(' Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - preguntaPost');
   }
 };
 

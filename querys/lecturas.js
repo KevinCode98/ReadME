@@ -3,13 +3,11 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getLecturas = async () => {
-  let lecturas = await prisma.LECTURAS.findMany({
+  const lecturas = await prisma.LECTURAS.findMany({
     select: {
       TITULO: true,
       GENERO: true,
-      TEXTO: true,
       ID_LECTURA: true,
-      FECHA_PUBLICACION: true,
       CORRIENTE_LITERARIA: true,
       PUNTUACION: true,
       AUTORES: {
@@ -55,7 +53,7 @@ const postLectura = async (lectura) => {
     },
   });
 
-  if (!autorExiste) return { msg: 'El autor no existe en la base de datos' };
+  if (!autorExiste) return { msg: 'El Autor no existe en la base de datos' };
 
   const lecturaDB = await prisma.LECTURAS.create({
     data: {

@@ -9,13 +9,18 @@ class Server {
 
     // Path de rutas
     this.alumnosPath = '/api/alumnos';
-    this.profesoresPath = '/api/profesores';
-    this.usuariosPath = '/api/usuarios';
-    this.tutoradosPath = '/api/tutorados';
+    this.asignacionesPath = '/api/asignaciones';
     this.autoresPath = '/api/autores';
+    this.cerradasPath = '/api/cerradas';
+    this.inscritosPath = '/api/inscritos';
     this.lecturasPath = '/api/lecturas';
-    this.questionariosPath = '/api/questionarios';
     this.preguntasPath = '/api/preguntas';
+    this.profesoresPath = '/api/profesores';
+    this.questionariosPath = '/api/questionarios';
+    this.respuestasPath = '/api/respuestas';
+    this.salasPath = '/api/salas';
+    this.tutoradosPath = '/api/tutorados';
+    this.usuariosPath = '/api/usuarios';
 
     // Middlewares
     this.middlewares();
@@ -37,13 +42,18 @@ class Server {
 
   routes() {
     this.app.use(this.alumnosPath, require('../routes/alumnos'));
-    this.app.use(this.profesoresPath, require('../routes/profesores'));
-    this.app.use(this.usuariosPath, require('../routes/usuario'));
-    this.app.use(this.tutoradosPath, require('../routes/tutorados'));
+    this.app.use(this.asignacionesPath, require('../routes/asignaciones'));
     this.app.use(this.autoresPath, require('../routes/autores'));
+    this.app.use(this.cerradasPath, require('../routes/cerradas'));
+    this.app.use(this.inscritosPath, require('../routes/inscritos'));
     this.app.use(this.lecturasPath, require('../routes/lecturas'));
-    this.app.use(this.questionariosPath, require('../routes/questionarios'));
     this.app.use(this.preguntasPath, require('../routes/preguntas'));
+    this.app.use(this.profesoresPath, require('../routes/profesores'));
+    this.app.use(this.questionariosPath, require('../routes/questionarios'));
+    this.app.use(this.respuestasPath, require('../routes/respuestas'));
+    this.app.use(this.salasPath, require('../routes/salas'));
+    this.app.use(this.tutoradosPath, require('../routes/tutorados'));
+    this.app.use(this.usuariosPath, require('../routes/usuario'));
   }
 
   listen() {

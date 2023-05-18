@@ -6,7 +6,7 @@ const autoresGet = async (req, res = response) => {
   try {
     res.json(await autoresDB.getAutores());
   } catch (error) {
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - autoresGet');
   }
 };
 
@@ -16,7 +16,7 @@ const autorGet = async (req, res = response) => {
   try {
     res.json(await autoresDB.getAutor(id));
   } catch (error) {
-    console.error('Error en la petición de base de datos');
+    console.error('Error en la petición de base de datos - autorGet');
   }
 };
 
@@ -27,11 +27,9 @@ const autorPost = async (req, res = response) => {
   try {
     res.json(await autoresDB.postAutor(req.body));
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de la base de datos');
+    console.error('Error en la petición de base de datos - autorPost');
   }
 };
-
 
 module.exports = {
   autoresGet,
