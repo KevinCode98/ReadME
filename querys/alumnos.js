@@ -68,6 +68,7 @@ const postAlumno = async (alumno) => {
       APODO: alumno.apodo,
       FOTO: alumno.foto,
       NIVEL: alumno.nivel,
+      STATUS: 'CREADO'
     },
   });
 
