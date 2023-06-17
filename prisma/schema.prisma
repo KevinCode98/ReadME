@@ -28,6 +28,7 @@ model AUTORES {
   FECHA_DEFUNCION DateTime?  @db.Date
   NACIONALIDAD    String?    @db.VarChar(25)
   APELLIDOS       String     @db.VarChar(100)
+  BIBLIOGRAFIA    String     @db.Text
   LECTURAS        LECTURAS[]
 }
 
@@ -163,22 +164,44 @@ model TUTORES {
 }
 
 model USUARIOS {
-  ID_USUARIO   Int          @id @default(autoincrement())
-  NOMBRE       String       @db.VarChar(100)
-  FECHA_NAC    DateTime     @db.Date
-  TIPO_USUARIO String       @db.VarChar(25)
-  EMAIL        String       @db.VarChar(100)
-  PWD          String       @db.VarChar(200)
-  FECHA_ALTA   DateTime     @db.DateTime(0)
-  APODO        String       @db.VarChar(25)
-  FOTO         String?      @db.Text
-  NIVEL        String       @db.VarChar(10)
-  APELLIDOS    String       @db.VarChar(100)
+  ID_USUARIO   Int            @id @default(autoincrement())
+  NOMBRE       String         @db.VarChar(100)
+  FECHA_NAC    DateTime       @db.Date
+  TIPO_USUARIO String         @db.VarChar(25)
+  EMAIL        String         @db.VarChar(100)
+  PWD          String         @db.VarChar(200)
+  FECHA_ALTA   DateTime       @db.DateTime(0)
+  APODO        String         @db.VarChar(25)
+  FOTO         String?        @db.Text
+  NIVEL        String         @db.VarChar(10)
+  APELLIDOS    String         @db.VarChar(100)
+  STATUS       String         @db.VarChar(25)
+  ALARMAS      ALARMAS[]
   CERRADAS     CERRADAS[]
+  DISPOSITIVOS DISPOSITIVOS[]
   HISTORIAL    HISTORIAL[]
   INSCRITOS    INSCRITOS[]
   PROGRESOS    PROGRESOS[]
   RESPUESTAS   RESPUESTAS[]
   SALAS        SALAS[]
   TUTORES      TUTORES[]
+}
+
+model ALARMAS {
+  ID          Int      @id @default(autoincrement())
+  DESCRIPCION String?  @db.VarChar(100)
+  HORA        DateTime @default(now()) @db.Timestamp(0)
+  ID_USUARIO  Int
+  USUARIOS    USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onUpdate: Restrict, map: "FK_AlarmasUsuarios")
+
+  @@index([ID_USUARIO], map: "FK_AlarmasUsuarios")
+}
+
+model DISPOSITIVOS {
+  ID               Int      @id @default(autoincrement())
+  ID_USUARIO       Int
+  UUID_DISPOSITIVO String   @db.VarChar(200)
+  USUARIOS         USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onUpdate: Restrict, map: "FK_DispositivosUsuarios")
+
+  @@index([ID_USUARIO], map: "FK_DispositivosUsuarios")
 }
