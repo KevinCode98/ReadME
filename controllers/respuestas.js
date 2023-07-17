@@ -1,6 +1,5 @@
 const { response, request } = require('express');
 const respuestasDB = require('../querys/respuestas');
-const { validationResult } = require('express-validator');
 
 const respuestasGet = async (req, res = response) => {
   const id = req.params.id;
@@ -9,17 +8,20 @@ const respuestasGet = async (req, res = response) => {
     res.json(await respuestasDB.getRespuestas(id));
   } catch (error) {
     console.error('Error en la petición de base de datos - respuestasGet');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - respuestasGet',
+    });
   }
 };
 
 const respuestaPost = async (req, res = response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json(errors);
-
   try {
     res.json(await respuestasDB.postRespuestas(req.body));
   } catch (error) {
     console.error('Error en la petición de base de datos - respuestaPost');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - respuestaPost',
+    });
   }
 };
 

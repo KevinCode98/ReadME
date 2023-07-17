@@ -1,5 +1,6 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
+const { validarCampos } = require('../middlewares/validar-campos');
 const {
   profesoresGet,
   profesorGet,
@@ -23,6 +24,7 @@ router.post(
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
     check('nacimiento', 'La fecha no es válida').isISO8601().toDate(),
+    validarCampos,
   ],
   profesorPost
 );

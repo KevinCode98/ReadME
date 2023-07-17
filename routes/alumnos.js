@@ -1,6 +1,14 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
-const { alumnosGet, alumnoGet, alumnoPost } = require('../controllers/alumnos');
+const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const {
+  alumnosGet,
+  alumnoGet,
+  alumnoPost,
+  alumnoDelete,
+} = require('../controllers/alumnos');
+const { existeUsuarioPorId } = require('../helpers/validator');
 
 const router = Router();
 
@@ -19,8 +27,14 @@ router.post(
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
     check('nacimiento', 'La fecha no es válida').isISO8601().toDate(),
+    validarCampos,
   ],
   alumnoPost
+);
+router.delete(
+  '/:id',
+  [validarJWT, check('id').custom(existeUsuarioPorId), validarCampos],
+  alumnoDelete
 );
 
 module.exports = router;

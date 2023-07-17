@@ -10,6 +10,7 @@ class Server {
     // Path de rutas
     this.alumnosPath = '/api/alumnos';
     this.asignacionesPath = '/api/asignaciones';
+    this.authPath = '/api/auth';
     this.autoresPath = '/api/autores';
     this.cerradasPath = '/api/cerradas';
     this.inscritosPath = '/api/inscritos';
@@ -43,6 +44,7 @@ class Server {
   routes() {
     this.app.use(this.alumnosPath, require('../routes/alumnos'));
     this.app.use(this.asignacionesPath, require('../routes/asignaciones'));
+    this.app.use(this.authPath, require('../routes/auth'));
     this.app.use(this.autoresPath, require('../routes/autores'));
     this.app.use(this.cerradasPath, require('../routes/cerradas'));
     this.app.use(this.inscritosPath, require('../routes/inscritos'));

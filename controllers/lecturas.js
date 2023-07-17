@@ -1,12 +1,14 @@
 const { response, request } = require('express');
 const lecturaDB = require('../querys/lecturas');
-const { validationResult } = require('express-validator');
 
 const lecturasGet = async (req, res = responese) => {
   try {
     res.json(await lecturaDB.getLecturas());
   } catch (error) {
-    console.error('Error en la petición de base de datos - lecturaGet');
+    console.error('Error en la petición de base de datos - lecturasGet');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - lecturasGet',
+    });
   }
 };
 
@@ -17,17 +19,20 @@ const lecturaGet = async (req, res = responese) => {
     res.json(await lecturaDB.getLectura(id));
   } catch (error) {
     console.error('Error en la petición de base de datos - lecturasGet');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - lecturasGet',
+    });
   }
 };
 
 const lecturaPost = async (req, res = response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json(errors);
-
   try {
     res.json(await lecturaDB.postLectura(req.body));
   } catch (error) {
     console.error('Error en la petición de base de datos - lecturaPost');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - lecturaPost',
+    });
   }
 };
 

@@ -1,5 +1,6 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
+const { validarCampos } = require('../middlewares/validar-campos');
 const {
   lecturaGet,
   lecturasGet,
@@ -20,6 +21,7 @@ router.post(
     check('corriente_literaria', 'El corriente_literaria es obliagorio')
       .not()
       .isEmpty(),
+    validarCampos,
   ],
   lecturaPost
 );

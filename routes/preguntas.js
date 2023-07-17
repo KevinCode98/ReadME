@@ -1,5 +1,6 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
+const { validarCampos } = require('../middlewares/validar-campos');
 const { preguntaGet, preguntaPost } = require('../controllers/preguntas');
 
 const router = Router();
@@ -13,6 +14,7 @@ router.post(
       .isEmpty(),
     check('descripcion', 'La descripcion es obligatoria').not().isEmpty(),
     check('cerrada', 'El campo cerrada es obligatoria').isBoolean(),
+    validarCampos,
   ],
   preguntaPost
 );

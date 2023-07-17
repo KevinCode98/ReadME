@@ -21,7 +21,7 @@ const getAlumnos = async () => {
 };
 
 const getAlumno = async (id) => {
-  const alumno = await prisma.USUARIOS.findMany({
+  const alumno = await prisma.USUARIOS.findFirst({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -30,7 +30,7 @@ const getAlumno = async (id) => {
       APODO: true,
     },
     where: {
-      TIPO_USUARIO: 'Estudiante',
+      TIPO_USUARIO: 'Alumno',
       ID_USUARIO: Number(id),
     },
   });
@@ -68,7 +68,7 @@ const postAlumno = async (alumno) => {
       APODO: alumno.apodo,
       FOTO: alumno.foto,
       NIVEL: alumno.nivel,
-      STATUS: 'CREADO'
+      STATUS: 'CREADO',
     },
   });
 
@@ -76,8 +76,29 @@ const postAlumno = async (alumno) => {
   return alumnoDB;
 };
 
+const deleteAlumno = async (id) => {
+  const alumno = await prisma.USUARIOS.update({
+    where: {
+      ID_USUARIO: Number(id),
+    },
+    data: {
+      STATUS: 'ELIMINADO',
+    },
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDOS: true,
+      EMAIL: true,
+      APODO: true,
+    },
+  });
+
+  return alumno;
+};
+
 module.exports = {
   getAlumnos,
   getAlumno,
   postAlumno,
+  deleteAlumno,
 };
