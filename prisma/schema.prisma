@@ -22,14 +22,17 @@ model ASIGNACIONES {
 }
 
 model AUTORES {
-  ID_AUTOR        Int        @id @default(autoincrement())
-  NOMBRE          String     @db.VarChar(100)
-  FECHA_NAC       DateTime?  @db.Date
-  FECHA_DEFUNCION DateTime?  @db.Date
-  NACIONALIDAD    String?    @db.VarChar(25)
-  APELLIDOS       String     @db.VarChar(100)
-  BIBLIOGRAFIA    String     @db.Text
+  ID_AUTOR        Int            @id @default(autoincrement())
+  NACIONALIDAD    Int
+  NOMBRE          String         @db.VarChar(100)
+  FECHA_NAC       DateTime?      @db.Date
+  FECHA_DEFUNCION DateTime?      @db.Date
+  APELLIDOS       String         @db.VarChar(100)
+  BIBLIOGRAFIA    String         @db.Text
+  NACIONALIDADES  NACIONALIDADES @relation(fields: [NACIONALIDAD], references: [ID_NACIONALIDAD], onDelete: NoAction, onUpdate: NoAction, map: "AUTORES_NACIONALIDADES_ID_NACIONALIDAD_fk")
   LECTURAS        LECTURAS[]
+
+  @@index([NACIONALIDAD], map: "AUTORES_NACIONALIDADES_ID_NACIONALIDAD_fk")
 }
 
 model CERRADAS {
@@ -176,6 +179,7 @@ model USUARIOS {
   NIVEL        String         @db.VarChar(10)
   APELLIDOS    String         @db.VarChar(100)
   STATUS       String         @db.VarChar(25)
+  ACTIVACIONES ACTIVACIONES[]
   ALARMAS      ALARMAS[]
   CERRADAS     CERRADAS[]
   DISPOSITIVOS DISPOSITIVOS[]
@@ -204,4 +208,24 @@ model DISPOSITIVOS {
   USUARIOS         USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onUpdate: Restrict, map: "FK_DispositivosUsuarios")
 
   @@index([ID_USUARIO], map: "FK_DispositivosUsuarios")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ACTIVACIONES {
+  ID_CODIGO  Int      @id @default(autoincrement())
+  ID_USUARIO Int
+  CODIGO     String   @db.VarChar(4)
+  TIEMPO     DateTime @db.DateTime(0)
+  PROCESADO  Boolean  @default(false)
+  USUARIOS   USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "CODIGOS_USUARIOS_FK")
+
+  @@index([ID_USUARIO], map: "CODIGOS_USUARIOS_FK")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model NACIONALIDADES {
+  ID_NACIONALIDAD Int       @id @default(autoincrement())
+  CODIGO_ISO      String    @db.VarChar(3)
+  DESCRIPCION     String    @db.VarChar(30)
+  AUTORES         AUTORES[]
 }
