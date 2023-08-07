@@ -1,10 +1,13 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
 const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { existeUsuarioPorId } = require('../helpers/validator');
 const {
   profesoresGet,
   profesorGet,
   profesorPost,
+  profesorDelete,
 } = require('../controllers/profesores');
 
 const router = Router();
@@ -27,6 +30,11 @@ router.post(
     validarCampos,
   ],
   profesorPost
+);
+router.delete(
+  '/:id',
+  [validarJWT, check('id').custom(existeUsuarioPorId), validarCampos],
+  profesorDelete
 );
 
 module.exports = router;

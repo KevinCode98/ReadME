@@ -29,7 +29,8 @@ const alumnoGet = async (req, res = response) => {
 const alumnoPost = async (req, res = response) => {
   try {
     const alumno = await alumnosDB.postAlumno(req.body);
-    await activacionDB.postActualizarCodigo(alumno.ID_USUARIO);
+    if (alumno.alumnoDB)
+      await activacionDB.postActualizarCodigo(alumno.alumnoDB.ID_USUARIO);
 
     res.json(alumno);
   } catch (error) {

@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const bcryptjs = require('bcryptjs');
+const { generarJWT } = require('../helpers/generar-jwt');
 
 const prisma = new PrismaClient();
 
@@ -73,7 +74,10 @@ const postAlumno = async (alumno) => {
   });
 
   delete alumnoDB.PWD;
-  return alumnoDB;
+  // Generar el JWT
+  const token = await generarJWT(alumnoDB.ID_USUARIO);
+
+  return { alumnoDB, token };
 };
 
 const deleteAlumno = async (id) => {
