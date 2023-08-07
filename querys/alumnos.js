@@ -67,7 +67,7 @@ const postAlumno = async (alumno) => {
       FECHA_ALTA: new Date(),
       APODO: alumno.apodo,
       FOTO: alumno.foto,
-      NIVEL: alumno.nivel,
+      NIVEL: 'BRONCE',
       STATUS: 'CREADO',
     },
   });

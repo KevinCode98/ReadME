@@ -1,5 +1,6 @@
 const { response, request } = require('express');
 const alumnosDB = require('../querys/alumnos');
+const activacionDB = require('../querys/activaciones');
 
 const alumnosGet = async (req, res = response) => {
   try {
@@ -27,7 +28,10 @@ const alumnoGet = async (req, res = response) => {
 
 const alumnoPost = async (req, res = response) => {
   try {
-    res.json(await alumnosDB.postAlumno(req.body));
+    const alumno = await alumnosDB.postAlumno(req.body);
+    await activacionDB.postActualizarCodigo(alumno.ID_USUARIO);
+
+    res.json(alumno);
   } catch (error) {
     console.error('Error en la petición de la base de datos - alumnoPost');
     return res.status(500).json({

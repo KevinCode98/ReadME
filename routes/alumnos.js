@@ -2,13 +2,13 @@ const { check } = require('express-validator');
 const { Router } = require('express');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
+const { existeUsuarioPorId } = require('../helpers/validator');
 const {
   alumnosGet,
   alumnoGet,
   alumnoPost,
   alumnoDelete,
 } = require('../controllers/alumnos');
-const { existeUsuarioPorId } = require('../helpers/validator');
 
 const router = Router();
 

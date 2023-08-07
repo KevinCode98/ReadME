@@ -8,6 +8,7 @@ class Server {
     this.port = process.env.PORT;
 
     // Path de rutas
+    this.activacionesPath = '/api/activaciones';
     this.alumnosPath = '/api/alumnos';
     this.asignacionesPath = '/api/asignaciones';
     this.authPath = '/api/auth';
@@ -42,6 +43,7 @@ class Server {
   }
 
   routes() {
+    this.app.use(this.activacionesPath, require('../routes/activaciones'));
     this.app.use(this.alumnosPath, require('../routes/alumnos'));
     this.app.use(this.asignacionesPath, require('../routes/asignaciones'));
     this.app.use(this.authPath, require('../routes/auth'));
