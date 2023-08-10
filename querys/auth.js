@@ -26,14 +26,14 @@ const postAuth = async (email, password) => {
 
   if (!usuario) {
     return {
-      estado: null,
+      msg: 'Error de datos',
     };
   }
 
-  // Si el usuario tiene un estado valido
+  // Si el usuario tiene un msg valido
   if (usuario.STATUS === 'ELIMINADO') {
     return {
-      estado: null,
+      msg: 'Error de datos',
     };
   }
 
@@ -41,7 +41,7 @@ const postAuth = async (email, password) => {
   const validarPassword = bcryptjs.compareSync(password, usuario.PWD);
   if (!validarPassword) {
     return {
-      estado: null,
+      msg: 'Error de datos',
     };
   }
 
@@ -50,7 +50,6 @@ const postAuth = async (email, password) => {
   delete usuario.PWD;
 
   return {
-    estado: 'Ok',
     usuario,
     token,
   };

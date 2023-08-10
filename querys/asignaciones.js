@@ -47,7 +47,7 @@ const postAsignacion = async (asignacion) => {
     return await prisma.ASIGNACIONES.create({
       data: {
         TITULO: asignacion.titulo,
-        INDICACION: asignacion.INDICACION,
+        INDICACION: asignacion.indicaciones,
         FECHA_CREACION: new Date(),
         SALAS: {
           connect: {

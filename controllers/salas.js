@@ -13,9 +13,17 @@ const salasGet = async (req, res = response) => {
 };
 
 const salaGet = async (req, res = response) => {
-  const id = req.params.id;
+  const hash = req.params.hash;
+
   try {
-    res.json(await salasDB.getSalas(id));
+    const sala = await salasDB.getSala(hash);
+
+    if (sala === null)
+      return res.status(400).json({
+        msg: `No se encontro una sala con el hash: ${hash}`,
+      });
+
+    res.status(200).json(sala);
   } catch (error) {
     console.error('Error en la petición de base de datos - salaGet');
     return res.status(500).json({
@@ -25,8 +33,13 @@ const salaGet = async (req, res = response) => {
 };
 
 const salasPost = async (req, res = response) => {
+  const id = req.usuario.ID_USUARIO;
+
   try {
-    res.json(await salasDB.postSalas(req.body));
+    const sala = await salasDB.postSalas(id, req.body);
+
+    if (sala.msg) return res.status(400).json(sala);
+    res.status(200).json(sala);
   } catch (error) {
     console.error('Error en la petición de base de datos - salasPost');
     return res.status(500).json({

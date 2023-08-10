@@ -1,11 +1,61 @@
-const { check } = require('express-validator');
 const { Router } = require('express');
-
-const { usuariosGet, usuarioGet } = require('../controllers/usuarios');
+const { check } = require('express-validator');
+const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { existeUsuarioPorId } = require('../helpers/validator');
+const {
+  usuarioActializarPost,
+  usuarioDelete,
+  usuarioGet,
+  usuarioPost,
+  usuariosGet,
+  usuariosNombreGet,
+} = require('../controllers/usuarios');
 
 const router = Router();
 
 router.get('/', usuariosGet);
 router.get('/:id', usuarioGet);
+router.get('/buscador/nombre/', usuariosNombreGet);
+router.post(
+  '/',
+  [
+    check('email', 'El email no es válido').isEmail(),
+    check('password', 'El password debe de ser más de 6 caracteres').isLength({
+      min: 6,
+    }),
+    check('apodo', 'El apodo debe de ser más de 4 caracteres').isLength({
+      min: 4,
+    }),
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
+    check('nacimiento', 'La fecha no es válida').isISO8601().toDate(),
+    check('tipo_usuario', 'El tipo_usuario no es válido').isIn([
+      'Alumno',
+      'Profesor',
+    ]),
+    validarCampos,
+  ],
+  usuarioPost
+);
+router.post(
+  '/actualizar/:id',
+  [
+    validarJWT,
+    check('apodo', 'El apodo debe de ser más de 4 caracteres').isLength({
+      min: 4,
+    }),
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
+    check('nacimiento', 'La fecha no es válida').isISO8601().toDate(),
+    validarCampos,
+  ],
+  usuarioActializarPost
+);
+router.delete(
+  '/:id',
+  [validarJWT, check('id').custom(existeUsuarioPorId), validarCampos],
+  usuarioDelete
+);
 
 module.exports = router;

@@ -1,16 +1,17 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
+const { validarJWT } = require('../middlewares/validar-jwt');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { salasGet, salasPost, salaGet } = require('../controllers/salas');
 
 const router = Router();
 
 router.get('/', salasGet);
-router.get('/:id', salaGet);
+router.get('/:hash', salaGet);
 router.post(
   '/',
   [
-    check('id_responsable', 'El id_responsable es obligatorio').not().isEmpty(),
+    validarJWT,
     check('descripcion', 'La descripcion es obligatoria').not().isEmpty(),
     validarCampos,
   ],

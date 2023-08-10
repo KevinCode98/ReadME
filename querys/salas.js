@@ -21,8 +21,8 @@ const getSalas = async () => {
   return salas;
 };
 
-const getSala = async (id) => {
-  const salas = await prisma.SALAS.findUnique({
+const getSala = async (hash) => {
+  const sala = await prisma.SALAS.findFirst({
     select: {
       DESCRIPCION: true,
       FECHA_CREACION: true,
@@ -36,20 +36,19 @@ const getSala = async (id) => {
       },
     },
     where: {
-      ID_SALA: Number(id),
+      HASH: hash,
     },
   });
 
-  return salas;
+  return sala;
 };
 
-const postSalas = async (sala) => {
+const postSalas = async (id, sala) => {
   // Validar que el Usuario exista en la base de datos
-  const idResponsable = sala.id_responsable;
-
-  const responsableExiste = await prisma.USUARIOS.findUnique({
+  const responsableExiste = await prisma.USUARIOS.findFirst({
     where: {
-      ID_USUARIO: Number(idResponsable),
+      ID_USUARIO: Number(id),
+      TIPO_USUARIO: 'Profesor',
     },
     select: {
       ID_USUARIO: true,
@@ -57,7 +56,9 @@ const postSalas = async (sala) => {
   });
 
   if (!responsableExiste)
-    return { msg: 'El Usario no existe en la base de datos' };
+    return {
+      msg: 'El Profesor no existe en la base de datos',
+    };
 
   const hash = generadorHash();
 
@@ -66,7 +67,7 @@ const postSalas = async (sala) => {
     where: { HASH: hash },
   });
 
-  if (hashExiste) postSalas(sala);
+  if (hashExiste) postSalas(id, sala);
 
   const salaDB = await prisma.SALAS.create({
     data: {
@@ -75,7 +76,7 @@ const postSalas = async (sala) => {
       HASH: hash,
       USUARIOS: {
         connect: {
-          ID_USUARIO: sala.id_responsable,
+          ID_USUARIO: Number(id),
         },
       },
     },

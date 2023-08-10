@@ -7,11 +7,7 @@ const authPost = async (req, res = response) => {
   try {
     usuario = await authDB.postAuth(email, password);
 
-    if (!usuario.estado)
-      return res.status(400).json({
-        msg: 'Datos invalidos',
-      });
-
+    if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
     console.error('Error en la petición de base de datos - authPost');

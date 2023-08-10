@@ -14,6 +14,31 @@ const getAutores = async () => {
   return autores;
 };
 
+const getNombresAutores = async (buscar) => {
+  const autores = await prisma.AUTORES.findMany({
+    select: {
+      ID_AUTOR: true,
+      NOMBRE: true,
+      APELLIDOS: true,
+    },
+    where: {
+      OR: [
+        {
+          NOMBRE: {
+            contains: buscar,
+          },
+        },
+        {
+          APELLIDOS: {
+            contains: buscar,
+          },
+        },
+      ],
+    },
+  });
+
+  return autores;
+};
 const getAutor = async (id) => {
   const autor = await prisma.AUTORES.findMany({
     select: {
@@ -37,7 +62,24 @@ const postAutor = async (autor) => {
       APELLIDOS: autor.apellidos,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
-      NACIONALIDAD: autor.nacionalidad,
+      NACIONALIDAD: Number(autor.nacionalidad),
+    },
+  });
+
+  return autorDB;
+};
+
+const postActualizarAutor = async (autor, id) => {
+  const autorDB = await prisma.AUTORES.update({
+    data: {
+      NOMBRE: autor.nombre,
+      APELLIDOS: autor.apellidos,
+      FECHA_NAC: new Date(autor.fecha_nac),
+      FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
+      NACIONALIDAD: Number(autor.nacionalidad),
+    },
+    where: {
+      ID_AUTOR: Number(id),
     },
   });
 
@@ -47,5 +89,7 @@ const postAutor = async (autor) => {
 module.exports = {
   getAutor,
   getAutores,
+  getNombresAutores,
+  postActualizarAutor,
   postAutor,
 };

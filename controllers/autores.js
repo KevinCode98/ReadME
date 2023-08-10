@@ -12,6 +12,20 @@ const autoresGet = async (req, res = response) => {
   }
 };
 
+const autoresNombreGet = async (req, res = response) => {
+  const nombre = req.query.nombre;
+
+  try {
+    if (Object.keys(nombre).length == 0) res.json(await autoresDB.getAutores());
+    else res.json(await autoresDB.getNombresAutores(nombre));
+  } catch (error) {
+    console.error('Error en la petición de base de datos - autoresNombreGet');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - autoresNombreGet',
+    });
+  }
+};
+
 const autorGet = async (req, res = response) => {
   const id = req.params.id;
 
@@ -36,8 +50,25 @@ const autorPost = async (req, res = response) => {
   }
 };
 
+const autorActualizarPost = async (req, res = response) => {
+  const id = req.params.id;
+
+  try {
+    res.json(await autoresDB.postActualizarAutor(req.body, id));
+  } catch (error) {
+    console.error(
+      'Error en la petición de base de datos - autorActualizarPost'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - autorActualizarPost',
+    });
+  }
+};
+
 module.exports = {
+  autorActualizarPost,
   autoresGet,
+  autoresNombreGet,
   autorGet,
   autorPost,
 };

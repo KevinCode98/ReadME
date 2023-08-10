@@ -13,10 +13,13 @@ router.post(
     check('email', 'El email no es válido').isEmail(),
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
-    check('parentesco', 'El parentesco no es válido').isIn(
-      ['Padre', 'Madre', 'Abuelo/a', 'Familiar'],
-      validarCampos
-    ),
+    check('parentesco', 'El parentesco no es válido').isIn([
+      'Padre',
+      'Madre',
+      'Abuelo/a',
+      'Familiar',
+    ]),
+    validarCampos,
   ],
   tutoradoPost
 );

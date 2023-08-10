@@ -1,7 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-const bcryptjs = require('bcryptjs');
-const { generarJWT } = require('../helpers/generar-jwt');
-
 const prisma = new PrismaClient();
 
 const getAlumnos = async () => {
@@ -15,6 +12,44 @@ const getAlumnos = async () => {
     },
     where: {
       TIPO_USUARIO: 'Alumno',
+    },
+  });
+
+  return alumnos;
+};
+
+const getNombresAlumnos = async (buscar) => {
+  const alumnos = await prisma.USUARIOS.findMany({
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDOS: true,
+      EMAIL: true,
+      APODO: true,
+    },
+    where: {
+      OR: [
+        {
+          NOMBRE: {
+            contains: buscar,
+          },
+        },
+        {
+          APELLIDOS: {
+            contains: buscar,
+          },
+        },
+        {
+          EMAIL: {
+            contains: buscar,
+          },
+        },
+      ],
+      AND: [
+        {
+          TIPO_USUARIO: 'Alumno',
+        },
+      ],
     },
   });
 
@@ -39,70 +74,8 @@ const getAlumno = async (id) => {
   return alumno;
 };
 
-const postAlumno = async (alumno) => {
-  const { email, password } = alumno;
-
-  // Verificar si el correo existe
-  const alumnoExiste = await prisma.USUARIOS.findFirst({
-    where: {
-      EMAIL: email,
-    },
-  });
-
-  if (alumnoExiste)
-    return { msg: 'El usuario ya se encuentra en la base de datos' };
-
-  // Encriptar la contraseña
-  const salt = bcryptjs.genSaltSync();
-  alumno.password = bcryptjs.hashSync(password, salt);
-
-  //Guardar en BD
-  const alumnoDB = await prisma.USUARIOS.create({
-    data: {
-      NOMBRE: alumno.nombre,
-      APELLIDOS: alumno.apellidos,
-      FECHA_NAC: new Date(alumno.nacimiento),
-      TIPO_USUARIO: 'Alumno',
-      EMAIL: alumno.email,
-      PWD: alumno.password,
-      FECHA_ALTA: new Date(),
-      APODO: alumno.apodo,
-      FOTO: alumno.foto,
-      NIVEL: 'BRONCE',
-      STATUS: 'CREADO',
-    },
-  });
-
-  delete alumnoDB.PWD;
-  // Generar el JWT
-  const token = await generarJWT(alumnoDB.ID_USUARIO);
-
-  return { alumnoDB, token };
-};
-
-const deleteAlumno = async (id) => {
-  const alumno = await prisma.USUARIOS.update({
-    where: {
-      ID_USUARIO: Number(id),
-    },
-    data: {
-      STATUS: 'ELIMINADO',
-    },
-    select: {
-      ID_USUARIO: true,
-      NOMBRE: true,
-      APELLIDOS: true,
-      EMAIL: true,
-      APODO: true,
-    },
-  });
-
-  return alumno;
-};
-
 module.exports = {
-  getAlumnos,
   getAlumno,
-  postAlumno,
-  deleteAlumno,
+  getAlumnos,
+  getNombresAlumnos,
 };
