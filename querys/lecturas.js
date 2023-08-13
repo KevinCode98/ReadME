@@ -1,10 +1,12 @@
 const { PrismaClient } = require('@prisma/client');
+const autoresDB = require('../querys/autores');
 
 const prisma = new PrismaClient();
 
 const getLecturas = async () => {
   const lecturas = await prisma.LECTURAS.findMany({
     select: {
+      ID_LECTURA: true,
       TITULO: true,
       GENERO: true,
       ID_LECTURA: true,
@@ -28,6 +30,7 @@ const getLectura = async (id) => {
       ID_LECTURA: Number(id),
     },
     select: {
+      ID_LECTURA: true,
       TITULO: true,
       GENERO: true,
       TEXTO: true,
@@ -41,6 +44,52 @@ const getLectura = async (id) => {
   });
 
   return lectura;
+};
+
+const getNombreLecturas = async (buscar) => {
+  let autores;
+
+  // Ingreso de lecturas por Titulo
+  let lecturas = await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      GENERO: true,
+      TEXTO: true,
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+          ID_AUTOR: true,
+        },
+      },
+    },
+    where: {
+      TITULO: {
+        contains: buscar,
+      },
+    },
+  });
+
+  // Ingreso de lecturas por Nombre o Apellido del autor
+  if (buscar) autores = await autoresDB.getNombresAutores(buscar);
+  if (autores) {
+    for (const autor of autores) {
+      // Obtiene los libros que tiene un autor
+      const libros = await lecturasPorAutor(autor.ID_AUTOR);
+      for (const libro of libros) {
+        // Valida si el libro ya fue ingresado al arreglo
+        const found = lecturas.some(
+          (lectura) => lectura.ID_LECTURA === libro.ID_LECTURA
+        );
+        if (!found) {
+          lecturas.push(libro);
+        }
+      }
+    }
+  }
+
+  return lecturas;
 };
 
 const postLectura = async (lectura) => {
@@ -74,8 +123,32 @@ const postLectura = async (lectura) => {
   return lecturaDB;
 };
 
+const lecturasPorAutor = async (id) => {
+  const lecturas = await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      GENERO: true,
+      TEXTO: true,
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+          ID_AUTOR: true,
+        },
+      },
+    },
+    where: {
+      ID_AUTOR: Number(id),
+    },
+  });
+
+  return lecturas;
+};
+
 module.exports = {
   getLecturas,
   getLectura,
   postLectura,
+  getNombreLecturas,
 };

@@ -13,6 +13,8 @@ const asignacionGet = async (req, res = response) => {
   }
 };
 
+// TODO: End-Point retornar asignaciones por sala
+
 const asignacionPost = async (req, res = response) => {
   try {
     res.json(await asignacionesDB.postAsignacion(req.body));

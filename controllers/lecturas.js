@@ -25,6 +25,21 @@ const lecturaGet = async (req, res = responese) => {
   }
 };
 
+const lecturaNombreGet = async (req, res = response) => {
+  const nombre = req.query.nombre;
+
+  try {
+    if (Object.keys(nombre).length == 0)
+      return res.json(await lecturaDB.getLecturas());
+    else res.json(await lecturaDB.getNombreLecturas(nombre));
+  } catch (error) {
+    console.error('Error en la petición de base de datos - lecturaNombreGet');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - lecturaNombreGet',
+    });
+  }
+};
+
 const lecturaPost = async (req, res = response) => {
   try {
     res.json(await lecturaDB.postLectura(req.body));
@@ -39,5 +54,6 @@ const lecturaPost = async (req, res = response) => {
 module.exports = {
   lecturaGet,
   lecturasGet,
+  lecturaNombreGet,
   lecturaPost,
 };

@@ -23,13 +23,13 @@ model ASIGNACIONES {
 
 model AUTORES {
   ID_AUTOR        Int            @id @default(autoincrement())
-  NACIONALIDAD    Int
+  NACIONALIDAD    Int?
   NOMBRE          String         @db.VarChar(100)
   FECHA_NAC       DateTime?      @db.Date
   FECHA_DEFUNCION DateTime?      @db.Date
   APELLIDOS       String         @db.VarChar(100)
   BIBLIOGRAFIA    String         @db.Text
-  NACIONALIDADES  NACIONALIDADES @relation(fields: [NACIONALIDAD], references: [ID_NACIONALIDAD], onDelete: NoAction, onUpdate: NoAction, map: "AUTORES_NACIONALIDADES_ID_NACIONALIDAD_fk")
+  NACIONALIDADES  NACIONALIDADES? @relation(fields: [NACIONALIDAD], references: [ID_NACIONALIDAD], onDelete: NoAction, onUpdate: NoAction, map: "AUTORES_NACIONALIDADES_ID_NACIONALIDAD_fk")
   LECTURAS        LECTURAS[]
 
   @@index([NACIONALIDAD], map: "AUTORES_NACIONALIDADES_ID_NACIONALIDAD_fk")
@@ -109,7 +109,7 @@ model PROGRESOS {
   ID_PROGRESOS Int      @id @default(autoincrement())
   ID_USUARIO   Int
   ID_LECTURA   Int
-  TIEMPO       Int
+  TIEMPO       Float
   FECHA        DateTime @db.Date
   USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_10")
   LECTURAS     LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_11")

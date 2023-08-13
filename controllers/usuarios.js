@@ -15,8 +15,8 @@ const usuariosNombreGet = async (req, res = response) => {
 
   try {
     if (Object.keys(nombre).length == 0)
-      res.json(await usuarioDB.getUsuarios());
-    else res.json(await usuarioDB.getNombresUsuarios(nombre));
+      return res.json(await usuarioDB.getUsuarios());
+    else return res.json(await usuarioDB.getNombresUsuarios(nombre));
   } catch (error) {
     console.error('Error en la petición de base de datos - usuariosNombreGet');
     return res.status(500).json({
@@ -46,6 +46,7 @@ const usuarioPost = async (req, res = response) => {
     );
     if (activacion.msg) return res.status(400).json(usuario);
 
+    // TODO: Validar si el alumno es menor de 12 años solicitar TUTOR -> Despues
     res.status(200).json(usuario);
   } catch (error) {
     console.error('Error en la petición de la base de datos - usuarioPost');
@@ -132,4 +133,5 @@ module.exports = {
   usuarioPost,
   usuariosGet,
   usuariosNombreGet,
+  usuarioPasswordPost,
 };

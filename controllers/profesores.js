@@ -42,8 +42,22 @@ const profesorGet = async (req, res = response) => {
   }
 };
 
+// TODO: Retornar las salas que las ha asignado el Profesor
+const profesorSalasGet = async (req, res = response) => {
+  const id = req.usuario.ID_USUARIO;
+
+  try {
+    res.json(await profesoresDB.getProfesorSalas(id));
+  } catch (error) {
+    console.error('Error en la petición de base de datos - profesorSalasGet');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - profesorSalasGet',
+    });
+  }
+};
 module.exports = {
   profesoresGet,
   profesoresNombreGet,
   profesorGet,
+  profesorSalasGet,
 };

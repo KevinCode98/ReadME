@@ -35,6 +35,8 @@ const tutoradoPost = async (req, res = response) => {
   }
 };
 
+// TODO: Generar la actualizacion del Tutor
+
 module.exports = {
   tutoradoGet,
   tutoradoPost,

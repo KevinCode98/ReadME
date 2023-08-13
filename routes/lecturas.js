@@ -5,12 +5,14 @@ const {
   lecturaGet,
   lecturasGet,
   lecturaPost,
+  lecturaNombreGet,
 } = require('../controllers/lecturas');
 
 const router = Router();
 
 router.get('/', lecturasGet);
 router.get('/:id', lecturaGet);
+router.get('/buscador/nombre/', lecturaNombreGet);
 router.post(
   '/',
   [

@@ -60,6 +60,7 @@ const postAutor = async (autor) => {
     data: {
       NOMBRE: autor.nombre,
       APELLIDOS: autor.apellidos,
+      BIBLIOGRAFIA: autor.bibliografia,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
       NACIONALIDAD: Number(autor.nacionalidad),
@@ -74,6 +75,7 @@ const postActualizarAutor = async (autor, id) => {
     data: {
       NOMBRE: autor.nombre,
       APELLIDOS: autor.apellidos,
+      BIBLIOGRAFIA: autor.bibliografia,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
       NACIONALIDAD: Number(autor.nacionalidad),

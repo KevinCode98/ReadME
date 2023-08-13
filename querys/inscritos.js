@@ -21,13 +21,15 @@ const postInscritos = async (inscrito) => {
   // Validar que el Usuario exista en la base de datos
   const idUsuario = inscrito.id_usuario;
 
+  // Validar que el usuario que se incribira solamente puede ser Alumno
   const usuarioExiste = await prisma.USUARIOS.findUnique({
     where: {
       ID_USUARIO: Number(idUsuario),
+      TIPO_USUARIO: 'Alumno',
     },
   });
 
-  if (!usuarioExiste) return { msg: 'El Usario no existe en la base de datos' };
+  if (!usuarioExiste) return { msg: 'El Alumno no existe en la base de datos' };
 
   // Validar que la Sala exista en la base de datos
   const idSala = inscrito.id_sala;

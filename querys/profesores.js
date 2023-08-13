@@ -74,8 +74,19 @@ const getProfesor = async (id) => {
   return profesor;
 };
 
+const getProfesorSalas = async (id) => {
+  const salas = await prisma.SALAS.findMany({
+    where: {
+      ID_RESPONSABLE: Number(id),
+    },
+  });
+
+  return salas;
+};
+
 module.exports = {
   getNombresProfesores,
   getProfesor,
   getProfesores,
+  getProfesorSalas,
 };

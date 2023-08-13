@@ -39,6 +39,8 @@ const alumnoGet = async (req, res = response) => {
   }
 };
 
+// TODO: Retornar las salas en las que se encuentra el Alumno
+
 module.exports = {
   alumnoGet,
   alumnosGet,
