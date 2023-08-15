@@ -78,19 +78,37 @@ model INSCRITOS {
 model LECTURAS {
   ID_LECTURA          Int             @id @default(autoincrement())
   ID_AUTOR            Int
+  ID_TEMATICA         Int
+  ID_CORRIENTE        Int
+  TEXTO               String          @db.Text
   TITULO              String          @db.VarChar(100)
   FECHA_PUBLICACION   DateTime?       @db.Date
-  GENERO              String          @db.VarChar(50)
-  TEXTO               String          @db.Text
-  CORRIENTE_LITERARIA String          @db.VarChar(100)
   PUNTUACION          Float?          @db.Float
   ASIGNACIONES        ASIGNACIONES[]
   HISTORIAL           HISTORIAL[]
   AUTORES             AUTORES         @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
+  TEMATICAS           TEMATICAS       @relation(fields: [ID_TEMATICA], references: [ID_TEMATICA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_19")
+  CORRIENTES          CORRIENTES      @relation(fields: [ID_CORRIENTE], references: [ID_CORRIENTE], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_20")
   PROGRESOS           PROGRESOS[]
   QUESTIONARIOS       QUESTIONARIOS[]
 
   @@index([ID_AUTOR], map: "FK_REFERENCE_3")
+  @@index([ID_TEMATICA], map: "FK_REFERENCE_19")
+  @@index([ID_CORRIENTE], map: "FK_REFERENCE_20")
+}
+
+model CORRIENTES {
+  ID_CORRIENTE Int    @id @default(autoincrement())
+  NOMBRE       String @db.VarChar(50)
+  DESCRIPCION  String @db.VarChar(512)
+  LECTURAS     LECTURAS[]
+}
+
+model TEMATICAS {
+  ID_TEMATICA Int    @id @default(autoincrement())
+  NOMBRE      String @db.VarChar(50)
+  DESCRIPCION String @db.VarChar(512)
+  LECTURAS    LECTURAS[]
 }
 
 model PREGUNTAS {
