@@ -55,9 +55,27 @@ const profesorSalasGet = async (req, res = response) => {
     });
   }
 };
+
+// TODO:: Retornar todos los Alumnos que se encuentran en una sala
+const profesorSalaInscritosGet = async (req, res = response) => {
+  const id = req.usuario.ID_USUARIO;
+  const sala = req.params.sala;
+
+  try {
+  } catch (error) {
+    console.error(
+      'Error en la petición de base de datos - profesorSalaInscritosGet'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - profesorSalaInscritosGet',
+    });
+  }
+};
+
 module.exports = {
   profesoresGet,
   profesoresNombreGet,
   profesorGet,
   profesorSalasGet,
+  profesorSalaInscritosGet,
 };

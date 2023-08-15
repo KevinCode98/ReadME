@@ -67,7 +67,7 @@ model INSCRITOS {
   ID_INSCRITOS Int      @id @default(autoincrement())
   ID_SALA      Int
   ID_USUARIO   Int
-  ACEPTADO     Boolean
+  ACEPTADO     String   @db.VarChar(25) @default("NO_ACEPTADO")
   SALAS        SALAS    @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_6")
   USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_7")
 

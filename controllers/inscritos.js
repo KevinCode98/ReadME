@@ -16,7 +16,10 @@ const inscritosGet = async (req, res = response) => {
 
 const inscritosPost = async (req, res = response) => {
   try {
-    res.json(await inscritosDB.postInscritos(req.body));
+    const inscritos = await inscritosDB.postInscritos(req.body);
+    if (inscritos.msg) return res.status(400).json(inscritos);
+
+    res.status(200).json(inscritos);
   } catch (error) {
     console.error('Error en la petición de base de datos - inscritosPost');
     return res.status(500).json({

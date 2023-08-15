@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { isUint8ClampedArray } = require('util/support/types');
 
 const prisma = new PrismaClient();
 
@@ -18,13 +19,10 @@ const getInscritos = async (id) => {
 };
 
 const postInscritos = async (inscrito) => {
-  // Validar que el Usuario exista en la base de datos
-  const idUsuario = inscrito.id_usuario;
-
   // Validar que el usuario que se incribira solamente puede ser Alumno
-  const usuarioExiste = await prisma.USUARIOS.findUnique({
+  const usuarioExiste = await prisma.USUARIOS.findFirst({
     where: {
-      ID_USUARIO: Number(idUsuario),
+      ID_USUARIO: Number(inscrito.id_usuario),
       TIPO_USUARIO: 'Alumno',
     },
   });
@@ -54,7 +52,6 @@ const postInscritos = async (inscrito) => {
           ID_USUARIO: Number(inscrito.id_usuario),
         },
       },
-      ACEPTADO: false,
     },
   });
 

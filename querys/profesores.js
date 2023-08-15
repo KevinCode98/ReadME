@@ -84,6 +84,46 @@ const getProfesorSalas = async (id) => {
   return salas;
 };
 
+const getProfesorSalaInscritos = async (id, sala) => {
+  // validar que el Profesor exista
+  const profesorExiste = await prisma.USUARIOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id),
+      TIPO_USUARIO: 'Profesor',
+    },
+  });
+
+  if (!profesorExiste)
+    return { msg: 'El Profesor no se encuentra en la base de datos' };
+
+  // validar que el Profesor sea dueño de la Sala
+  const salaExiste = await prisma.SALAS.findFirst({
+    where: {
+      ID_RESPONSABLE: Number(id),
+      ID_SALA: Number(sala),
+    },
+  });
+
+  if (!salaExiste) return { msg: 'El Profesor no es propietario de la sala' };
+
+  const alumnos = await prisma.INSCRITOS.findMany({
+    where: {
+      ID_SALA: Number(sala),
+    },
+    select: {
+      ACEPTADO: true,
+      USUARIOS: {
+        NOMBRE: true,
+        APELLIDOS: true,
+        FOTO: true,
+        NIVEL: true,
+      },
+    },
+  });
+
+  return alumnos;
+};
+
 module.exports = {
   getNombresProfesores,
   getProfesor,
