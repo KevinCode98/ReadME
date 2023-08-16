@@ -14,13 +14,16 @@ class Server {
     this.authPath = '/api/auth';
     this.autoresPath = '/api/autores';
     this.cerradasPath = '/api/cerradas';
+    this.corrientesPath = '/api/corrientes';
     this.inscritosPath = '/api/inscritos';
     this.lecturasPath = '/api/lecturas';
+    this.nacionalidadesPath = '/api/nacionalidades';
     this.preguntasPath = '/api/preguntas';
     this.profesoresPath = '/api/profesores';
     this.questionariosPath = '/api/questionarios';
     this.respuestasPath = '/api/respuestas';
     this.salasPath = '/api/salas';
+    this.tematicasPath = '/api/tematicas';
     this.tutoradosPath = '/api/tutorados';
     this.usuariosPath = '/api/usuarios';
 
@@ -49,13 +52,16 @@ class Server {
     this.app.use(this.authPath, require('../routes/auth'));
     this.app.use(this.autoresPath, require('../routes/autores'));
     this.app.use(this.cerradasPath, require('../routes/cerradas'));
+    this.app.use(this.corrientesPath, require('../routes/corrientes'));
     this.app.use(this.inscritosPath, require('../routes/inscritos'));
     this.app.use(this.lecturasPath, require('../routes/lecturas'));
+    this.app.use(this.nacionalidadesPath, require('../routes/nacionalidades'));
     this.app.use(this.preguntasPath, require('../routes/preguntas'));
     this.app.use(this.profesoresPath, require('../routes/profesores'));
     this.app.use(this.questionariosPath, require('../routes/questionarios'));
     this.app.use(this.respuestasPath, require('../routes/respuestas'));
     this.app.use(this.salasPath, require('../routes/salas'));
+    this.app.use(this.tematicasPath, require('../routes/tematicas'));
     this.app.use(this.tutoradosPath, require('../routes/tutorados'));
     this.app.use(this.usuariosPath, require('../routes/usuario'));
   }

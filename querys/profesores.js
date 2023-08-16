@@ -86,12 +86,7 @@ const getProfesorSalas = async (id) => {
 
 const getProfesorSalaInscritos = async (id, sala) => {
   // validar que el Profesor exista
-  const profesorExiste = await prisma.USUARIOS.findFirst({
-    where: {
-      ID_USUARIO: Number(id),
-      TIPO_USUARIO: 'Profesor',
-    },
-  });
+  const profesorExiste = await getProfesor(id);
 
   if (!profesorExiste)
     return { msg: 'El Profesor no se encuentra en la base de datos' };
@@ -113,10 +108,12 @@ const getProfesorSalaInscritos = async (id, sala) => {
     select: {
       ACEPTADO: true,
       USUARIOS: {
-        NOMBRE: true,
-        APELLIDOS: true,
-        FOTO: true,
-        NIVEL: true,
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+          FOTO: true,
+          NIVEL: true,
+        },
       },
     },
   });
@@ -129,4 +126,5 @@ module.exports = {
   getProfesor,
   getProfesores,
   getProfesorSalas,
+  getProfesorSalaInscritos,
 };

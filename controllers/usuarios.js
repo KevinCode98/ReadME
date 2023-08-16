@@ -37,6 +37,7 @@ const usuarioGet = async (req, res = response) => {
 const usuarioPost = async (req, res = response) => {
   try {
     // Ingresar el usuario a la Base de Datos
+    // TODO: Validar si el alumno es menor de 12 años solicitar TUTOR -> Despues
     const usuario = await usuarioDB.postUsuario(req.body);
     if (usuario.msg) return res.status(400).json(usuario);
 
@@ -46,7 +47,6 @@ const usuarioPost = async (req, res = response) => {
     );
     if (activacion.msg) return res.status(400).json(usuario);
 
-    // TODO: Validar si el alumno es menor de 12 años solicitar TUTOR -> Despues
     res.status(200).json(usuario);
   } catch (error) {
     console.error('Error en la petición de la base de datos - usuarioPost');

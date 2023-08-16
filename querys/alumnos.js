@@ -74,8 +74,41 @@ const getAlumno = async (id) => {
   return alumno;
 };
 
+const getAlumnoSalasInscritas = async (id) => {
+  // Validar que el Alunno exista
+  const alumnoExiste = await getAlumno(id);
+
+  if (!alumnoExiste) return { msg: 'El Alumno no existe en la base de datos' };
+
+  const salas = await prisma.INSCRITOS.findMany({
+    select: {
+      ACEPTADO: true,
+      SALAS: {
+        select: {
+          ID_SALA: true,
+          DESCRIPCION: true,
+          USUARIOS: {
+            select: {
+              ID_USUARIO: true,
+              NOMBRE: true,
+              FOTO: true,
+              APELLIDOS: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      ID_USUARIO: Number(id),
+    },
+  });
+
+  return salas;
+};
+
 module.exports = {
   getAlumno,
   getAlumnos,
   getNombresAlumnos,
+  getAlumnoSalasInscritas,
 };

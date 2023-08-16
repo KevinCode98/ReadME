@@ -62,7 +62,12 @@ const profesorSalaInscritosGet = async (req, res = response) => {
   const sala = req.params.sala;
 
   try {
+    const alumnos = await profesoresDB.getProfesorSalaInscritos(id, sala);
+    if (alumnos.msg) return res.status(400).json(alumnos);
+
+    res.status(200).json(alumnos);
   } catch (error) {
+    console.log(error);
     console.error(
       'Error en la petición de base de datos - profesorSalaInscritosGet'
     );

@@ -103,6 +103,7 @@ const postAlumnoAceptarSala = async (id, sala, inscripcion) => {
   const inscritosExiste = await prisma.INSCRITOS.findFirst({
     where: {
       ID_INSCRITOS: Number(inscripcion),
+      ACEPTADO: 'NO_ACEPTADO',
     },
     select: {
       ID_SALA: true,
@@ -128,6 +129,47 @@ const postAlumnoAceptarSala = async (id, sala, inscripcion) => {
   }
 };
 
+const deleteAlumnoCancelarSala = async (id, sala, inscripcion) => {
+  // Validar que el Alumno exista en la base de datos
+  const alumnoExiste = await prisma.USUARIOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id),
+      TIPO_USUARIO: 'Alumno',
+    },
+    select: {
+      ID_USUARIO: true,
+    },
+  });
+
+  if (!alumnoExiste) return { msg: 'El Alumno no existe en la base de datos' };
+
+  // Validar que la sala exista en la base de datos
+  const inscritosExiste = await prisma.INSCRITOS.findFirst({
+    where: {
+      ID_INSCRITOS: Number(inscripcion),
+      ACEPTADO: 'NO_ACEPTADO',
+    },
+    select: {
+      ID_SALA: true,
+      ID_USUARIO: true,
+    },
+  });
+
+  if (!inscritosExiste)
+    return { msg: 'La peticion no existe en la base de datos' };
+
+  if (inscritosExiste.ID_USUARIO === id && inscritosExiste.ID_SALA === sala) {
+    const eliminado = await prisma.INSCRITOS.delete({
+      where: {
+        ID_INSCRITOS: Number(inscripcion),
+      },
+    });
+    return eliminado;
+  } else {
+    return { msg: 'Datos invalidos' };
+  }
+};
+
 const generadorHash = () => {
   const banco =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -146,4 +188,5 @@ module.exports = {
   getSalas,
   postSalas,
   postAlumnoAceptarSala,
+  deleteAlumnoCancelarSala,
 };
