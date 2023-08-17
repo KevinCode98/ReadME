@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getAsignacion = async (id) => {
-  const asignacion = await prisma.ASIGNACIONES.findUnique({
+  const asignacion = await prisma.ASIGNACIONES.findFirst({
     select: {
       ID_SALA: true,
       ID_LECTURA: true,
@@ -23,7 +23,7 @@ const postAsignacion = async (asignacion) => {
   // Validar que la Sala exista en la base de datos
   const idSala = asignacion.id_sala;
 
-  const salaExiste = await prisma.SALAS.findUnique({
+  const salaExiste = await prisma.SALAS.findFirst({
     where: {
       ID_SALA: Number(idSala),
     },
@@ -35,7 +35,7 @@ const postAsignacion = async (asignacion) => {
   if (asignacion.id_lectura) {
     const idLectura = asignacion.id_lectura;
 
-    const lecturaExiste = await prisma.lECTURAS.findUnique({
+    const lecturaExiste = await prisma.lECTURAS.findFirst({
       where: {
         ID_LECTURA: Number(idLectura),
       },
@@ -77,7 +77,38 @@ const postAsignacion = async (asignacion) => {
   });
 };
 
+// TODO: Asignaciones por sala
+const getAsignacionesPorSala = async (sala) => {
+  // validar si la sala existe
+  const salaExiste = await prisma.SALAS.findFirst({
+    where: {
+      ID_SALA: Number(sala),
+    },
+    select: {
+      ID_RESPONSABLE: true,
+    },
+  });
+
+  if (!salaExiste) return { msg: 'La Sala no existe en la base de datos' };
+
+  const asignaciones = await prisma.ASIGNACIONES.findMany({
+    select: {
+      ID_SALA: true,
+      ID_LECTURA: true,
+      TITULO: true,
+      INDICACION: true,
+      FECHA_CREACION: true,
+    },
+    where: {
+      ID_SALA: Number(sala),
+    },
+  });
+
+  return { asignaciones, responsable: salaExiste.ID_RESPONSABLE };
+};
+
 module.exports = {
   getAsignacion,
   postAsignacion,
+  getAsignacionesPorSala,
 };

@@ -31,7 +31,7 @@ const lecturaNombreGet = async (req, res = response) => {
   try {
     if (Object.keys(nombre).length == 0)
       return res.json(await lecturaDB.getLecturas());
-    else res.json(await lecturaDB.getNombreLecturas(nombre));
+    else return res.json(await lecturaDB.getNombreLecturas(nombre));
   } catch (error) {
     console.error('Error en la petición de base de datos - lecturaNombreGet');
     return res.status(500).json({
@@ -44,6 +44,7 @@ const lecturaPost = async (req, res = response) => {
   try {
     res.json(await lecturaDB.postLectura(req.body));
   } catch (error) {
+    console.log(error);
     console.error('Error en la petición de base de datos - lecturaPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - lecturaPost',

@@ -64,9 +64,13 @@ const postValidarActivacion = async (id, codigo) => {
     data: {
       STATUS: 'ONLINE',
     },
+    select: {
+      ID_USUARIO: true,
+      TIPO_USUARIO: true,
+    },
   });
 
-  return { ID_USUARIO: usuario.ID_USUARIO };
+  return usuario;
 };
 
 const postActualizarCodigo = async (id) => {

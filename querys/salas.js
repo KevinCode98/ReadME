@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 const getSalas = async () => {
   const salas = await prisma.SALAS.findMany({
     select: {
+      ID_SALA: true,
       DESCRIPCION: true,
       FECHA_CREACION: true,
       HASH: true,
@@ -21,9 +22,10 @@ const getSalas = async () => {
   return salas;
 };
 
-const getSala = async (hash) => {
+const getSala = async (id) => {
   const sala = await prisma.SALAS.findFirst({
     select: {
+      ID_SALA: true,
       DESCRIPCION: true,
       FECHA_CREACION: true,
       HASH: true,
@@ -36,7 +38,7 @@ const getSala = async (hash) => {
       },
     },
     where: {
-      HASH: hash,
+      ID_SALA: Number(id),
     },
   });
 

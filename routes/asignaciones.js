@@ -4,11 +4,13 @@ const { validarCampos } = require('../middlewares/validar-campos');
 const {
   asignacionGet,
   asignacionPost,
+  asignacionesPorSalaGet,
 } = require('../controllers/asignaciones');
 
 const router = Router();
 
 router.get('/:id', asignacionGet);
+router.get('/salas/:idSala', asignacionesPorSalaGet);
 router.post(
   '/',
   [

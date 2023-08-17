@@ -8,9 +8,19 @@ const getLecturas = async () => {
     select: {
       ID_LECTURA: true,
       TITULO: true,
-      GENERO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
       ID_LECTURA: true,
-      CORRIENTE_LITERARIA: true,
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
       PUNTUACION: true,
       AUTORES: {
         select: {
@@ -25,14 +35,25 @@ const getLecturas = async () => {
 };
 
 const getLectura = async (id) => {
-  const lectura = await prisma.LECTURAS.findUnique({
+  const lectura = await prisma.LECTURAS.findFirst({
     where: {
       ID_LECTURA: Number(id),
     },
     select: {
       ID_LECTURA: true,
       TITULO: true,
-      GENERO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
       TEXTO: true,
       AUTORES: {
         select: {
@@ -54,8 +75,18 @@ const getNombreLecturas = async (buscar) => {
     select: {
       ID_LECTURA: true,
       TITULO: true,
-      GENERO: true,
-      TEXTO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
       AUTORES: {
         select: {
           NOMBRE: true,
@@ -94,6 +125,8 @@ const getNombreLecturas = async (buscar) => {
 
 const postLectura = async (lectura) => {
   const idAutor = lectura.id_autor;
+  const idTematica = lectura.tematica;
+  const idCorriente = lectura.corriente_literaria;
 
   // Verificar si el autor existe en la base de datos
   const autorExiste = await prisma.AUTORES.findFirst({
@@ -104,13 +137,41 @@ const postLectura = async (lectura) => {
 
   if (!autorExiste) return { msg: 'El Autor no existe en la base de datos' };
 
+  // Verificar la tematica existe en la base de datos
+  const tematicaExiste = await prisma.TEMATICAS.findFirst({
+    where: {
+      ID_TEMATICA: idTematica,
+    },
+  });
+
+  if (!tematicaExiste)
+    return { msg: 'La Tematica no existe en la base de datos' };
+
+  // Verificar la existe en la base de datos
+  const corrienteExiste = await prisma.CORRIENTES.findFirst({
+    where: {
+      ID_CORRIENTE: idCorriente,
+    },
+  });
+
+  if (!corrienteExiste)
+    return { msg: 'La Corriente no existe en la base de datos' };
+
   const lecturaDB = await prisma.LECTURAS.create({
     data: {
       TITULO: lectura.titulo,
       FECHA_PUBLICACION: new Date(lectura.fecha_publicacion),
-      GENERO: lectura.genero,
+      TEMATICAS: {
+        connect: {
+          ID_TEMATICA: Number(lectura.tematica),
+        },
+      },
       TEXTO: lectura.texto,
-      CORRIENTE_LITERARIA: lectura.corriente_literaria,
+      CORRIENTES: {
+        connect: {
+          ID_CORRIENTE: Number(lectura.corriente_literaria),
+        },
+      },
       PUNTUACION: Number(0),
       AUTORES: {
         connect: {
@@ -128,8 +189,18 @@ const lecturasPorAutor = async (id) => {
     select: {
       ID_LECTURA: true,
       TITULO: true,
-      GENERO: true,
-      TEXTO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
       AUTORES: {
         select: {
           NOMBRE: true,

@@ -13,7 +13,7 @@ const {
 const router = Router();
 
 router.get('/', salasGet);
-router.get('/:hash', salaGet);
+router.get('/:id', salaGet);
 router.post('/aceptacion/:sala', [validarJWT], alumnoAceptarSalaPost);
 router.delete('/cancelacion/:sala', [validarJWT], alumnoCancelarSalaDelete);
 router.post(

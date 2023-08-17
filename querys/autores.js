@@ -40,15 +40,22 @@ const getNombresAutores = async (buscar) => {
   return autores;
 };
 const getAutor = async (id) => {
-  const autor = await prisma.AUTORES.findMany({
+  const autor = await prisma.AUTORES.findFirst({
     select: {
       ID_AUTOR: true,
       NOMBRE: true,
       APELLIDOS: true,
       LECTURAS: true,
+      BIBLIOGRAFIA: true,
+      NACIONALIDADES: {
+        select: {
+          CODIGO_ISO: true,
+          DESCRIPCION: true,
+        },
+      },
     },
     where: {
-      ID_AUTOR: id,
+      ID_AUTOR: Number(id),
     },
   });
 
@@ -63,11 +70,7 @@ const postAutor = async (autor) => {
       BIBLIOGRAFIA: autor.bibliografia,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
-      NACIONALIDADES: {
-        connect: {
-          NACIONALIDAD: Number(autor.nacionalidad),
-        },
-      },
+      NACIONALIDAD: Number(autor.nacionalidad),
     },
   });
 
