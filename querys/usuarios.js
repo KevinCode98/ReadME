@@ -70,7 +70,8 @@ const getUsuario = async (id) => {
   return usuario;
 };
 
-const postUsuario = async (usuario) => {
+const postUsuario = async (usuario, pathCompleto) => {
+  //
   const { email, password, apodo } = usuario;
 
   // Verificar si el correo existe
@@ -112,7 +113,7 @@ const postUsuario = async (usuario) => {
       PWD: usuario.password,
       FECHA_ALTA: new Date(),
       APODO: usuario.apodo,
-      FOTO: usuario.foto,
+      FOTO: pathCompleto,
       NIVEL: 'BRONCE',
       STATUS: 'CREADO',
     },

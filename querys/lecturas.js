@@ -123,10 +123,10 @@ const getNombreLecturas = async (buscar) => {
   return lecturas;
 };
 
-const postLectura = async (lectura) => {
-  const idAutor = lectura.id_autor;
-  const idTematica = lectura.tematica;
-  const idCorriente = lectura.corriente_literaria;
+const postLectura = async (lectura, pathCompleto) => {
+  const idAutor = Number(lectura.id_autor);
+  const idTematica = Number(lectura.tematica);
+  const idCorriente = Number(lectura.corriente_literaria);
 
   // Verificar si el autor existe en la base de datos
   const autorExiste = await prisma.AUTORES.findFirst({
@@ -166,7 +166,7 @@ const postLectura = async (lectura) => {
           ID_TEMATICA: Number(lectura.tematica),
         },
       },
-      TEXTO: lectura.texto,
+      TEXTO: pathCompleto,
       CORRIENTES: {
         connect: {
           ID_CORRIENTE: Number(lectura.corriente_literaria),

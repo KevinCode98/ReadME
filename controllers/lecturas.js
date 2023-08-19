@@ -1,5 +1,6 @@
 const { response, request } = require('express');
 const lecturaDB = require('../querys/lecturas');
+const { subirArchivo } = require('../helpers/subir-archivo');
 
 const lecturasGet = async (req, res = responese) => {
   try {
@@ -42,7 +43,15 @@ const lecturaNombreGet = async (req, res = response) => {
 
 const lecturaPost = async (req, res = response) => {
   try {
-    res.json(await lecturaDB.postLectura(req.body));
+    if (
+      !req.files ||
+      Object.keys(req.files).length === 0 ||
+      !req.files.archivo
+    ) {
+      return res.status(400).json({ msg: 'No hay archivos en la petición' });
+    }
+    const pathCompleto = await subirArchivo(req.files, ['pdf'], 'lecturas');
+    res.json(await lecturaDB.postLectura(req.body, pathCompleto));
   } catch (error) {
     console.log(error);
     console.error('Error en la petición de base de datos - lecturaPost');

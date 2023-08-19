@@ -1,2 +1,5 @@
 /node_modules
+/archivos/*.jpg
+/archivos/lecturas/
+/archivos/perfil/
 .env

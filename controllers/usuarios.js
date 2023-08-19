@@ -1,6 +1,7 @@
 const { response, request } = require('express');
 const usuarioDB = require('../querys/usuarios');
 const activacionDB = require('../querys/activaciones');
+const { subirArchivo } = require('../helpers/subir-archivo');
 
 const usuariosGet = async (req, res = response) => {
   try {
@@ -38,7 +39,14 @@ const usuarioPost = async (req, res = response) => {
   try {
     // Ingresar el usuario a la Base de Datos
     // TODO: Validar si el alumno es menor de 12 años solicitar TUTOR -> Despues
-    const usuario = await usuarioDB.postUsuario(req.body);
+    const pathCompleto = await subirArchivo(
+      req.files,
+      ['png', 'jpg', 'jpeg'],
+      'perfil'
+    );
+
+    console.log(pathCompleto);
+    const usuario = await usuarioDB.postUsuario(req.body, pathCompleto);
     if (usuario.msg) return res.status(400).json(usuario);
 
     // Ingresar el codigo de validacion
@@ -49,6 +57,7 @@ const usuarioPost = async (req, res = response) => {
 
     res.status(200).json(usuario);
   } catch (error) {
+    console.log(error);
     console.error('Error en la petición de la base de datos - usuarioPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - usuarioPost',
