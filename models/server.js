@@ -16,6 +16,7 @@ class Server {
     this.autoresPath = '/api/autores';
     this.cerradasPath = '/api/cerradas';
     this.corrientesPath = '/api/corrientes';
+    this.dispositivosPath = '/api/dispositivos';
     this.inscritosPath = '/api/inscritos';
     this.lecturasPath = '/api/lecturas';
     this.nacionalidadesPath = '/api/nacionalidades';
@@ -63,6 +64,7 @@ class Server {
     this.app.use(this.autoresPath, require('../routes/autores'));
     this.app.use(this.cerradasPath, require('../routes/cerradas'));
     this.app.use(this.corrientesPath, require('../routes/corrientes'));
+    this.app.use(this.dispositivosPath, require('../routes/dispositivos'));
     this.app.use(this.inscritosPath, require('../routes/inscritos'));
     this.app.use(this.lecturasPath, require('../routes/lecturas'));
     this.app.use(this.nacionalidadesPath, require('../routes/nacionalidades'));

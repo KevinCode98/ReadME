@@ -1,4 +1,4 @@
-const { response, request } = require('express');
+const { response } = require('express');
 const usuarioDB = require('../querys/usuarios');
 const activacionDB = require('../querys/activaciones');
 const { subirArchivo } = require('../helpers/subir-archivo');
@@ -45,7 +45,6 @@ const usuarioPost = async (req, res = response) => {
       'perfil'
     );
 
-    console.log(pathCompleto);
     const usuario = await usuarioDB.postUsuario(req.body, pathCompleto);
     if (usuario.msg) return res.status(400).json(usuario);
 
@@ -57,7 +56,6 @@ const usuarioPost = async (req, res = response) => {
 
     res.status(200).json(usuario);
   } catch (error) {
-    console.log(error);
     console.error('Error en la petición de la base de datos - usuarioPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - usuarioPost',
@@ -102,7 +100,7 @@ const usuarioPasswordPost = async (req, res = response) => {
     }
 
     // Ingresar el usuario a la Base de Datos
-    const usuario = await usuarioDB.postUsuarioActializar(req.body, id);
+    const usuario = await usuarioDB.postPasswordActializar(req.body, id);
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {

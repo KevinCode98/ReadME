@@ -87,7 +87,7 @@ const postSalas = async (id, sala) => {
   return salaDB;
 };
 
-const postAlumnoAceptarSala = async (id, sala, inscripcion) => {
+const postAlumnoAceptarSala = async (id, sala) => {
   // Validar que el Alumno exista en la base de datos
   const alumnoExiste = await prisma.USUARIOS.findFirst({
     where: {
@@ -104,10 +104,12 @@ const postAlumnoAceptarSala = async (id, sala, inscripcion) => {
   // Validar que la sala exista en la base de datos
   const inscritosExiste = await prisma.INSCRITOS.findFirst({
     where: {
-      ID_INSCRITOS: Number(inscripcion),
+      ID_USUARIO: Number(id),
+      ID_SALA: Number(sala),
       ACEPTADO: 'NO_ACEPTADO',
     },
     select: {
+      ID_INSCRITOS: true,
       ID_SALA: true,
       ID_USUARIO: true,
     },
@@ -116,10 +118,13 @@ const postAlumnoAceptarSala = async (id, sala, inscripcion) => {
   if (!inscritosExiste)
     return { msg: 'La peticion no existe en la base de datos' };
 
-  if (inscritosExiste.ID_USUARIO === id && inscritosExiste.ID_SALA === sala) {
-    const aceptado = awaitprisma.INSCRITOS.update({
+  if (
+    Number(inscritosExiste.ID_USUARIO) === Number(id) &&
+    Number(inscritosExiste.ID_SALA) === Number(sala)
+  ) {
+    const aceptado = await prisma.INSCRITOS.update({
       where: {
-        ID_INSCRITOS: Number(inscripcion),
+        ID_INSCRITOS: Number(inscritosExiste.ID_INSCRITOS),
       },
       data: {
         ACEPTADO: 'ACEPTADO',
@@ -131,7 +136,7 @@ const postAlumnoAceptarSala = async (id, sala, inscripcion) => {
   }
 };
 
-const deleteAlumnoCancelarSala = async (id, sala, inscripcion) => {
+const deleteAlumnoCancelarSala = async (id, sala) => {
   // Validar que el Alumno exista en la base de datos
   const alumnoExiste = await prisma.USUARIOS.findFirst({
     where: {
@@ -148,10 +153,12 @@ const deleteAlumnoCancelarSala = async (id, sala, inscripcion) => {
   // Validar que la sala exista en la base de datos
   const inscritosExiste = await prisma.INSCRITOS.findFirst({
     where: {
-      ID_INSCRITOS: Number(inscripcion),
+      ID_USUARIO: Number(id),
+      ID_SALA: Number(sala),
       ACEPTADO: 'NO_ACEPTADO',
     },
     select: {
+      ID_INSCRITOS: true,
       ID_SALA: true,
       ID_USUARIO: true,
     },
@@ -160,10 +167,13 @@ const deleteAlumnoCancelarSala = async (id, sala, inscripcion) => {
   if (!inscritosExiste)
     return { msg: 'La peticion no existe en la base de datos' };
 
-  if (inscritosExiste.ID_USUARIO === id && inscritosExiste.ID_SALA === sala) {
+  if (
+    Number(inscritosExiste.ID_USUARIO) === Number(id) &&
+    Number(inscritosExiste.ID_SALA) === Number(sala)
+  ) {
     const eliminado = await prisma.INSCRITOS.delete({
       where: {
-        ID_INSCRITOS: Number(inscripcion),
+        ID_INSCRITOS: Number(inscritosExiste.ID_INSCRITOS),
       },
     });
     return eliminado;

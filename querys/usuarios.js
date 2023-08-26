@@ -164,7 +164,7 @@ const postUsuarioActializar = async (usuario, id) => {
   return { valiacion: true };
 };
 
-const postPasswordActializar = async (password, id) => {
+const postPasswordActializar = async ({ password }, id) => {
   const valoresCodigo = await prisma.ACTIVACIONES.findFirst({
     where: {
       ID_USUARIO: Number(id),
@@ -185,6 +185,14 @@ const postPasswordActializar = async (password, id) => {
     },
     where: {
       ID_USUARIO: Number(id),
+    },
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDOS: true,
+      TIPO_USUARIO: true,
+      EMAIL: true,
+      APODO: true,
     },
   });
 
