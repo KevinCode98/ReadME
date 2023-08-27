@@ -1,4 +1,4 @@
-const { response, request } = require('express');
+const { response } = require('express');
 const activacionesDB = require('../querys/activaciones');
 
 const actualizarActivacionPost = async (req, res = response) => {
