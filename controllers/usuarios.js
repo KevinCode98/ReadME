@@ -2,6 +2,7 @@ const { response } = require('express');
 const usuarioDB = require('../querys/usuarios');
 const activacionDB = require('../querys/activaciones');
 const { subirArchivo } = require('../helpers/subir-archivo');
+const { enviarCorreo } = require('../helpers/enviar-correo');
 
 const usuariosGet = async (req, res = response) => {
   try {
@@ -54,8 +55,18 @@ const usuarioPost = async (req, res = response) => {
     );
     if (activacion.msg) return res.status(400).json(usuario);
 
+    // Enviar correo
+    const datosCorreo = {
+      from: process.env.EMAIL_GMAIL,
+      to: usuario.usuarioDB.EMAIL,
+      subject: 'Validacion de codigo',
+      text: `Codigo de confirmacion: ${activacion.CODIGO}`,
+    };
+
+    enviarCorreo(datosCorreo);
     res.status(200).json(usuario);
   } catch (error) {
+    console.error(error);
     console.error('Error en la petición de la base de datos - usuarioPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - usuarioPost',

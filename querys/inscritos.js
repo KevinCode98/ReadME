@@ -18,27 +18,47 @@ const getInscritos = async (id) => {
   return inscritos;
 };
 
-const postInscritos = async (inscrito) => {
+const postInscritos = async (inscrito, id_profesor) => {
   // Validar que el usuario que se incribira solamente puede ser Alumno
-  const usuarioExiste = await prisma.USUARIOS.findFirst({
+  const alumnoExiste = await prisma.USUARIOS.findFirst({
     where: {
       ID_USUARIO: Number(inscrito.id_usuario),
       TIPO_USUARIO: 'Alumno',
     },
   });
 
-  if (!usuarioExiste) return { msg: 'El Alumno no existe en la base de datos' };
+  if (!alumnoExiste) return { msg: 'El Alumno no existe en la base de datos' };
+
+  // Validar que el usuario que se incribira solamente puede ser Alumno
+  const profesorExiste = await prisma.USUARIOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id_profesor),
+      TIPO_USUARIO: 'Profesor',
+    },
+  });
+
+  if (!profesorExiste)
+    return { msg: 'El Profesor no existe en la base de datos' };
 
   // Validar que la Sala exista en la base de datos
-  const idSala = inscrito.id_sala;
-
-  const salaExiste = await prisma.SALAS.findUnique({
+  const salaExiste = await prisma.SALAS.findFirst({
     where: {
-      ID_SALA: Number(idSala),
+      ID_SALA: Number(inscrito.id_sala),
+      ID_RESPONSABLE: Number(id_profesor),
     },
   });
 
   if (!salaExiste) return { msg: 'La Sala no existe en la base de datos' };
+  // Validar que la Inscripcion no exista en la base de datos
+  const inscripcionExiste = await prisma.INSCRITOS.findFirst({
+    where: {
+      ID_SALA: Number(inscrito.id_sala),
+      ID_USUARIO: Number(inscrito.id_usuario),
+    },
+  });
+
+  if (inscripcionExiste)
+    return { msg: 'La invitacion ya existe en la base de datos' };
 
   const inscritoDB = await prisma.INSCRITOS.create({
     data: {
@@ -58,7 +78,46 @@ const postInscritos = async (inscrito) => {
   return inscritoDB;
 };
 
+const postEliminarInscritos = async (inscrito, id_profesor) => {
+  // Validar que el Profesor que se incribira solamente puede ser Alumno
+  const profesorExiste = await prisma.USUARIOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id_profesor),
+      TIPO_USUARIO: 'Profesor',
+    },
+  });
+  if (!profesorExiste)
+    return { msg: 'El Profesor no existe en la base de datos' };
+
+  // Validar que el usuario que se incribira solamente puede ser Alumno
+  const alumnoExiste = await prisma.USUARIOS.findFirst({
+    where: {
+      ID_USUARIO: Number(inscrito.id_usuario),
+      TIPO_USUARIO: 'Alumno',
+    },
+  });
+  if (!alumnoExiste) return { msg: 'El Alumno no existe en la base de datos' };
+
+  // Validar que el sala que se incribira solamente puede ser Alumno
+  const salaExiste = await prisma.SALAS.findFirst({
+    where: {
+      ID_SALA: Number(inscrito.id_sala),
+    },
+  });
+  if (!salaExiste) return { msg: 'La Sala no existe en la base de datos' };
+
+  await prisma.INSCRITOS.update({
+    data: {
+      ACEPTADO: 'ELIMINADO',
+    },
+  });
+
+  // Eliminar los datos del Alumno dentro de la Sala
+  // TODO: Eliminar todos los valores del alumno
+};
+
 module.exports = {
   getInscritos,
   postInscritos,
+  postEliminarInscritos,
 };

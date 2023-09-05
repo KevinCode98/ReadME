@@ -45,6 +45,8 @@ const getSala = async (id) => {
   return sala;
 };
 
+const getAsignacionesPorSala = async (sala) => {};
+
 const postSalas = async (id, sala) => {
   // Validar que el Profesor exista en la base de datos
   const responsableExiste = await prisma.USUARIOS.findFirst({
