@@ -1,4 +1,4 @@
-const { response, request } = require('express');
+const { response } = require('express');
 const respuestasDB = require('../querys/respuestas');
 
 const respuestasGet = async (req, res = response) => {

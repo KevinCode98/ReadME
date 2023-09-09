@@ -1,4 +1,4 @@
-const { response, request } = require('express');
+const { response } = require('express');
 const authDB = require('../querys/auth');
 
 const authPost = async (req, res = response) => {

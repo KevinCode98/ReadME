@@ -75,7 +75,7 @@ const postInscritos = async (inscrito, id_profesor) => {
     },
   });
 
-  return inscritoDB;
+  return { inscritoDB, salaExiste };
 };
 
 const postEliminarInscritos = async (inscrito, id_profesor) => {

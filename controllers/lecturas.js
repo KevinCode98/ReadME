@@ -1,4 +1,4 @@
-const { response, request } = require('express');
+const { response } = require('express');
 const lecturaDB = require('../querys/lecturas');
 const { subirArchivo } = require('../helpers/subir-archivo');
 

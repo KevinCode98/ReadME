@@ -15,6 +15,23 @@ const dispositivosGet = async (req, res = response) => {
   }
 };
 
+const dispositivosPorIdGet = async (req, res = response) => {
+  try {
+    const id = req.usuario.ID_USUARIO;
+    const dispositivos = await dispositivosDB.getDispositivosPorId(id);
+    if (dispositivos.msg) return res.status(400).json(dispositivos);
+
+    res.status(200).json(dispositivos);
+  } catch (error) {
+    console.error(
+      'Error en la petición de la base de datos - dispositivosPorIdGet'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - dispositivosPorIdGet',
+    });
+  }
+};
+
 const dispositivosPost = async (req, res = response) => {
   try {
     const id = req.usuario.ID_USUARIO;
@@ -63,4 +80,9 @@ const dispositivoDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { dispositivosPost, dispositivosGet, dispositivoDelete };
+module.exports = {
+  dispositivoDelete,
+  dispositivosGet,
+  dispositivosPorIdGet,
+  dispositivosPost,
+};

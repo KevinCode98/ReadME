@@ -4,3 +4,4 @@
 /archivos/perfil/
 .env
 /test
+/key/*json

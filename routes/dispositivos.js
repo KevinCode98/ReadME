@@ -6,11 +6,13 @@ const {
   dispositivosPost,
   dispositivosGet,
   dispositivoDelete,
+  dispositivosPorIdGet,
 } = require('../controllers/dispositivos');
 
 const router = Router();
 
 router.get('/', [validarJWT], dispositivosGet);
+router.get('/mis-dispositivos', [validarJWT], dispositivosPorIdGet);
 router.post(
   '/',
   [
