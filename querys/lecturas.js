@@ -123,7 +123,7 @@ const getNombreLecturas = async (buscar) => {
   return lecturas;
 };
 
-const postLectura = async (lectura, pathCompleto) => {
+const postLectura = async (lectura, textoLectura) => {
   const idAutor = Number(lectura.id_autor);
   const idTematica = Number(lectura.tematica);
   const idCorriente = Number(lectura.corriente_literaria);
@@ -166,7 +166,7 @@ const postLectura = async (lectura, pathCompleto) => {
           ID_TEMATICA: Number(lectura.tematica),
         },
       },
-      TEXTO: pathCompleto,
+      TEXTO: textoLectura,
       CORRIENTES: {
         connect: {
           ID_CORRIENTE: Number(lectura.corriente_literaria),

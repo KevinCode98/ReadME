@@ -1,4 +1,4 @@
-const { response } = require('express');
+const { response, text } = require('express');
 const lecturaDB = require('../querys/lecturas');
 const { subirArchivo } = require('../helpers/subir-archivo');
 
@@ -51,7 +51,19 @@ const lecturaPost = async (req, res = response) => {
       return res.status(400).json({ msg: 'No hay archivos en la petición' });
     }
     const pathCompleto = await subirArchivo(req.files, ['pdf'], 'lecturas');
-    res.json(await lecturaDB.postLectura(req.body, pathCompleto));
+    const splitPath = pathCompleto.split('/');
+    const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
+
+    const response = await fetch(
+      'http://localhost:8081/converter/' + uuidLectura
+    );
+
+    response.text().then(async (text) => {
+      if (!text) return res.status(400).json('Error de extraccion de texto');
+      else {
+        res.json(await lecturaDB.postLectura(req.body, text));
+      }
+    });
   } catch (error) {
     console.log(error);
     console.error('Error en la petición de base de datos - lecturaPost');

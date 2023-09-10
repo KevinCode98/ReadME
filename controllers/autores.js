@@ -43,6 +43,7 @@ const autorPost = async (req, res = response) => {
   try {
     res.json(await autoresDB.postAutor(req.body));
   } catch (error) {
+    console.log(error);
     console.error('Error en la petición de base de datos - autorPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - autorPost',
