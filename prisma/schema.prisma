@@ -16,6 +16,7 @@ model ASIGNACIONES {
   FECHA_CREACION DateTime  @db.Date
   SALAS          SALAS     @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_4")
   LECTURAS       LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_5")
+  QUESTIONARIOS     QUESTIONARIOS[]
 
   @@index([ID_SALA], map: "FK_REFERENCE_4")
   @@index([ID_LECTURA], map: "FK_REFERENCE_5")
@@ -38,14 +39,11 @@ model AUTORES {
 model CERRADAS {
   ID_CERRADA  Int       @id @default(autoincrement())
   ID_PREGUNTA Int
-  ID_USUARIO  Int
   CORRECTA    Boolean
   DESCRIPCION String    @db.VarChar(50)
   PREGUNTAS   PREGUNTAS @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_14")
-  USUARIOS    USUARIOS  @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_16")
 
   @@index([ID_PREGUNTA], map: "FK_REFERENCE_14")
-  @@index([ID_USUARIO], map: "FK_REFERENCE_16")
 }
 
 model HISTORIAL {
@@ -90,7 +88,6 @@ model LECTURAS {
   CORRIENTES        CORRIENTES      @relation(fields: [ID_CORRIENTE], references: [ID_CORRIENTE], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_20")
   AUTORES           AUTORES         @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
   PROGRESOS         PROGRESOS[]
-  QUESTIONARIOS     QUESTIONARIOS[]
 
   @@index([ID_AUTOR], map: "FK_REFERENCE_3")
   @@index([ID_TEMATICA], map: "FK_REFERENCE_19")
@@ -138,13 +135,13 @@ model PROGRESOS {
 
 model QUESTIONARIOS {
   ID_QUESTIONARIO Int         @id @default(autoincrement())
-  ID_LECTURA      Int
+  ID_ASIGNACION   Int
   DESCRIPCION     String?     @db.VarChar(50)
   NIVEL           Int
   PREGUNTAS       PREGUNTAS[]
-  LECTURAS        LECTURAS    @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_12")
+  ASIGNACIONES    ASIGNACIONES    @relation(fields: [ID_ASIGNACION], references: [ID_ASIGNACION], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_12")
 
-  @@index([ID_LECTURA], map: "FK_REFERENCE_12")
+  @@index([ID_ASIGNACION], map: "FK_REFERENCE_12")
 }
 
 model RESPUESTAS {
@@ -199,7 +196,6 @@ model USUARIOS {
   STATUS       String         @db.VarChar(25)
   ACTIVACIONES ACTIVACIONES[]
   ALARMAS      ALARMAS[]
-  CERRADAS     CERRADAS[]
   DISPOSITIVOS DISPOSITIVOS[]
   HISTORIAL    HISTORIAL[]
   INSCRITOS    INSCRITOS[]

@@ -55,7 +55,7 @@ const lecturaPost = async (req, res = response) => {
     const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
 
     const response = await fetch(
-      'http://localhost:8081/converter/' + uuidLectura
+      'http://localhost:8000/converter/' + uuidLectura
     );
 
     response.text().then(async (text) => {
