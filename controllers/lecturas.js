@@ -73,9 +73,44 @@ const lecturaPost = async (req, res = response) => {
   }
 };
 
+const lecturasTextoGet = async (req, res = response) => {
+  const id = req.params.id;
+  const lectura = await lecturaDB.getLectura(id,true);
+
+  if(!lectura) return res.status(400).json({ msg: 'No existe la lectura especificada.' }); 
+
+  if(!lectura.TEXTO) return res.status(400).json({ msg: 'La lectura no tiene texto.' });
+
+  let pages = [];
+  const texto = lectura.TEXTO.replace(/\n\n/gi,"\n").split(" ")
+  const longitud = texto.length;
+  let step = 110;
+  if(longitud <= step){
+    pages.push({
+      text : lectura.TEXTO
+    });
+  }else{
+    let cortar = true;
+    while(cortar){
+      const textAux = texto.splice(0,step);
+      pages.push({
+        text : textAux.join(" ")
+      });
+      if(texto.length <= step){
+        cortar = false;
+        pages.push({
+          text : texto.join(" ")
+        });
+      }
+    }
+  }
+  res.json(pages);
+}
+
 module.exports = {
   lecturaGet,
   lecturasGet,
   lecturaNombreGet,
   lecturaPost,
+  lecturasTextoGet
 };
