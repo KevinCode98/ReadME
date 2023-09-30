@@ -12,6 +12,7 @@ const getAlumnos = async () => {
     },
     where: {
       TIPO_USUARIO: 'Alumno',
+      STATUS: 'ONLINE',
     },
   });
 
@@ -19,7 +20,7 @@ const getAlumnos = async () => {
 };
 
 const getNombresAlumnos = async (buscar) => {
-  const alumnos = await prisma.USUARIOS.findMany({
+  return await prisma.USUARIOS.findMany({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -48,12 +49,11 @@ const getNombresAlumnos = async (buscar) => {
       AND: [
         {
           TIPO_USUARIO: 'Alumno',
+          STATUS: 'ONLINE',
         },
       ],
     },
   });
-
-  return alumnos;
 };
 
 const getAlumno = async (id) => {
@@ -75,12 +75,7 @@ const getAlumno = async (id) => {
 };
 
 const getAlumnoSalasInscritas = async (id) => {
-  // Validar que el Alunno exista
-  const alumnoExiste = await getAlumno(id);
-
-  if (!alumnoExiste) return { msg: 'El Alumno no existe en la base de datos' };
-
-  const salas = await prisma.INSCRITOS.findMany({
+  return await prisma.INSCRITOS.findMany({
     select: {
       ACEPTADO: true,
       SALAS: {
@@ -102,8 +97,48 @@ const getAlumnoSalasInscritas = async (id) => {
       ID_USUARIO: Number(id),
     },
   });
+};
 
-  return salas;
+const getInscripcion = async (id, sala) => {
+  return await prisma.INSCRITOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id),
+      ID_SALA: Number(sala),
+      ACEPTADO: 'NO_ACEPTADO',
+    },
+    select: {
+      ID_INSCRITOS: true,
+    },
+  });
+};
+
+const postAlumnoAceptarSala = async (id, sala) => {
+  const inscritosExiste = await getInscripcion(id, sala);
+
+  if (!inscritosExiste)
+    return { msg: 'La peticion no existe en la base de datos' };
+
+  return await prisma.INSCRITOS.update({
+    where: {
+      ID_INSCRITOS: Number(inscritosExiste.ID_INSCRITOS),
+    },
+    data: {
+      ACEPTADO: 'ACEPTADO',
+    },
+  });
+};
+
+const deleteAlumnoCancelarSala = async (id, sala) => {
+  const inscritosExiste = await getInscripcion(id, sala);
+
+  if (!inscritosExiste)
+    return { msg: 'La peticion no existe en la base de datos' };
+
+  return await prisma.INSCRITOS.delete({
+    where: {
+      ID_INSCRITOS: Number(inscritosExiste.ID_INSCRITOS),
+    },
+  });
 };
 
 module.exports = {
@@ -111,4 +146,6 @@ module.exports = {
   getAlumnos,
   getNombresAlumnos,
   getAlumnoSalasInscritas,
+  postAlumnoAceptarSala,
+  deleteAlumnoCancelarSala,
 };

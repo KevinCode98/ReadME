@@ -8,15 +8,15 @@ datasource db {
 }
 
 model ASIGNACIONES {
-  ID_ASIGNACION  Int       @id @default(autoincrement())
+  ID_ASIGNACION  Int             @id @default(autoincrement())
   ID_SALA        Int
   ID_LECTURA     Int?
-  TITULO         String    @db.VarChar(30)
-  INDICACION     String?   @db.VarChar(50)
-  FECHA_CREACION DateTime  @db.Date
-  SALAS          SALAS     @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_4")
-  LECTURAS       LECTURAS? @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_5")
-  QUESTIONARIOS     QUESTIONARIOS[]
+  TITULO         String          @db.VarChar(30)
+  INDICACION     String?         @db.VarChar(50)
+  FECHA_CREACION DateTime        @db.Date
+  SALAS          SALAS           @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_4")
+  LECTURAS       LECTURAS?       @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_5")
+  QUESTIONARIOS  QUESTIONARIOS[]
 
   @@index([ID_SALA], map: "FK_REFERENCE_4")
   @@index([ID_LECTURA], map: "FK_REFERENCE_5")
@@ -36,12 +36,13 @@ model AUTORES {
   @@index([NACIONALIDAD], map: "AUTORES_NACIONALIDADES_ID_NACIONALIDAD_fk")
 }
 
-model CERRADAS {
-  ID_CERRADA  Int       @id @default(autoincrement())
+model OPCIONES {
+  ID_OPCION   Int          @id @default(autoincrement())
   ID_PREGUNTA Int
   CORRECTA    Boolean
-  DESCRIPCION String    @db.VarChar(50)
-  PREGUNTAS   PREGUNTAS @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_14")
+  DESCRIPCION String       @db.VarChar(150)
+  PREGUNTAS   PREGUNTAS    @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_14")
+  RESPUESTAS  RESPUESTAS[]
 
   @@index([ID_PREGUNTA], map: "FK_REFERENCE_14")
 }
@@ -74,19 +75,19 @@ model INSCRITOS {
 }
 
 model LECTURAS {
-  ID_LECTURA        Int             @id @default(autoincrement())
+  ID_LECTURA        Int            @id @default(autoincrement())
   ID_AUTOR          Int
   ID_TEMATICA       Int
   ID_CORRIENTE      Int
-  TEXTO             String          @db.LongText
-  TITULO            String          @db.VarChar(100)
-  FECHA_PUBLICACION DateTime?       @db.Date
-  PUNTUACION        Float?          @db.Float
+  TEXTO             String         @db.LongText
+  TITULO            String         @db.VarChar(100)
+  FECHA_PUBLICACION DateTime?      @db.Date
+  PUNTUACION        Float?         @db.Float
   ASIGNACIONES      ASIGNACIONES[]
   HISTORIAL         HISTORIAL[]
-  TEMATICAS         TEMATICAS       @relation(fields: [ID_TEMATICA], references: [ID_TEMATICA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_19")
-  CORRIENTES        CORRIENTES      @relation(fields: [ID_CORRIENTE], references: [ID_CORRIENTE], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_20")
-  AUTORES           AUTORES         @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
+  TEMATICAS         TEMATICAS      @relation(fields: [ID_TEMATICA], references: [ID_TEMATICA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_19")
+  CORRIENTES        CORRIENTES     @relation(fields: [ID_CORRIENTE], references: [ID_CORRIENTE], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_20")
+  AUTORES           AUTORES        @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
   PROGRESOS         PROGRESOS[]
 
   @@index([ID_AUTOR], map: "FK_REFERENCE_3")
@@ -112,8 +113,7 @@ model PREGUNTAS {
   ID_PREGUNTA     Int           @id @default(autoincrement())
   ID_QUESTIONARIO Int
   DESCRIPCION     String        @db.VarChar(255)
-  CERRADA         Boolean
-  CERRADAS        CERRADAS[]
+  OPCIONES        OPCIONES[]
   QUESTIONARIOS   QUESTIONARIOS @relation(fields: [ID_QUESTIONARIO], references: [ID_QUESTIONARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_15")
   RESPUESTAS      RESPUESTAS[]
 
@@ -134,26 +134,29 @@ model PROGRESOS {
 }
 
 model QUESTIONARIOS {
-  ID_QUESTIONARIO Int         @id @default(autoincrement())
+  ID_QUESTIONARIO Int          @id @default(autoincrement())
   ID_ASIGNACION   Int
-  DESCRIPCION     String?     @db.VarChar(50)
+  DESCRIPCION     String?      @db.VarChar(50)
   NIVEL           Int
   PREGUNTAS       PREGUNTAS[]
-  ASIGNACIONES    ASIGNACIONES    @relation(fields: [ID_ASIGNACION], references: [ID_ASIGNACION], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_12")
+  ASIGNACIONES    ASIGNACIONES @relation(fields: [ID_ASIGNACION], references: [ID_ASIGNACION], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_12")
 
   @@index([ID_ASIGNACION], map: "FK_REFERENCE_12")
 }
 
 model RESPUESTAS {
-  ID_RESPUESTA    Int       @id @default(autoincrement())
-  ID_PREGUNTA     Int
-  ID_USUARIO      Int
-  TEXTO_RESPUESTA String    @db.VarChar(1024)
-  PREGUNTAS       PREGUNTAS @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_17")
-  USUARIOS        USUARIOS  @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_18")
+  ID_RESPUESTA Int       @id @default(autoincrement())
+  ID_PREGUNTA  Int
+  ID_USUARIO   Int
+  ID_OPCION    Int
+  PUNTOS       Int
+  PREGUNTAS    PREGUNTAS @relation(fields: [ID_PREGUNTA], references: [ID_PREGUNTA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_17")
+  USUARIOS     USUARIOS  @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_18")
+  OPCIONES     OPCIONES  @relation(fields: [ID_OPCION], references: [ID_OPCION], onDelete: Cascade, map: "RESPUESTAS_OPCIONES_ID_OPCION_fk")
 
   @@index([ID_PREGUNTA], map: "FK_REFERENCE_17")
   @@index([ID_USUARIO], map: "FK_REFERENCE_18")
+  @@index([ID_OPCION], map: "RESPUESTAS_OPCIONES_ID_OPCION_fk")
 }
 
 model SALAS {

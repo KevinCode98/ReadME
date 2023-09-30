@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getAutores = async () => {
-  const autores = await prisma.AUTORES.findMany({
+  return await prisma.AUTORES.findMany({
     select: {
       ID_AUTOR: true,
       NOMBRE: true,
@@ -10,12 +10,10 @@ const getAutores = async () => {
       LECTURAS: true,
     },
   });
-
-  return autores;
 };
 
 const getNombresAutores = async (buscar) => {
-  const autores = await prisma.AUTORES.findMany({
+  return await prisma.AUTORES.findMany({
     select: {
       ID_AUTOR: true,
       NOMBRE: true,
@@ -36,11 +34,10 @@ const getNombresAutores = async (buscar) => {
       ],
     },
   });
-
-  return autores;
 };
+
 const getAutor = async (id) => {
-  const autor = await prisma.AUTORES.findFirst({
+  return await prisma.AUTORES.findFirst({
     select: {
       ID_AUTOR: true,
       NOMBRE: true,
@@ -58,12 +55,10 @@ const getAutor = async (id) => {
       ID_AUTOR: Number(id),
     },
   });
-
-  return autor;
 };
 
 const postAutor = async (autor) => {
-  const autorDB = await prisma.AUTORES.create({
+  return await prisma.AUTORES.create({
     data: {
       NOMBRE: autor.nombre,
       APELLIDOS: autor.apellidos,
@@ -73,30 +68,22 @@ const postAutor = async (autor) => {
       NACIONALIDAD: Number(autor.nacionalidad),
     },
   });
-
-  return autorDB;
 };
 
 const postActualizarAutor = async (autor, id) => {
-  const autorDB = await prisma.AUTORES.update({
+  return await prisma.AUTORES.update({
     data: {
       NOMBRE: autor.nombre,
       APELLIDOS: autor.apellidos,
       BIBLIOGRAFIA: autor.bibliografia,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
-      NACIONALIDADES: {
-        connect: {
-          NACIONALIDAD: Number(autor.nacionalidad),
-        },
-      },
+      NACIONALIDAD: autor.nacionalidad ? Number(autor.nacionalidad) : null,
     },
     where: {
       ID_AUTOR: Number(id),
     },
   });
-
-  return autorDB;
 };
 
 module.exports = {

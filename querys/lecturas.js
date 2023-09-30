@@ -124,40 +124,7 @@ const getNombreLecturas = async (buscar) => {
 };
 
 const postLectura = async (lectura, textoLectura) => {
-  const idAutor = Number(lectura.id_autor);
-  const idTematica = Number(lectura.tematica);
-  const idCorriente = Number(lectura.corriente_literaria);
-
-  // Verificar si el autor existe en la base de datos
-  const autorExiste = await prisma.AUTORES.findFirst({
-    where: {
-      ID_AUTOR: idAutor,
-    },
-  });
-
-  if (!autorExiste) return { msg: 'El Autor no existe en la base de datos' };
-
-  // Verificar la tematica existe en la base de datos
-  const tematicaExiste = await prisma.TEMATICAS.findFirst({
-    where: {
-      ID_TEMATICA: idTematica,
-    },
-  });
-
-  if (!tematicaExiste)
-    return { msg: 'La Tematica no existe en la base de datos' };
-
-  // Verificar la existe en la base de datos
-  const corrienteExiste = await prisma.CORRIENTES.findFirst({
-    where: {
-      ID_CORRIENTE: idCorriente,
-    },
-  });
-
-  if (!corrienteExiste)
-    return { msg: 'La Corriente no existe en la base de datos' };
-
-  const lecturaDB = await prisma.LECTURAS.create({
+  return await prisma.LECTURAS.create({
     data: {
       TITULO: lectura.titulo,
       FECHA_PUBLICACION: new Date(lectura.fecha_publicacion),
@@ -180,8 +147,6 @@ const postLectura = async (lectura, textoLectura) => {
       },
     },
   });
-
-  return lecturaDB;
 };
 
 const lecturasPorAutor = async (id) => {

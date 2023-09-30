@@ -5,7 +5,7 @@ const { generarJWT } = require('../helpers/generar-jwt');
 const prisma = new PrismaClient();
 
 const getUsuarios = async () => {
-  const usuarios = await prisma.USUARIOS.findMany({
+  return await prisma.USUARIOS.findMany({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -14,9 +14,10 @@ const getUsuarios = async () => {
       EMAIL: true,
       APODO: true,
     },
+    where: {
+      STATUS: 'ONLINE',
+    },
   });
-
-  return usuarios;
 };
 
 const getNombresUsuarios = async (buscar) => {
@@ -46,6 +47,11 @@ const getNombresUsuarios = async (buscar) => {
           },
         },
       ],
+      AND: [
+        {
+          STATUS: 'ONLINE',
+        },
+      ],
     },
   });
 
@@ -68,6 +74,15 @@ const getUsuario = async (id) => {
   });
 
   return usuario;
+};
+
+const getUsuarioOnline = async (id) => {
+  return await prisma.USUARIOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id),
+      STATUS: 'ONLINE',
+    },
+  });
 };
 
 const postUsuario = async (usuario, pathCompleto) => {
@@ -223,6 +238,7 @@ module.exports = {
   deleteUsuario,
   getNombresUsuarios,
   getUsuario,
+  getUsuarioOnline,
   getUsuarios,
   postPasswordActializar,
   postUsuario,

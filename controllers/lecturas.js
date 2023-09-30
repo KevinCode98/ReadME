@@ -43,29 +43,28 @@ const lecturaNombreGet = async (req, res = response) => {
 
 const lecturaPost = async (req, res = response) => {
   try {
-    if (
-      !req.files ||
-      Object.keys(req.files).length === 0 ||
-      !req.files.archivo
-    ) {
-      return res.status(400).json({ msg: 'No hay archivos en la petición' });
-    }
-    const pathCompleto = await subirArchivo(req.files, ['pdf'], 'lecturas');
-    const splitPath = pathCompleto.split('/');
-    const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
+    // if (
+    //   !req.files ||
+    //   Object.keys(req.files).length === 0 ||
+    //   !req.files.archivo
+    // ) {
+    //   return res.status(400).json({ msg: 'No hay archivos en la petición' });
+    // }
+    // const pathCompleto = await subirArchivo(req.files, ['pdf'], 'lecturas');
+    // const splitPath = pathCompleto.split('/');
+    // const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
 
-    const response = await fetch(
-      'http://localhost:8000/converter/' + uuidLectura
-    );
+    // const response = await fetch(
+    //   'http://localhost:8000/converter/' + uuidLectura
+    // );
 
-    response.text().then(async (text) => {
-      if (!text) return res.status(400).json('Error de extraccion de texto');
-      else {
-        res.json(await lecturaDB.postLectura(req.body, text));
-      }
-    });
+    // response.text().then(async (text) => {
+    //   if (!text) return res.status(400).json('Error de extraccion de texto');
+    //   else {
+    res.json(await lecturaDB.postLectura(req.body, 'None'));
+    // }
+    // });
   } catch (error) {
-    console.log(error);
     console.error('Error en la petición de base de datos - lecturaPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - lecturaPost',

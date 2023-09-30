@@ -1,20 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const postGenerarActivacion = async (id) => {
-  const activacionDB = await prisma.ACTIVACIONES.create({
-    data: {
-      ID_USUARIO: id,
-      CODIGO: genearCodigo(),
-      TIEMPO: new Date(),
-    },
-  });
-
-  return activacionDB;
-};
-
-const postValidarActivacion = async (id, codigo) => {
-  const valoresCodigo = await prisma.ACTIVACIONES.findFirst({
+const getValidacion = async (id) => {
+  return await prisma.ACTIVACIONES.findFirst({
     select: {
       ID_CODIGO: true,
       ID_USUARIO: true,
@@ -25,6 +13,20 @@ const postValidarActivacion = async (id, codigo) => {
       ID_USUARIO: Number(id),
     },
   });
+};
+
+const postGenerarActivacion = async (id) => {
+  return await prisma.ACTIVACIONES.create({
+    data: {
+      ID_USUARIO: id,
+      CODIGO: genearCodigo(),
+      TIEMPO: new Date(),
+    },
+  });
+};
+
+const postValidarActivacion = async (id, codigo) => {
+  const valoresCodigo = await getValidacion(id);
 
   // Validar si existe un codigo de validacion
   if (!valoresCodigo)
@@ -56,7 +58,7 @@ const postValidarActivacion = async (id, codigo) => {
     },
   });
 
-  const usuario = await prisma.USUARIOS.update({
+  return await prisma.USUARIOS.update({
     where: {
       ID_USUARIO: Number(id),
     },
@@ -68,22 +70,10 @@ const postValidarActivacion = async (id, codigo) => {
       TIPO_USUARIO: true,
     },
   });
-
-  return usuario;
 };
 
 const postActualizarCodigo = async (id) => {
-  const valoresCodigo = await prisma.ACTIVACIONES.findFirst({
-    select: {
-      ID_CODIGO: true,
-      ID_USUARIO: true,
-      CODIGO: true,
-      TIEMPO: true,
-    },
-    where: {
-      ID_USUARIO: Number(id),
-    },
-  });
+  const valoresCodigo = await getValidacion(id);
 
   if (!valoresCodigo) {
     return postGenerarActivacion(id);
@@ -95,7 +85,7 @@ const postActualizarCodigo = async (id) => {
       TIEMPO: new Date(),
     },
     where: {
-      ID_CODIGO: valoresCodigo.ID_CODIGO,
+      ID_CODIGO: Number(valoresCodigo.ID_CODIGO),
     },
   });
 

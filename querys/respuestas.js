@@ -1,36 +1,63 @@
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
+const opcionesDB = require('../querys/opciones');
 
-const getRespuestas = async (id) => {
-  const respuestas = await prisma.RESPUESTAS.findMany({
-    where: {
-      ID_PREGUNTA: id,
-    },
+const getRespuesta = async (id) => {
+  return await prisma.RESPUESTAS.findFirst({
+    where: { ID_PREGUNTA: Number(id) },
+  });
+};
+
+const getRespuestasDeQuestionario = async (questionario) => {
+  return await prisma.QUESTIONARIOS.findMany({
     select: {
-      ID_RESPUESTA: true,
-      ID_USUARIO: true,
-      TEXTO_RESPUESTA: true,
+      PREGUNTAS: {
+        select: {
+          ID_PREGUNTA: true,
+          DESCRIPCION: true,
+          OPCIONES: {
+            select: {
+              ID_OPCION: true,
+              CORRECTA: true,
+              DESCRIPCION: true,
+            },
+          },
+          RESPUESTAS: {
+            select: {
+              ID_OPCION: true,
+              PUNTOS: true,
+            },
+            where: {
+              ID_USUARIO: Number(questionario.id_alumno),
+            },
+          },
+        },
+      },
+    },
+    where: {
+      ID_QUESTIONARIO: Number(questionario.id_questionario),
     },
   });
 };
 
-const postRespuestas = async (respuesta) => {
-  const idPregunta = respuesta.id_pregunta;
-  console.log(respuesta);
+const postRespuestas = async (respuesta, id_alumno) => {
+  const opcion = await opcionesDB.getOpcion(respuesta.id_opcion);
 
-  // Verificar que la respuesta exista en la base de datos
-  const preguntaExiste = await prisma.PREGUNTAS.findUnique({
-    where: {
-      ID_PREGUNTA: idPregunta,
+  let puntos = 0;
+  if (opcion.CORRECTA === true) puntos = 100 * Number(respuesta.tiempo);
+
+  return await prisma.RESPUESTAS.create({
+    data: {
+      ID_PREGUNTA: Number(respuesta.id_pregunta),
+      ID_OPCION: Number(respuesta.id_opcion),
+      ID_USUARIO: Number(id_alumno),
+      PUNTOS: Number(puntos),
     },
   });
-
-  console.log(preguntaExiste);
-  // TODO: REALIZAR EL MANEJO DE PREGUNTAS CERRADAS
 };
 
 module.exports = {
-  getRespuestas,
+  getRespuesta,
   postRespuestas,
+  getRespuestasDeQuestionario,
 };

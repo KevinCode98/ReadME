@@ -39,7 +39,6 @@ const alumnoGet = async (req, res = response) => {
   }
 };
 
-// TODO: Retornar las salas en las que se encuentra el Alumno
 const alumnoSalasInscritasGet = async (req, res = response) => {
   const id = req.usuario.ID_USUARIO;
 
@@ -59,9 +58,51 @@ const alumnoSalasInscritasGet = async (req, res = response) => {
   }
 };
 
+const alumnoAceptarSalaPost = async (req, res = response) => {
+  const id = req.usuario.ID_USUARIO;
+  const sala = req.params.sala;
+
+  try {
+    const aceptacion = await alumnosDB.postAlumnoAceptarSala(id, sala);
+    if (aceptacion.msg) return res.status(400).json(aceptacion);
+
+    res.status(200).json(aceptacion);
+  } catch (error) {
+    console.log(error);
+    console.error(
+      'Error en la petición de base de datos - alumnoAceptarSalaPost'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - alumnoAceptarSalaPost',
+    });
+  }
+};
+
+const alumnoCancelarSalaDelete = async (req, res = response) => {
+  const id = req.usuario.ID_USUARIO;
+  const sala = req.params.sala;
+
+  try {
+    const aceptacion = await alumnosDB.deleteAlumnoCancelarSala(id, sala);
+    if (aceptacion.msg) return res.status(400).json(aceptacion);
+
+    res.status(200).json(aceptacion);
+  } catch (error) {
+    console.log(error);
+    console.error(
+      'Error en la petición de base de datos - alumnoCancelarSalaDelete'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - alumnoCancelarSalaDelete',
+    });
+  }
+};
+
 module.exports = {
   alumnoGet,
   alumnosGet,
   alumnosNombreGet,
   alumnoSalasInscritasGet,
+  alumnoAceptarSalaPost,
+  alumnoCancelarSalaDelete,
 };

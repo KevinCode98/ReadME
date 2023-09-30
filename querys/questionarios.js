@@ -1,40 +1,37 @@
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
+const preguntaDB = require('../querys/preguntas');
+const opcionesDB = require('../querys/opciones');
 
 const getQuestionario = async (id) => {
-  const questionario = await prisma.QUESTIONARIOS.findFirst({
-    include: {
-      LECTURAS: {
-        select: {
-          TITULO: true,
-          GENERO: true,
-          CORRIENTE_LITERARIA: true,
-        },
-      },
-    },
-    where: {
-      ID_QUESTIONARIO: Number(id),
-    },
+  return await prisma.QUESTIONARIOS.findFirst({
+    where: { ID_QUESTIONARIO: Number(id) },
   });
-
-  return questionario;
 };
 
 const postQuestionario = async (questionario) => {
-  const questionariosDB = await prisma.QUESTIONARIOS.create({
+  const questionarioDB = await prisma.QUESTIONARIOS.create({
     data: {
       DESCRIPCION: questionario.descripcion,
       NIVEL: Number(questionario.nivel),
-      LECTURAS: {
-        connect: {
-          ID_LECTURA: Number(questionario.id_lectura),
-        },
-      },
+      ID_ASIGNACION: Number(questionario.id_asignacion),
     },
   });
 
-  return questionariosDB;
+  const preguntas = questionario.preguntas;
+  preguntas.forEach(async (pregunta) => {
+    const preguntaResponse = await preguntaDB.postPregunta(
+      pregunta.descripcion,
+      questionarioDB.ID_QUESTIONARIO
+    );
+
+    const opciones = pregunta.opciones;
+    opciones.forEach(async (opcion) => {
+      await opcionesDB.postOpcion(opcion, preguntaResponse.ID_PREGUNTA);
+    });
+  });
+
+  return { msg: 'Holi' };
 };
 
 module.exports = {
