@@ -7,12 +7,20 @@ const {
   asignacionPost,
   asignacionesPorSalaGet,
 } = require('../controllers/asignaciones');
-const { existeProfesor, existeSala } = require('../middlewares/validar-existe');
+const {
+  existeProfesor,
+  existeSala,
+  existeUsuario,
+} = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/:id', asignacionGet);
-router.get('/salas/:id', [existeSala], asignacionesPorSalaGet);
+router.get('/:id', [validarJWT, existeUsuario], asignacionGet);
+router.get(
+  '/salas/:id',
+  [validarJWT, existeUsuario, existeSala],
+  asignacionesPorSalaGet
+);
 router.post(
   '/',
   [

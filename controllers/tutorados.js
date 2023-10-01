@@ -2,10 +2,8 @@ const { response } = require('express');
 const tutoradoDB = require('../querys/tutorados');
 
 const tutoradoGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    const tutorado = await tutoradoDB.getTutorado(id);
+    const tutorado = await tutoradoDB.getTutorado(req.params.id);
 
     if (tutorado === null)
       return res.status(400).json({

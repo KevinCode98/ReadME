@@ -6,14 +6,21 @@ const {
   existeProfesor,
   existeAsignacion,
   existeUsuario,
+  existeQuestionario,
 } = require('../middlewares/validar-existe');
 const {
   questionarioGet,
   questionarioPost,
+  questionarioConPreguntasGet,
 } = require('../controllers/questionarios');
 const router = Router();
 
 router.get('/:id', [validarJWT, existeUsuario], questionarioGet);
+router.get(
+  '/preguntas/:id',
+  [validarJWT, existeUsuario, existeQuestionario],
+  questionarioConPreguntasGet
+);
 router.post(
   '/',
   [

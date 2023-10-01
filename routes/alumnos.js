@@ -16,8 +16,8 @@ const {
 const router = Router();
 
 router.get('/', [validarJWT, existeUsuario], alumnosGet);
-router.get('/:id', [existeAlumno], alumnoGet);
-router.get('/buscador/nombre/', alumnosNombreGet);
+router.get('/:id', [validarJWT, existeUsuario], alumnoGet);
+router.get('/buscador/nombre/', [validarJWT, existeUsuario], alumnosNombreGet);
 router.get(
   '/salas/inscritos/',
   [validarJWT, existeAlumno],

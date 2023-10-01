@@ -13,11 +13,10 @@ const autoresGet = async (req, res = response) => {
 };
 
 const autoresNombreGet = async (req, res = response) => {
-  const nombre = req.query.nombre;
-
   try {
-    if (Object.keys(nombre).length == 0) res.json(await autoresDB.getAutores());
-    else res.json(await autoresDB.getNombresAutores(nombre));
+    if (Object.keys(req.query.nombre).length == 0)
+      res.json(await autoresDB.getAutores());
+    else res.json(await autoresDB.getNombresAutores(req.query.nombre));
   } catch (error) {
     console.error('Error en la petición de base de datos - autoresNombreGet');
     return res.status(500).json({
@@ -28,7 +27,7 @@ const autoresNombreGet = async (req, res = response) => {
 
 const autorGet = async (req, res = response) => {
   try {
-    res.json(await autoresDB.getAutor(id));
+    res.json(await autoresDB.getAutor(req.params.id));
   } catch (error) {
     console.error('Error en la petición de base de datos - autorGet');
     return res.status(500).json({
@@ -41,7 +40,6 @@ const autorPost = async (req, res = response) => {
   try {
     res.status(200).json(await autoresDB.postAutor(req.body));
   } catch (error) {
-    console.log(error);
     console.error('Error en la petición de base de datos - autorPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - autorPost',
@@ -50,11 +48,11 @@ const autorPost = async (req, res = response) => {
 };
 
 const autorActualizarPost = async (req, res = response) => {
-  const id = req.params.id;
   try {
-    res.status(200).json(await autoresDB.postActualizarAutor(req.body, id));
+    res
+      .status(200)
+      .json(await autoresDB.postActualizarAutor(req.body, req.params.id));
   } catch (error) {
-    console.log(error);
     console.error(
       'Error en la petición de base de datos - autorActualizarPost'
     );

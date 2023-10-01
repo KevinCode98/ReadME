@@ -13,10 +13,8 @@ const tematicasGet = async (req, res = response) => {
 };
 
 const tematicaGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    res.status(200).json(await tematicasDB.getTematica(id));
+    res.status(200).json(await tematicasDB.getTematica(req.params.id));
   } catch (error) {
     console.error('Error en la petición de base de datos - tematicaGet');
     return res.status(500).json({

@@ -13,13 +13,14 @@ const {
   existeAutor,
   existeProfesor,
   existeNacionalidad,
+  existeUsuario,
 } = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/', autoresGet);
-router.get('/:id', [existeAutor], autorGet);
-router.get('/buscador/nombre/', autoresNombreGet);
+router.get('/', [validarJWT, existeUsuario], autoresGet);
+router.get('/:id', [validarCampos, existeUsuario, existeAutor], autorGet);
+router.get('/buscador/nombre/', [validarJWT, existeUsuario], autoresNombreGet);
 router.post(
   '/',
   [

@@ -13,12 +13,10 @@ const usuariosGet = async (req, res = response) => {
 };
 
 const usuariosNombreGet = async (req, res = response) => {
-  const nombre = req.query.nombre;
-
   try {
-    if (Object.keys(nombre).length == 0)
+    if (Object.keys(req.query.nombre).length == 0)
       return res.json(await usuarioDB.getUsuarios());
-    else return res.json(await usuarioDB.getNombresUsuarios(nombre));
+    else return res.json(await usuarioDB.getNombresUsuarios(req.query.nombre));
   } catch (error) {
     console.error('Error en la petición de base de datos - usuariosNombreGet');
     return res.status(500).json({
@@ -28,9 +26,8 @@ const usuariosNombreGet = async (req, res = response) => {
 };
 
 const usuarioGet = async (req, res = response) => {
-  const id = req.params.id;
   try {
-    return res.json(await usuarioDB.getUsuario(id));
+    return res.json(await usuarioDB.getUsuario(req.params.id));
   } catch (error) {
     console.error('Error en la petición de base de datos - usuarioGet');
   }
@@ -75,18 +72,18 @@ const usuarioPost = async (req, res = response) => {
 };
 
 const usuarioActializarPost = async (req, res = response) => {
-  const id = req.params.id;
-  const usuarioAutenticado = req.usuario;
-
   try {
-    if (Number(id) !== Number(usuarioAutenticado.ID_USUARIO)) {
+    if (Number(req.params.id) !== Number(req.usuario.ID_USUARIO)) {
       return res.status(401).json({
-        msg: `El ID ${usuarioAutenticado.ID_USUARIO} no es el propietario de la cuenta`,
+        msg: `El ID ${req.usuario.ID_USUARIO} no es el propietario de la cuenta`,
       });
     }
 
     // Ingresar el usuario a la Base de Datos
-    const usuario = await usuarioDB.postUsuarioActializar(req.body, id);
+    const usuario = await usuarioDB.postUsuarioActializar(
+      req.body,
+      req.params.id
+    );
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
@@ -100,18 +97,18 @@ const usuarioActializarPost = async (req, res = response) => {
 };
 
 const usuarioPasswordPost = async (req, res = response) => {
-  const id = req.params.id;
-  const usuarioAutenticado = req.usuario;
-
   try {
-    if (Number(id) !== Number(usuarioAutenticado.ID_USUARIO)) {
+    if (Number(req.params.id) !== Number(req.usuario.ID_USUARIO)) {
       return res.status(401).json({
-        msg: `El ID ${usuarioAutenticado.ID_USUARIO} no es el propietario de la cuenta`,
+        msg: `El ID ${req.usuario.ID_USUARIO} no es el propietario de la cuenta`,
       });
     }
 
     // Ingresar el usuario a la Base de Datos
-    const usuario = await usuarioDB.postPasswordActializar(req.body, id);
+    const usuario = await usuarioDB.postPasswordActializar(
+      req.body,
+      req.params.id
+    );
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
@@ -125,17 +122,14 @@ const usuarioPasswordPost = async (req, res = response) => {
 };
 
 const usuarioDelete = async (req, res = response) => {
-  const id = req.params.id;
-  const usuarioAutenticado = req.usuario;
-
   try {
-    if (Number(id) !== Number(usuarioAutenticado.ID_USUARIO)) {
+    if (Number(req.params.id) !== Number(req.usuario.ID_USUARIO)) {
       return res.status(401).json({
-        msg: `El ID ${usuarioAutenticado.ID_USUARIO} no es el propietario de la cuenta`,
+        msg: `El ID ${req.usuario.ID_USUARIO} no es el propietario de la cuenta`,
       });
     }
 
-    res.json(await usuarioDB.deleteUsuario(id));
+    res.json(await usuarioDB.deleteUsuario(req.params.id));
   } catch (error) {
     console.error('Error enl a petición de la base de datos - usuarioDelete');
     return res.status(500).json({

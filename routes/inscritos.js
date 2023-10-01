@@ -3,11 +3,15 @@ const { Router } = require('express');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { inscritosGet, inscritosPost } = require('../controllers/inscritos');
-const { existeProfesor, existeSala } = require('../middlewares/validar-existe');
+const {
+  existeProfesor,
+  existeSala,
+  existeUsuario,
+} = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/:id', inscritosGet);
+router.get('/:id', [validarJWT, existeUsuario], inscritosGet);
 router.post(
   '/',
   [
