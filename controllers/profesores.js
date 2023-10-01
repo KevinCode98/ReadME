@@ -42,7 +42,6 @@ const profesorGet = async (req, res = response) => {
   }
 };
 
-// TODO: Retornar las salas que las ha asignado el Profesor
 const profesorSalasGet = async (req, res = response) => {
   const id = req.usuario.ID_USUARIO;
 
@@ -56,7 +55,6 @@ const profesorSalasGet = async (req, res = response) => {
   }
 };
 
-// TODO:: Retornar todos los Alumnos que se encuentran en una sala
 const profesorSalaInscritosGet = async (req, res = response) => {
   const id = req.usuario.ID_USUARIO;
   const sala = req.params.sala;
@@ -77,10 +75,32 @@ const profesorSalaInscritosGet = async (req, res = response) => {
   }
 };
 
+const profesorEliminarInscritoSalaDelete = async (req, res = response) => {
+  const id_profesor = req.usuario.ID_USUARIO;
+
+  try {
+    const inscritos = await profesoresDB.postProfesorEliminarInscrito(
+      req.body,
+      id_profesor
+    );
+    if (inscritos.msg) return res.status(400).json(inscritos);
+
+    res.status(200).json(inscritos);
+  } catch (error) {
+    console.error(
+      'Error en la petición de base de datos - profesorEliminarInscritoSalaDelete'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - profesorEliminarInscritoSalaDelete',
+    });
+  }
+};
+
 module.exports = {
   profesoresGet,
   profesoresNombreGet,
   profesorGet,
   profesorSalasGet,
   profesorSalaInscritosGet,
+  profesorEliminarInscritoSalaDelete,
 };

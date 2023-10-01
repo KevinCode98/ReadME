@@ -1,21 +1,34 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
 const { validarCampos } = require('../middlewares/validar-campos');
-const { cerradasGet, cerradaPost } = require('../controllers/cerradas');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { opcionGet, opcionPost } = require('../controllers/opciones');
+const {
+  existeProfesor,
+  existePregunta,
+  existeUsuario,
+  existeOpcion,
+} = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/:id', cerradasGet);
+router.get(
+  '/:id',
+  [validarJWT, existeUsuario, existeOpcion, existePregunta],
+  opcionGet
+);
 router.post(
   '/',
   [
+    validarJWT,
+    existeProfesor,
     check('id_pregunta', 'El id_pregunta es obligatorio').not().isEmpty(),
-    check('id_usuario', 'El id_usuario es obligatorio').not().isEmpty(),
     check('descripcion', 'La descripcion es obligatoria').not().isEmpty(),
     check('correcta', 'Correcta es obligatorio').isBoolean(),
+    existePregunta,
     validarCampos,
   ],
-  cerradaPost
+  opcionPost
 );
 
 module.exports = router;

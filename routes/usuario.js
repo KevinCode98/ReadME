@@ -11,12 +11,13 @@ const {
   usuariosGet,
   usuariosNombreGet,
 } = require('../controllers/usuarios');
+const { existeUsuario } = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/', usuariosGet);
-router.get('/:id', usuarioGet);
-router.get('/buscador/nombre/', usuariosNombreGet);
+router.get('/', [validarJWT, existeUsuario], usuariosGet);
+router.get('/:id', [validarJWT, existeUsuario], usuarioGet);
+router.get('/buscador/nombre/', [validarJWT, existeUsuario], usuariosNombreGet);
 router.post(
   '/',
   [
@@ -42,6 +43,7 @@ router.post(
   '/actualizar/:id',
   [
     validarJWT,
+    existeUsuario,
     check('apodo', 'El apodo debe de ser más de 4 caracteres').isLength({
       min: 4,
     }),

@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getAsignacion = async (id) => {
-  const asignacion = await prisma.ASIGNACIONES.findFirst({
+  return await prisma.ASIGNACIONES.findFirst({
     select: {
       ID_SALA: true,
       ID_LECTURA: true,
@@ -15,69 +15,30 @@ const getAsignacion = async (id) => {
       ID_ASIGNACION: Number(id),
     },
   });
-
-  return asignacion;
 };
 
-const postAsignacion = async (asignacion) => {
-  // Validar que la Sala exista en la base de datos
-  const idSala = asignacion.id_sala;
-
-  const salaExiste = await prisma.SALAS.findFirst({
+const postAsignacion = async (asignacion, id_profesor) => {
+  const profesorSala = await prisma.SALAS.findFirst({
     where: {
-      ID_SALA: Number(idSala),
+      ID_SALA: Number(asignacion.id_sala),
+      ID_RESPONSABLE: Number(id_profesor),
     },
   });
 
-  if (!salaExiste) return { msg: 'La Sala no existe en la base de datos' };
-
-  // Validar que la Lectura exista en la base de datos
-  if (asignacion.id_lectura) {
-    const idLectura = asignacion.id_lectura;
-
-    const lecturaExiste = await prisma.lECTURAS.findFirst({
-      where: {
-        ID_LECTURA: Number(idLectura),
-      },
-    });
-
-    if (!lecturaExiste)
-      return { msg: 'La Lectura no existe en la base de datos' };
-
-    return await prisma.ASIGNACIONES.create({
-      data: {
-        TITULO: asignacion.titulo,
-        INDICACION: asignacion.indicaciones,
-        FECHA_CREACION: new Date(),
-        SALAS: {
-          connect: {
-            ID_SALA: Number(asignacion.id_sala),
-          },
-        },
-        LECTURAS: {
-          connect: {
-            ID_LECTURA: Number(asignacion.id_lectura),
-          },
-        },
-      },
-    });
-  }
+  if (!profesorSala)
+    return { msg: 'El Profesor no tiene permisos en esta sala' };
 
   return await prisma.ASIGNACIONES.create({
     data: {
       TITULO: asignacion.titulo,
-      INDICACION: asignacion.INDICACION,
+      INDICACION: asignacion.indicaciones,
       FECHA_CREACION: new Date(),
-      SALAS: {
-        connect: {
-          ID_SALA: Number(asignacion.id_sala),
-        },
-      },
+      ID_SALA: Number(asignacion.id_sala),
+      ID_LECTURA: Number(asignacion.id_lectura) || null,
     },
   });
 };
 
-// TODO: Asignaciones por sala
 const getAsignacionesPorSala = async (sala) => {
   // validar si la sala existe
   const salaExiste = await prisma.SALAS.findFirst({

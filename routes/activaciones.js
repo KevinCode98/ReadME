@@ -6,6 +6,7 @@ const {
   validarActivacionPost,
   actualizarActivacionPost,
 } = require('../controllers/activaciones');
+const { existeUsuario } = require('../middlewares/validar-existe');
 
 const router = Router();
 
@@ -19,6 +20,6 @@ router.post(
   validarActivacionPost
 );
 
-router.post('/generar', [validarJWT], actualizarActivacionPost);
+router.post('/generar', [validarJWT, existeUsuario], actualizarActivacionPost);
 
 module.exports = router;

@@ -6,7 +6,7 @@ const { enviarCorreo } = require('../helpers/enviar-correo');
 
 const usuariosGet = async (req, res = response) => {
   try {
-    res.json(await usuarioDB.getUsuarios());
+    res.status(200).json(await usuarioDB.getUsuarios());
   } catch (error) {
     console.error('Error en la petición de base de datos - usuariosGet');
   }

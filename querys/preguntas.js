@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getPregunta = async (id) => {
-  const pregunta = await prisma.PREGUNTAS.findFirst({
+  return await prisma.PREGUNTAS.findFirst({
     where: {
       ID_PREGUNTA: Number(id),
     },
@@ -16,39 +16,37 @@ const getPregunta = async (id) => {
       },
     },
   });
-
-  return pregunta;
 };
 
-const postPregunta = async (pregunta) => {
-  const idQuestonario = Number(pregunta.id_questionario);
-
-  // Verificar si el Questionario existe en la base de datos
-  const questionarioExiste = await prisma.QUESTIONARIOS.findFirst({
-    where: {
-      ID_QUESTIONARIO: idQuestonario,
-    },
-  });
-
-  if (!questionarioExiste)
-    return { msq: 'El questionario no existe en la base de datos' };
-
-  const preguntaDB = await prisma.PREGUNTAS.create({
-    data: {
-      DESCRIPCION: pregunta.descripcion,
-      CERRADA: Boolean(pregunta.cerrada),
-      QUESTIONARIOS: {
-        connect: {
-          ID_QUESTIONARIO: Number(pregunta.id_questionario),
+const getPreguntaConOpciones = async (id) => {
+  return await prisma.PREGUNTAS.findMany({
+    select: {
+      ID_PREGUNTA: true,
+      DESCRIPCION: true,
+      OPCIONES: {
+        select: {
+          ID_OPCION: true,
+          DESCRIPCION: true,
         },
       },
     },
+    where: {
+      ID_PREGUNTA: Number(id),
+    },
   });
+};
 
-  return preguntaDB;
+const postPregunta = async (descripcion, id_questionario) => {
+  return await prisma.PREGUNTAS.create({
+    data: {
+      DESCRIPCION: descripcion,
+      ID_QUESTIONARIO: Number(id_questionario),
+    },
+  });
 };
 
 module.exports = {
   getPregunta,
   postPregunta,
+  getPreguntaConOpciones,
 };

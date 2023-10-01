@@ -16,10 +16,31 @@ const asignacionGet = async (req, res = response) => {
 
 const asignacionPost = async (req, res = response) => {
   try {
-    const asignacion = await asignacionesDB.postAsignacion(req.body);
-    if (asignacion.msg) return res.status(400).json(asignacion);
+    const id_profesor = req.usuario.ID_USUARIO;
 
+    const asignacion = await asignacionesDB.postAsignacion(
+      req.body,
+      id_profesor
+    );
+    if (asignacion.msg) return res.status(400).json(asignacion);
     res.status(200).json(asignacion);
+
+    const alumnos = await salasDB.getUsuariosPorSala(asignacion.ID_SALA);
+
+    alumnos.forEach(async (alumno) => {
+      const dispositivosUsuario = await dispositivosDB.getDispositivosPorId(
+        alumno.ID_USUARIO
+      );
+
+      dispositivosUsuario.forEach((dispositivo) => {
+        const datosNotificacion = {
+          tokenId: dispositivo.UUID_DISPOSITIVO,
+          titulo: `Nueva asignación`,
+          mensaje: `Nueva tarea: ${asignacion.TITULO}`,
+        };
+        Notificaciones.sendPushToOneUser(datosNotificacion);
+      });
+    });
   } catch (error) {
     console.error('Error en la petición de base de datos - asignacionPost');
     return res.status(500).json({
@@ -28,12 +49,11 @@ const asignacionPost = async (req, res = response) => {
   }
 };
 
-// TODO: End-Point retornar asignaciones por sala
 const asignacionesPorSalaGet = async (req, res = response) => {
-  const idSala = req.params.idSala;
+  const id = req.params.id;
 
   try {
-    const asignacion = await asignacionesDB.getAsignacionesPorSala(idSala);
+    const asignacion = await asignacionesDB.getAsignacionesPorSala(id);
     if (asignacion.msg) return res.status(400).json(asignacion);
 
     res.status(200).json(asignacion);
