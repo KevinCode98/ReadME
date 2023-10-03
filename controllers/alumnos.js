@@ -13,11 +13,10 @@ const alumnosGet = async (req, res = response) => {
 };
 
 const alumnosNombreGet = async (req, res = response) => {
-  const nombre = req.query.nombre;
-
   try {
-    if (Object.keys(nombre).length == 0) res.json(await alumnosDB.getAlumnos());
-    else res.json(await alumnosDB.getNombresAlumnos(nombre));
+    if (Object.keys(req.query.nombre).length == 0)
+      res.json(await alumnosDB.getAlumnos());
+    else res.json(await alumnosDB.getNombresAlumnos(req.query.nombre));
   } catch (error) {
     console.error('Error en la petición de base de datos - alumnosNombreGet');
     return res.status(500).json({
@@ -27,10 +26,13 @@ const alumnosNombreGet = async (req, res = response) => {
 };
 
 const alumnoGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    res.json(await alumnosDB.getAlumno(id));
+    const alumno = await alumnosDB.getAlumno(req.params.id);
+    if (alumno === null)
+      return res
+        .status(400)
+        .json({ msg: 'El Alumno no existe en la base de datos' });
+    res.status(200).json(alumno);
   } catch (error) {
     console.error('Error enl a petición de la base de datos - alumnoGet');
     return res.status(500).json({
@@ -40,15 +42,14 @@ const alumnoGet = async (req, res = response) => {
 };
 
 const alumnoSalasInscritasGet = async (req, res = response) => {
-  const id = req.usuario.ID_USUARIO;
-
   try {
-    const salas = await alumnosDB.getAlumnoSalasInscritas(id);
+    const salas = await alumnosDB.getAlumnoSalasInscritas(
+      req.usuario.ID_USUARIO
+    );
     if (salas.msg) return res.status(400).json(salas);
 
     res.status(200).json(salas);
   } catch (error) {
-    console.log(error);
     console.error(
       'Error enl a petición de la base de datos - alumnoSalasInscritasGet'
     );
@@ -59,16 +60,15 @@ const alumnoSalasInscritasGet = async (req, res = response) => {
 };
 
 const alumnoAceptarSalaPost = async (req, res = response) => {
-  const id = req.usuario.ID_USUARIO;
-  const sala = req.params.sala;
-
   try {
-    const aceptacion = await alumnosDB.postAlumnoAceptarSala(id, sala);
+    const aceptacion = await alumnosDB.postAlumnoAceptarSala(
+      req.usuario.ID_USUARIO,
+      req.params.sala
+    );
     if (aceptacion.msg) return res.status(400).json(aceptacion);
 
     res.status(200).json(aceptacion);
   } catch (error) {
-    console.log(error);
     console.error(
       'Error en la petición de base de datos - alumnoAceptarSalaPost'
     );
@@ -79,16 +79,15 @@ const alumnoAceptarSalaPost = async (req, res = response) => {
 };
 
 const alumnoCancelarSalaDelete = async (req, res = response) => {
-  const id = req.usuario.ID_USUARIO;
-  const sala = req.params.sala;
-
   try {
-    const aceptacion = await alumnosDB.deleteAlumnoCancelarSala(id, sala);
+    const aceptacion = await alumnosDB.deleteAlumnoCancelarSala(
+      req.usuario.ID_USUARIO,
+      req.params.sala
+    );
     if (aceptacion.msg) return res.status(400).json(aceptacion);
 
     res.status(200).json(aceptacion);
   } catch (error) {
-    console.log(error);
     console.error(
       'Error en la petición de base de datos - alumnoCancelarSalaDelete'
     );

@@ -16,7 +16,6 @@ const preguntaConOpcionesGet = async (req, res = response) => {
   try {
     res.json(await preguntaDB.getPreguntaConOpciones(req.body.id_pregunta));
   } catch (error) {
-    console.log(error);
     console.error('Error en la petición de base de datos - preguntaGet');
     return res.status(500).json({
       msg: 'Hable con el administrador - preguntaGet',

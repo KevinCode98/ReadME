@@ -10,15 +10,26 @@ const {
   profesorSalaInscritosGet,
   profesorEliminarInscritoSalaDelete,
 } = require('../controllers/profesores');
-const { existeProfesor } = require('../middlewares/validar-existe');
+const {
+  existeProfesor,
+  existeUsuario,
+} = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/', profesoresGet);
-router.get('/:id', [existeProfesor], profesorGet);
-router.get('/salas', [validarJWT], profesorSalasGet);
-router.get('/inscritos/:sala', [validarJWT], profesorSalaInscritosGet);
-router.get('/buscador/nombre/', profesoresNombreGet);
+router.get('/', [validarJWT, existeUsuario], profesoresGet);
+router.get('/salas', [validarJWT, existeProfesor], profesorSalasGet);
+router.get(
+  '/inscritos/:sala',
+  [validarJWT, existeUsuario],
+  profesorSalaInscritosGet
+);
+router.get(
+  '/buscador/nombre/',
+  [validarJWT, existeUsuario],
+  profesoresNombreGet
+);
+
 router.post(
   '/eliminar/:id',
   [
@@ -29,5 +40,6 @@ router.post(
   ],
   profesorEliminarInscritoSalaDelete
 );
+router.get('/:id', [validarJWT, existeUsuario], profesorGet);
 
 module.exports = router;

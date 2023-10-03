@@ -2,11 +2,9 @@ const { response } = require('express');
 const asignacionesDB = require('../querys/asignaciones');
 
 const asignacionGet = async (req, res = response) => {
-  const id = req.params.id;
   try {
-    res.json(await asignacionesDB.getAsignacion(id));
+    res.json(await asignacionesDB.getAsignacion(req.params.id));
   } catch (error) {
-    console.log(error);
     console.error('Error en la petición de base de datos - asignacionGet');
     return res.status(500).json({
       msg: 'Hable con el administrador - asignacionGet',
@@ -16,11 +14,9 @@ const asignacionGet = async (req, res = response) => {
 
 const asignacionPost = async (req, res = response) => {
   try {
-    const id_profesor = req.usuario.ID_USUARIO;
-
     const asignacion = await asignacionesDB.postAsignacion(
       req.body,
-      id_profesor
+      req.usuario.ID_USUARIO
     );
     if (asignacion.msg) return res.status(400).json(asignacion);
     res.status(200).json(asignacion);
@@ -50,10 +46,10 @@ const asignacionPost = async (req, res = response) => {
 };
 
 const asignacionesPorSalaGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    const asignacion = await asignacionesDB.getAsignacionesPorSala(id);
+    const asignacion = await asignacionesDB.getAsignacionesPorSala(
+      req.params.id
+    );
     if (asignacion.msg) return res.status(400).json(asignacion);
 
     res.status(200).json(asignacion);

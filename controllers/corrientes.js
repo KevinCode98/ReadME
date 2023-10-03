@@ -13,10 +13,8 @@ const corrientesGet = async (req, res = response) => {
 };
 
 const corrienteGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    res.status(200).json(await corrientesDB.getCorriente(id));
+    res.status(200).json(await corrientesDB.getCorriente(req.params.id));
   } catch (error) {
     console.error('Error en la petición de base de datos - corrienteGet');
     return res.status(500).json({

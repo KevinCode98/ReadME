@@ -8,15 +8,21 @@ const {
   dispositivoDelete,
   dispositivosPorIdGet,
 } = require('../controllers/dispositivos');
+const { existeUsuario } = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/', [validarJWT], dispositivosGet);
-router.get('/mis-dispositivos', [validarJWT], dispositivosPorIdGet);
+router.get('/', [validarJWT, existeUsuario], dispositivosGet);
+router.get(
+  '/mis-dispositivos',
+  [validarJWT, existeUsuario],
+  dispositivosPorIdGet
+);
 router.post(
   '/',
   [
     validarJWT,
+    existeUsuario,
     check('uuid_dispositivo', 'El uuid_dispositivo es obligatorio')
       .not()
       .isEmpty(),

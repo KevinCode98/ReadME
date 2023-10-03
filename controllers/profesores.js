@@ -3,7 +3,7 @@ const profesoresDB = require('../querys/profesores');
 
 const profesoresGet = async (req, res = response) => {
   try {
-    res.json(await profesoresDB.getProfesores());
+    res.status(200).json(await profesoresDB.getProfesores());
   } catch (error) {
     console.error('Error en la petición de base de datos - profesoresGet');
     return res.status(500).json({
@@ -13,12 +13,10 @@ const profesoresGet = async (req, res = response) => {
 };
 
 const profesoresNombreGet = async (req, res = response) => {
-  const nombre = req.query.nombre;
-
   try {
-    if (Object.keys(nombre).length == 0)
+    if (Object.keys(req.query.nombre).length == 0)
       res.json(await profesoresDB.getProfesores());
-    else res.json(await profesoresDB.getNombresProfesores(nombre));
+    else res.json(await profesoresDB.getNombresProfesores(req.query.nombre));
   } catch (error) {
     console.error(
       'Error en la petición de base de datos - profesoresNombreGet'
@@ -30,10 +28,13 @@ const profesoresNombreGet = async (req, res = response) => {
 };
 
 const profesorGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    res.json(await profesoresDB.getProfesor(id));
+    const profesor = await profesoresDB.getProfesor(req.params.id);
+    if (profesor === null)
+      return res
+        .status(400)
+        .json({ msg: 'El Profesor no existe en la base de datos' });
+    res.status(200).json(profesor);
   } catch (error) {
     console.error('Error en la petición de base de datos - profesorGet');
     return res.status(500).json({
@@ -43,10 +44,8 @@ const profesorGet = async (req, res = response) => {
 };
 
 const profesorSalasGet = async (req, res = response) => {
-  const id = req.usuario.ID_USUARIO;
-
   try {
-    res.json(await profesoresDB.getProfesorSalas(id));
+    res.json(await profesoresDB.getProfesorSalas(req.usuario.ID_USUARIO));
   } catch (error) {
     console.error('Error en la petición de base de datos - profesorSalasGet');
     return res.status(500).json({
@@ -56,16 +55,15 @@ const profesorSalasGet = async (req, res = response) => {
 };
 
 const profesorSalaInscritosGet = async (req, res = response) => {
-  const id = req.usuario.ID_USUARIO;
-  const sala = req.params.sala;
-
   try {
-    const alumnos = await profesoresDB.getProfesorSalaInscritos(id, sala);
+    const alumnos = await profesoresDB.getProfesorSalaInscritos(
+      req.usuario.ID_USUARIO,
+      req.params.sala
+    );
     if (alumnos.msg) return res.status(400).json(alumnos);
 
     res.status(200).json(alumnos);
   } catch (error) {
-    console.log(error);
     console.error(
       'Error en la petición de base de datos - profesorSalaInscritosGet'
     );
@@ -76,12 +74,10 @@ const profesorSalaInscritosGet = async (req, res = response) => {
 };
 
 const profesorEliminarInscritoSalaDelete = async (req, res = response) => {
-  const id_profesor = req.usuario.ID_USUARIO;
-
   try {
     const inscritos = await profesoresDB.postProfesorEliminarInscrito(
       req.body,
-      id_profesor
+      req.usuario.ID_USUARIO
     );
     if (inscritos.msg) return res.status(400).json(inscritos);
 

@@ -59,7 +59,7 @@ const getNombresProfesores = async (buscar) => {
 };
 
 const getProfesor = async (id) => {
-  const profesor = await prisma.USUARIOS.findFirst({
+  return await prisma.USUARIOS.findFirst({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -72,18 +72,14 @@ const getProfesor = async (id) => {
       ID_USUARIO: Number(id),
     },
   });
-
-  return profesor;
 };
 
 const getProfesorSalas = async (id) => {
-  const salas = await prisma.SALAS.findMany({
+  return await prisma.SALAS.findMany({
     where: {
       ID_RESPONSABLE: Number(id),
     },
   });
-
-  return salas;
 };
 
 const getProfesorSalaInscritos = async (id, sala) => {

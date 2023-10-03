@@ -2,10 +2,8 @@ const { response } = require('express');
 const respuestasDB = require('../querys/respuestas');
 
 const respuestaGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    res.json(await respuestasDB.getRespuestas(id));
+    res.json(await respuestasDB.getRespuestas(req.params.id));
   } catch (error) {
     console.error('Error en la petición de base de datos - respuestaGet');
     return res.status(500).json({
@@ -20,7 +18,6 @@ const respuestasDeQuestionarioGet = async (req, res = response) => {
       .status(200)
       .json(await respuestasDB.getRespuestasDeQuestionario(req.body));
   } catch (error) {
-    console.log(error);
     console.error(
       'Error en la petición de base de datos - respuestasDeQuestionarioGet'
     );
@@ -32,8 +29,9 @@ const respuestasDeQuestionarioGet = async (req, res = response) => {
 
 const respuestaPost = async (req, res = response) => {
   try {
-    const id_alumno = req.usuario.ID_USUARIO;
-    res.json(await respuestasDB.postRespuestas(req.body, id_alumno));
+    res.json(
+      await respuestasDB.postRespuestas(req.body, req.usuario.ID_USUARIO)
+    );
   } catch (error) {
     console.error('Error en la petición de base de datos - respuestaPost');
     return res.status(500).json({

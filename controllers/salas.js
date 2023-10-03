@@ -13,10 +13,8 @@ const salasGet = async (req, res = response) => {
 };
 
 const salaGet = async (req, res = response) => {
-  const id = req.params.id;
-
   try {
-    const sala = await salasDB.getSala(id);
+    const sala = await salasDB.getSala(req.params.id);
 
     if (sala === null)
       return res.status(400).json({

@@ -57,7 +57,7 @@ const getNombresAlumnos = async (buscar) => {
 };
 
 const getAlumno = async (id) => {
-  const alumno = await prisma.USUARIOS.findFirst({
+  return await prisma.USUARIOS.findFirst({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -70,8 +70,6 @@ const getAlumno = async (id) => {
       ID_USUARIO: Number(id),
     },
   });
-
-  return alumno;
 };
 
 const getAlumnoSalasInscritas = async (id) => {

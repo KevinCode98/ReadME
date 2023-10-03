@@ -1,11 +1,13 @@
 const { check } = require('express-validator');
 const { Router } = require('express');
 const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
 const { tutoradoGet, tutoradoPost } = require('../controllers/tutorados');
+const { existeUsuario } = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/:id', tutoradoGet);
+router.get('/:id', [validarJWT, existeUsuario], tutoradoGet);
 router.post(
   '/',
   [

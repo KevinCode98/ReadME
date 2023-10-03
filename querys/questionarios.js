@@ -9,6 +9,28 @@ const getQuestionario = async (id) => {
   });
 };
 
+const getQuestionarioConPreguntas = async (id) => {
+  return await prisma.QUESTIONARIOS.findMany({
+    select: {
+      PREGUNTAS: {
+        select: {
+          ID_PREGUNTA: true,
+          DESCRIPCION: true,
+          OPCIONES: {
+            select: {
+              ID_OPCION: true,
+              DESCRIPCION: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      ID_QUESTIONARIO: Number(id),
+    },
+  });
+};
+
 const postQuestionario = async (questionario) => {
   const questionarioDB = await prisma.QUESTIONARIOS.create({
     data: {
@@ -36,5 +58,6 @@ const postQuestionario = async (questionario) => {
 
 module.exports = {
   getQuestionario,
+  getQuestionarioConPreguntas,
   postQuestionario,
 };

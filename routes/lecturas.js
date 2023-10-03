@@ -8,6 +8,7 @@ const {
   existeCorriente,
   existeAutor,
   existeLectura,
+  existeUsuario,
 } = require('../middlewares/validar-existe');
 const {
   lecturaGet,
@@ -19,10 +20,14 @@ const {
 
 const router = Router();
 
-router.get('/', lecturasGet);
-router.get('/:id', lecturaGet);
-router.get('/texto/:id', lecturasTextoGet);
-router.get('/buscador/nombre/', lecturaNombreGet);
+router.get('/', [validarJWT, existeUsuario], lecturasGet);
+router.get('/:id', [validarJWT, existeUsuario, existeLectura], lecturaGet);
+router.get(
+  '/texto/:id',
+  [validarJWT, existeUsuario, existeLectura],
+  lecturasTextoGet
+);
+router.get('/buscador/nombre/', [validarJWT, existeUsuario], lecturaNombreGet);
 router.post(
   '/',
   [

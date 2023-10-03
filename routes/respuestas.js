@@ -14,6 +14,7 @@ const {
   existeRespuesta,
   existeQuestionario,
   existeProfesor,
+  existeUsuario,
 } = require('../middlewares/validar-existe');
 
 const router = Router();
@@ -32,7 +33,7 @@ router.get(
   ],
   respuestasDeQuestionarioGet
 );
-router.get('/:id', [existeRespuesta], respuestaGet);
+router.get('/:id', [validarJWT, existeUsuario, existeRespuesta], respuestaGet);
 router.post(
   '/',
   [
