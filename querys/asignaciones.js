@@ -6,10 +6,21 @@ const getAsignacion = async (id) => {
   return await prisma.ASIGNACIONES.findFirst({
     select: {
       ID_SALA: true,
-      ID_LECTURA: true,
       TITULO: true,
       INDICACION: true,
       FECHA_CREACION: true,
+      LECTURAS: {
+        select: {
+          ID_LECTURA: true,
+          TITULO: true,
+        },
+      },
+      QUESTIONARIOS: {
+        select: {
+          ID_QUESTIONARIO: true,
+          DESCRIPCION: true,
+        },
+      },
     },
     where: {
       ID_ASIGNACION: Number(id),
@@ -54,6 +65,7 @@ const getAsignacionesPorSala = async (sala) => {
 
   const asignaciones = await prisma.ASIGNACIONES.findMany({
     select: {
+      ID_ASIGNACION: true,
       ID_SALA: true,
       ID_LECTURA: true,
       TITULO: true,

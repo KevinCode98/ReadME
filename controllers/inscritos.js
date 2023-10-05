@@ -45,7 +45,24 @@ const inscritosPost = async (req, res = response) => {
   }
 };
 
+const inscritosHashPost = async (req, res = response) => {
+  try {
+    const inscrito = await inscritosDB.postInscritosHash(
+      req.body.hash,
+      req.usuario.ID_USUARIO
+    );
+    if (inscrito.msg) return res.status(400).json(inscrito);
+    res.status(200).json(inscrito);
+  } catch (error) {
+    console.error('Error en la petición de base de datos - inscritosHashPost');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - inscritosHashPost',
+    });
+  }
+};
+
 module.exports = {
   inscritosGet,
   inscritosPost,
+  inscritosHashPost,
 };

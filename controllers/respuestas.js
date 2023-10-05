@@ -12,6 +12,38 @@ const respuestaGet = async (req, res = response) => {
   }
 };
 
+const respuestasPuntosGet = async (req, res = response) => {
+  try {
+    res.status(200).json(await respuestasDB.getRespuestasPuntos(req.body));
+  } catch (error) {
+    console.error(
+      'Error en la petición de base de datos - respuestasPuntosGet'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - respuestasPuntosGet',
+    });
+  }
+};
+
+const respuestasPuntosAlumnosQuestionarioGet = async (req, res = response) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await respuestasDB.getRespuestasPuntosAlumnosQuestionario(
+          req.body.id_questionario
+        )
+      );
+  } catch (error) {
+    console.error(
+      'Error en la petición de base de datos - respuestasPuntosAlumnosQuestionarioGet'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - respuestasPuntosAlumnosQuestionarioGet',
+    });
+  }
+};
+
 const respuestasDeQuestionarioGet = async (req, res = response) => {
   try {
     res
@@ -44,4 +76,6 @@ module.exports = {
   respuestaGet,
   respuestaPost,
   respuestasDeQuestionarioGet,
+  respuestasPuntosAlumnosQuestionarioGet,
+  respuestasPuntosGet,
 };

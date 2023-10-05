@@ -7,19 +7,33 @@ const {
   existeAsignacion,
   existeUsuario,
   existeQuestionario,
+  existeAlumno,
 } = require('../middlewares/validar-existe');
 const {
   questionarioGet,
   questionarioPost,
   questionarioConPreguntasGet,
+  questionarioContestadoGet,
 } = require('../controllers/questionarios');
 const router = Router();
 
-router.get('/:id', [validarJWT, existeUsuario], questionarioGet);
 router.get(
   '/preguntas/:id',
   [validarJWT, existeUsuario, existeQuestionario],
   questionarioConPreguntasGet
+);
+router.get(
+  '/contestado',
+  [
+    validarJWT,
+    existeAlumno,
+    check('id_questionario', 'El id_questionario es obligatorio')
+      .not()
+      .isEmpty(),
+    validarCampos,
+    existeQuestionario,
+  ],
+  questionarioContestadoGet
 );
 router.post(
   '/',
@@ -33,5 +47,6 @@ router.post(
   ],
   questionarioPost
 );
+router.get('/:id', [validarJWT, existeUsuario], questionarioGet);
 
 module.exports = router;

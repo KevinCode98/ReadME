@@ -12,6 +12,39 @@ const questionarioGet = async (req, res = response) => {
   }
 };
 
+const questionarioContestadoGet = async (req, res = response) => {
+  try {
+    res.json(
+      await questionarioDB.getQuestionarioContestado(
+        req.body.id_questionario,
+        req.usuario.ID_USUARIO
+      )
+    );
+  } catch (error) {
+    console.log(error);
+    console.error(
+      'Error en la petición de base de datos - questionarioContestadoGet'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - questionarioContestadoGet',
+    });
+  }
+};
+
+const questionarioRespuestasPorAlumno = async (questionario) => {
+  try {
+    // res.json(await )
+  } catch (error) {
+    console.log(error);
+    console.error(
+      'Error en la petición de base de datos - questionarioRespuestasPorAlumno'
+    );
+    return res.status(500).json({
+      msg: 'Hable con el administrador - questionarioRespuestasPorAlumno',
+    });
+  }
+};
+
 const questionarioConPreguntasGet = async (req, res = response) => {
   try {
     res.json(await questionarioDB.getQuestionarioConPreguntas(req.params.id));
@@ -27,7 +60,10 @@ const questionarioConPreguntasGet = async (req, res = response) => {
 
 const questionarioPost = async (req, res = response) => {
   try {
-    res.json(await questionarioDB.postQuestionario(req.body));
+    const questionario = await questionarioDB.postQuestionario(req.body);
+
+    if (questionario.msg) return res.status(400).json(questionario);
+    res.status(200).json(questionario);
   } catch (error) {
     console.error('Error en la petición de base de datos - questionarioPost');
     return res.status(500).json({
@@ -38,6 +74,8 @@ const questionarioPost = async (req, res = response) => {
 
 module.exports = {
   questionarioGet,
+  questionarioContestadoGet,
+  questionarioRespuestasPorAlumno,
   questionarioConPreguntasGet,
   questionarioPost,
 };
