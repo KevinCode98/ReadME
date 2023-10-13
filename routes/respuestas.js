@@ -6,6 +6,8 @@ const {
   respuestaGet,
   respuestaPost,
   respuestasDeQuestionarioGet,
+  respuestasPuntosGet,
+  respuestasPuntosAlumnosQuestionarioGet,
 } = require('../controllers/respuestas');
 const {
   existeAlumno,
@@ -23,7 +25,7 @@ router.get(
   '/',
   [
     validarJWT,
-    existeProfesor,
+    existeUsuario,
     check('id_questionario', 'El id_questionario es obligatorio')
       .not()
       .isEmpty(),
@@ -33,7 +35,35 @@ router.get(
   ],
   respuestasDeQuestionarioGet
 );
-router.get('/:id', [validarJWT, existeUsuario, existeRespuesta], respuestaGet);
+router.get(
+  '/total-puntos',
+  [
+    validarJWT,
+    existeUsuario,
+    check('id_questionario', 'El id_questionario es obligatorio')
+      .not()
+      .isEmpty(),
+    check('id_alumno', 'El id_alumno es obligatorio').not().isEmpty(),
+    validarCampos,
+    existeQuestionario,
+    existeAlumno,
+  ],
+  respuestasPuntosGet
+);
+
+router.get(
+  '/total-puntos-questionario',
+  [
+    validarJWT,
+    existeUsuario,
+    check('id_questionario', 'El id_questionario es obligatorio')
+      .not()
+      .isEmpty(),
+    validarCampos,
+    existeQuestionario,
+  ],
+  respuestasPuntosAlumnosQuestionarioGet
+);
 router.post(
   '/',
   [
@@ -48,5 +78,6 @@ router.post(
   ],
   respuestaPost
 );
+router.get('/:id', [validarJWT, existeUsuario, existeRespuesta], respuestaGet);
 
 module.exports = router;

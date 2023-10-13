@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getInscritos = async (id) => {
-  const inscritos = await prisma.INSCRITOS.findMany({
+  return await prisma.INSCRITOS.findMany({
     select: {
       ID_SALA: true,
       ID_USUARIO: true,
@@ -13,8 +13,20 @@ const getInscritos = async (id) => {
       ID_SALA: Number(id),
     },
   });
+};
 
-  return inscritos;
+const getInscritosAceptados = async (id) => {
+  return await prisma.INSCRITOS.findMany({
+    select: {
+      ID_SALA: true,
+      ID_USUARIO: true,
+      ACEPTADO: true,
+    },
+    where: {
+      ID_SALA: Number(id),
+      ACEPTADO: 'ACEPTADO',
+    },
+  });
 };
 
 const postInscritos = async (inscrito) => {
@@ -72,8 +84,29 @@ const postEliminarInscritos = async (inscrito, id_profesor) => {
   // TODO: Eliminar todos los valores del alumno
 };
 
+const postInscritosHash = async (hash, id_alumno) => {
+  const salaExiste = await prisma.SALAS.findFirst({
+    where: {
+      HASH: hash,
+    },
+  });
+
+  if (!salaExiste)
+    return { msg: 'El hash no se encuentra en la base de datos' };
+
+  return await prisma.INSCRITOS.create({
+    data: {
+      ID_SALA: Number(salaExiste.ID_SALA),
+      ID_USUARIO: Number(id_alumno),
+      ACEPTADO: 'ACEPTADO',
+    },
+  });
+};
+
 module.exports = {
   getInscritos,
+  getInscritosAceptados,
   postInscritos,
+  postInscritosHash,
   postEliminarInscritos,
 };

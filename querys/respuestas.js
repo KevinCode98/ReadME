@@ -1,6 +1,10 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const opcionesDB = require('../querys/opciones');
+const alumnosDB = require('../querys/alumnos');
+const inscritosDB = require('../querys/inscritos');
+const questionariosDB = require('../querys/questionarios');
+const asignacionesDB = require('../querys/asignaciones');
 
 const getRespuesta = async (id) => {
   return await prisma.RESPUESTAS.findFirst({
@@ -9,7 +13,7 @@ const getRespuesta = async (id) => {
 };
 
 const getRespuestasDeQuestionario = async (questionario) => {
-  return await prisma.QUESTIONARIOS.findMany({
+  return await prisma.QUESTIONARIOS.findFirst({
     select: {
       PREGUNTAS: {
         select: {
@@ -56,8 +60,51 @@ const postRespuestas = async (respuesta, id_alumno) => {
   });
 };
 
+const getRespuestasPuntos = async (questionario) => {
+  let puntos = 0;
+  const questionarioDB = await getRespuestasDeQuestionario(questionario);
+  const alumnoExiste = await alumnosDB.getAlumno(questionario.id_alumno);
+  const preguntas = questionarioDB.PREGUNTAS;
+
+  preguntas.forEach((pregunta) => {
+    if (pregunta.RESPUESTAS.length !== 0)
+      puntos += Number(pregunta.RESPUESTAS[0].PUNTOS);
+  });
+
+  alumnoExiste.puntos = puntos;
+  return alumnoExiste;
+};
+
+const getRespuestasPuntosAlumnosQuestionario = async (id_questionario) => {
+  let resultadosPuntos;
+  const alumnosPuntos = [];
+  const questionario = await questionariosDB.getQuestionario(id_questionario);
+  const asignacion = await asignacionesDB.getAsignacion(
+    questionario.ID_ASIGNACION
+  );
+  const alumnos = await inscritosDB.getInscritosAceptados(asignacion.ID_SALA);
+
+  await alumnos.forEach(async (alumno) => {
+    const questionarioDatos = {
+      id_questionario: Number(id_questionario),
+      id_alumno: Number(alumno.ID_USUARIO),
+    };
+    alumnosPuntos.push(getRespuestasPuntos(questionarioDatos));
+  });
+
+  await Promise.all(alumnosPuntos)
+    .then((valores) => {
+      resultadosPuntos = valores;
+    })
+    .catch({ msg: 'Error' });
+
+  return resultadosPuntos;
+};
+
 module.exports = {
   getRespuesta,
   postRespuestas,
   getRespuestasDeQuestionario,
+  getRespuestasPuntosAlumnosQuestionario,
+  getRespuestasPuntos,
 };

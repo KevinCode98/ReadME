@@ -2,16 +2,20 @@ const { check } = require('express-validator');
 const { Router } = require('express');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { validarCampos } = require('../middlewares/validar-campos');
-const { inscritosGet, inscritosPost } = require('../controllers/inscritos');
+const {
+  inscritosGet,
+  inscritosPost,
+  inscritosHashPost,
+} = require('../controllers/inscritos');
 const {
   existeProfesor,
   existeSala,
   existeUsuario,
+  existeAlumno,
 } = require('../middlewares/validar-existe');
 
 const router = Router();
 
-router.get('/:id', [validarJWT, existeUsuario], inscritosGet);
 router.post(
   '/',
   [
@@ -24,5 +28,16 @@ router.post(
   ],
   inscritosPost
 );
+router.post(
+  '/hash',
+  [
+    validarJWT,
+    existeAlumno,
+    check('hash', 'El hash es obligatorio').not().isEmpty(),
+    validarCampos,
+  ],
+  inscritosHashPost
+);
+router.get('/:id', [validarJWT, existeUsuario], inscritosGet);
 
 module.exports = router;

@@ -1,5 +1,8 @@
 const { response } = require('express');
 const asignacionesDB = require('../querys/asignaciones');
+const inscritosDB = require('../querys/inscritos');
+const dispositivosDB = require('../querys/dispositivos');
+const Notificaciones = require('../helpers/notificaciones');
 
 const asignacionGet = async (req, res = response) => {
   try {
@@ -21,8 +24,7 @@ const asignacionPost = async (req, res = response) => {
     if (asignacion.msg) return res.status(400).json(asignacion);
     res.status(200).json(asignacion);
 
-    const alumnos = await salasDB.getUsuariosPorSala(asignacion.ID_SALA);
-
+    const alumnos = await inscritosDB.getInscritosAceptados(asignacion.ID_SALA);
     alumnos.forEach(async (alumno) => {
       const dispositivosUsuario = await dispositivosDB.getDispositivosPorId(
         alumno.ID_USUARIO
@@ -38,6 +40,7 @@ const asignacionPost = async (req, res = response) => {
       });
     });
   } catch (error) {
+    console.log(error);
     console.error('Error en la petición de base de datos - asignacionPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - asignacionPost',
@@ -54,6 +57,7 @@ const asignacionesPorSalaGet = async (req, res = response) => {
 
     res.status(200).json(asignacion);
   } catch (error) {
+    console.log(error);
     console.error(
       'Error en la petición de base de datos - asignacionesPorSalaGet'
     );

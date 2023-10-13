@@ -43,10 +43,24 @@ const salasPost = async (req, res = response) => {
   }
 };
 
-// TODO: Actualizar la sala
+const salasActualizarPost = async (req, res = response) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await salasDB.postSalasActualizar(req.usuario.ID_USUARIO, req.body)
+      );
+  } catch (error) {
+    console.error('Error en la petición de base de datos - salasPost');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - salasPost',
+    });
+  }
+};
 
 module.exports = {
   salaGet,
   salasGet,
   salasPost,
+  salasActualizarPost,
 };

@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getSalas = async () => {
-  const salas = await prisma.SALAS.findMany({
+  return await prisma.SALAS.findMany({
     select: {
       ID_SALA: true,
       DESCRIPCION: true,
@@ -18,12 +18,10 @@ const getSalas = async () => {
       },
     },
   });
-
-  return salas;
 };
 
 const getSala = async (id) => {
-  const sala = await prisma.SALAS.findFirst({
+  return await prisma.SALAS.findFirst({
     select: {
       ID_SALA: true,
       DESCRIPCION: true,
@@ -41,11 +39,7 @@ const getSala = async (id) => {
       ID_SALA: Number(id),
     },
   });
-
-  return sala;
 };
-
-const getAsignacionesPorSala = async (sala) => {};
 
 const postSalas = async (id, sala) => {
   const hash = generadorHash();
@@ -57,7 +51,7 @@ const postSalas = async (id, sala) => {
 
   if (hashExiste) postSalas(id, sala);
 
-  const salaDB = await prisma.SALAS.create({
+  return await prisma.SALAS.create({
     data: {
       DESCRIPCION: sala.descripcion,
       FECHA_CREACION: new Date(),
@@ -65,8 +59,24 @@ const postSalas = async (id, sala) => {
       ID_RESPONSABLE: Number(id),
     },
   });
+};
 
-  return salaDB;
+const postSalasActualizar = async (id_profesor, sala) => {
+  const profesorSala = await prisma.SALAS.findFirst({
+    where: {
+      ID_SALA: Number(sala.id_sala),
+      ID_RESPONSABLE: Number(id_profesor),
+    },
+  });
+
+  if (!profesorSala)
+    return { msg: 'El Profesor no tiene permisos en esta sala' };
+
+  return await prisma.SALAS.update({
+    data: {
+      DESCRIPCION: sala.descripcion,
+    },
+  });
 };
 
 const generadorHash = () => {
@@ -86,4 +96,5 @@ module.exports = {
   getSala,
   getSalas,
   postSalas,
+  postSalasActualizar,
 };
