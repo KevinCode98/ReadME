@@ -209,7 +209,7 @@ model USUARIOS {
 }
 
 model ALARMAS {
-  ID          Int      @id @default(autoincrement())
+  ID_ALARMA   Int      @id @default(autoincrement())
   DESCRIPCION String?  @db.VarChar(100)
   HORA        DateTime @default(now()) @db.Timestamp(0)
   ID_USUARIO  Int
@@ -219,7 +219,7 @@ model ALARMAS {
 }
 
 model DISPOSITIVOS {
-  ID               Int      @id @default(autoincrement())
+  ID_DISPOSITIVO   Int      @id @default(autoincrement())
   ID_USUARIO       Int
   UUID_DISPOSITIVO String   @db.VarChar(200)
   USUARIOS         USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onUpdate: Restrict, map: "FK_DispositivosUsuarios")
@@ -227,7 +227,6 @@ model DISPOSITIVOS {
   @@index([ID_USUARIO], map: "FK_DispositivosUsuarios")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model ACTIVACIONES {
   ID_CODIGO  Int      @id @default(autoincrement())
   ID_USUARIO Int
@@ -239,7 +238,7 @@ model ACTIVACIONES {
   @@index([ID_USUARIO], map: "CODIGOS_USUARIOS_FK")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+
 model NACIONALIDADES {
   ID_NACIONALIDAD Int       @id @default(autoincrement())
   CODIGO_ISO      String    @db.VarChar(3)

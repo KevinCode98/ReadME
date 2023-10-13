@@ -57,7 +57,7 @@ const lecturaPost = async (req, res = response) => {
     response.text().then(async (text) => {
       if (!text) return res.status(400).json('Error de extraccion de texto');
       else {
-        res.json(await lecturaDB.postLectura(req.body, 'None'));
+        res.json(await lecturaDB.postLectura(req.body, text));
       }
     });
   } catch (error) {

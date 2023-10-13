@@ -1,4 +1,5 @@
 const { response } = require('express');
+const alarmasDB = require('../querys/alarmas');
 const alumnosDB = require('../querys/alumnos');
 const asignacionesDB = require('../querys/asignaciones');
 const autoresDB = require('../querys/autores');
@@ -13,6 +14,15 @@ const questionariosDB = require('../querys/questionarios');
 const salasDB = require('../querys/salas');
 const tematicasDB = require('../querys/tematicas');
 const usuariosDB = require('../querys/usuarios');
+
+const existeAlarma = async (req, res = response, next) => {
+  const id = req.body.id_alarma ? req.body.id_alarma : req.params.id;
+  if (!(await alarmasDB.getAlarma(id)))
+    return res.status(400).json({
+      msg: 'El Alarma no existe en la base de datos',
+    });
+  next();
+};
 
 const existeAlumno = async (req, res = response, next) => {
   const id = req.usuario ? req.usuario.ID_USUARIO : req.params.id;
@@ -146,6 +156,7 @@ const existeUsuario = async (req, res = response, next) => {
 };
 
 module.exports = {
+  existeAlarma,
   existeAlumno,
   existeAsignacion,
   existeAutor,
