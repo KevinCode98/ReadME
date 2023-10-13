@@ -34,7 +34,7 @@ const getLecturas = async () => {
   return lecturas;
 };
 
-const getLectura = async (id,retornaTexto=false) => {
+const getLectura = async (id, retornaTexto = false) => {
   const lectura = await prisma.LECTURAS.findFirst({
     where: {
       ID_LECTURA: Number(id),
@@ -55,7 +55,7 @@ const getLectura = async (id,retornaTexto=false) => {
         },
       },
       TEXTO: retornaTexto,
-      FECHA_PUBLICACION : true,
+      FECHA_PUBLICACION: true,
       AUTORES: {
         select: {
           NOMBRE: true,
@@ -118,6 +118,48 @@ const getNombreLecturas = async (buscar) => {
           lecturas.push(libro);
         }
       }
+    }
+  }
+
+  // Ingreso de lecturas por coincidencia de palabras en el libro
+  const lecturasPorPalabras = await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+          ID_AUTOR: true,
+        },
+      },
+    },
+    where: {
+      TEXTO: {
+        contains: buscar,
+      },
+    },
+  });
+
+  for (const libro of lecturasPorPalabras) {
+    // Valida si el libro ya fue ingresado al arreglo
+    const found = lecturas.some(
+      (lectura) => lectura.ID_LECTURA === libro.ID_LECTURA
+    );
+    if (!found) {
+      lecturas.push(libro);
     }
   }
 
