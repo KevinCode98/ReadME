@@ -4,7 +4,7 @@ const autoresDB = require('../querys/autores');
 const prisma = new PrismaClient();
 
 const getLecturas = async () => {
-  const lecturas = await prisma.LECTURAS.findMany({
+  return await prisma.LECTURAS.findMany({
     select: {
       ID_LECTURA: true,
       TITULO: true,
@@ -30,12 +30,10 @@ const getLecturas = async () => {
       },
     },
   });
-
-  return lecturas;
 };
 
 const getLectura = async (id, retornaTexto = false) => {
-  const lectura = await prisma.LECTURAS.findFirst({
+  return await prisma.LECTURAS.findFirst({
     where: {
       ID_LECTURA: Number(id),
     },
@@ -64,8 +62,38 @@ const getLectura = async (id, retornaTexto = false) => {
       },
     },
   });
+};
 
-  return lectura;
+const getLecturaInfo = async (id_lectura) => {
+  return await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      ID_LECTURA: true,
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
+      PUNTUACION: true,
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+        },
+      },
+    },
+    where: {
+      ID_LECTURA: Number(id_lectura),
+    },
+  });
 };
 
 const getNombreLecturas = async (buscar) => {
@@ -193,7 +221,7 @@ const postLectura = async (lectura, textoLectura) => {
 };
 
 const lecturasPorAutor = async (id) => {
-  const lecturas = await prisma.LECTURAS.findMany({
+  return await prisma.LECTURAS.findMany({
     select: {
       ID_LECTURA: true,
       TITULO: true,
@@ -221,11 +249,27 @@ const lecturasPorAutor = async (id) => {
       ID_AUTOR: Number(id),
     },
   });
+};
 
-  return lecturas;
+const actualizarPuntuacionLectura = async (id_lectura, promedio) => {
+  return await prisma.LECTURAS.update({
+    data: {
+      PUNTUACION: Number(promedio),
+    },
+    where: {
+      ID_LECTURA: Number(id_lectura),
+    },
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      PUNTUACION: true,
+    },
+  });
 };
 
 module.exports = {
+  actualizarPuntuacionLectura,
+  getLecturaInfo,
   getLecturas,
   getLectura,
   postLectura,

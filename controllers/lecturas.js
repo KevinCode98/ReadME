@@ -1,5 +1,6 @@
 const { response, text } = require('express');
 const lecturaDB = require('../querys/lecturas');
+const puntuacionesDB = require('../querys/puntuaciones');
 const { subirArchivo } = require('../helpers/subir-archivo');
 
 const lecturasGet = async (req, res = responese) => {
@@ -22,6 +23,22 @@ const lecturaGet = async (req, res = responese) => {
       msg: 'Hable con el administrador - lecturasGet',
     });
   }
+};
+
+const lecturasMasPuntuadasGet = async (req, res = response) => {
+  const mapLecturas = new Map();
+  const lecturas = await lecturaDB.getLecturas();
+
+  for (const lectura of lecturas) {
+    mapLecturas.set(
+      await lecturaDB.getLecturaInfo(lectura.ID_LECTURA),
+      await puntuacionesDB.getCantidadPuntuaciones(lectura.ID_LECTURA)
+    );
+  }
+
+  const auxMap = Array.from(mapLecturas).sort((b, a) => a[1] - b[1]);
+
+  res.json(auxMap);
 };
 
 const lecturaNombreGet = async (req, res = response) => {
@@ -50,9 +67,7 @@ const lecturaPost = async (req, res = response) => {
     const splitPath = pathCompleto.split('/');
     const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
 
-    const response = await fetch(
-      'http://localhost:8000/converter/' + uuidLectura
-    );
+    const response = await fetch(process.env.PATH_OCR + uuidLectura);
 
     response.text().then(async (text) => {
       if (!text) return res.status(400).json('Error de extraccion de texto');
@@ -61,6 +76,7 @@ const lecturaPost = async (req, res = response) => {
       }
     });
   } catch (error) {
+    console.log(error);
     console.error('Error en la petición de base de datos - lecturaPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - lecturaPost',
@@ -106,6 +122,7 @@ const lecturasTextoGet = async (req, res = response) => {
 module.exports = {
   lecturaGet,
   lecturasGet,
+  lecturasMasPuntuadasGet,
   lecturaNombreGet,
   lecturaPost,
   lecturasTextoGet,

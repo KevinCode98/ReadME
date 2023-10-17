@@ -9,6 +9,7 @@ const nacionalidadesDB = require('../querys/nacionalidades');
 const opcionesDB = require('../querys/opciones');
 const preguntasDB = require('../querys/preguntas');
 const profesoresDB = require('../querys/profesores');
+const puntuacionesDB = require('../querys/puntuaciones');
 const respuestasDB = require('../querys/respuestas');
 const questionariosDB = require('../querys/questionarios');
 const salasDB = require('../querys/salas');
@@ -108,6 +109,15 @@ const existeProfesor = async (req, res = response, next) => {
   next();
 };
 
+const existePuntuacion = async (req, res = response, next) => {
+  const id = req.body.id_puntuacion ? req.body.id_puntuacion : req.params.id;
+  if (!(await puntuacionesDB.getPuntuacion(id)))
+    return res.status(400).json({
+      msg: 'La Puntuaciones no existe en la base de datos',
+    });
+  next();
+};
+
 const existeRespuesta = async (req, res = response, next) => {
   const id = req.body.id_respuesta ? req.body.id_respuesta : req.params.id;
   if (!(await respuestasDB.getRespuesta(id)))
@@ -166,6 +176,7 @@ module.exports = {
   existeOpcion,
   existePregunta,
   existeProfesor,
+  existePuntuacion,
   existeQuestionario,
   existeRespuesta,
   existeSala,

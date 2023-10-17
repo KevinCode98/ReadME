@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getAlumnos = async () => {
-  const alumnos = await prisma.USUARIOS.findMany({
+  return await prisma.USUARIOS.findMany({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -15,8 +15,6 @@ const getAlumnos = async () => {
       STATUS: 'ONLINE',
     },
   });
-
-  return alumnos;
 };
 
 const getNombresAlumnos = async (buscar) => {

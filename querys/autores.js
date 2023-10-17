@@ -7,7 +7,13 @@ const getAutores = async () => {
       ID_AUTOR: true,
       NOMBRE: true,
       APELLIDOS: true,
-      LECTURAS: true,
+      LECTURAS: {
+        select: {
+          ID_LECTURA: true,
+          TITULO: true,
+          PUNTUACION: true,
+        },
+      },
     },
   });
 };
@@ -65,7 +71,7 @@ const postAutor = async (autor) => {
       BIBLIOGRAFIA: autor.bibliografia,
       FECHA_NAC: new Date(autor.fecha_nac),
       FECHA_DEFUNCION: new Date(autor.fecha_defuncion),
-      NACIONALIDAD: Number(autor.nacionalidad),
+      NACIONALIDAD: Number(autor.nacionalidad) || null,
     },
   });
 };
