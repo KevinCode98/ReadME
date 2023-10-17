@@ -16,12 +16,17 @@ const {
   lecturaPost,
   lecturaNombreGet,
   lecturasTextoGet,
+  lecturasMasPuntuadasGet,
 } = require('../controllers/lecturas');
 
 const router = Router();
 
 router.get('/', [validarJWT, existeUsuario], lecturasGet);
-router.get('/:id', [validarJWT, existeUsuario, existeLectura], lecturaGet);
+router.get(
+  '/mas-puntuadas',
+  [validarJWT, existeUsuario],
+  lecturasMasPuntuadasGet
+);
 router.get(
   '/texto/:id',
   [validarJWT, existeUsuario, existeLectura],
@@ -46,5 +51,6 @@ router.post(
   ],
   lecturaPost
 );
+router.get('/:id', [validarJWT, existeUsuario, existeLectura], lecturaGet);
 
 module.exports = router;

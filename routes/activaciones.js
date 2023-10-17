@@ -20,6 +20,6 @@ router.post(
   validarActivacionPost
 );
 
-router.post('/generar', [validarJWT, existeUsuario], actualizarActivacionPost);
+router.post('/generar', [validarJWT], actualizarActivacionPost);
 
 module.exports = router;

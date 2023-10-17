@@ -14,7 +14,6 @@ const {
 
 const router = Router();
 
-router.get('/:id', [validarJWT, existeUsuario, existePregunta], preguntaGet);
 router.get(
   '/',
   [
@@ -38,5 +37,6 @@ router.post(
   ],
   preguntaPost
 );
+router.get('/:id', [validarJWT, existeUsuario, existePregunta], preguntaGet);
 
 module.exports = router;

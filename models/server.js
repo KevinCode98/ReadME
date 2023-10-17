@@ -25,6 +25,7 @@ class Server {
     this.preguntasPath = '/api/preguntas';
     this.profesoresPath = '/api/profesores';
     this.progresosPath = '/api/progresos';
+    this.puntuacionesPath = '/api/puntuaciones';
     this.questionariosPath = '/api/questionarios';
     this.respuestasPath = '/api/respuestas';
     this.salasPath = '/api/salas';
@@ -76,6 +77,7 @@ class Server {
     this.app.use(this.preguntasPath, require('../routes/preguntas'));
     this.app.use(this.profesoresPath, require('../routes/profesores'));
     this.app.use(this.progresosPath, require('../routes/progresos'));
+    this.app.use(this.puntuacionesPath, require('../routes/puntuaciones'));
     this.app.use(this.questionariosPath, require('../routes/questionarios'));
     this.app.use(this.respuestasPath, require('../routes/respuestas'));
     this.app.use(this.salasPath, require('../routes/salas'));

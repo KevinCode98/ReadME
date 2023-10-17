@@ -89,6 +89,7 @@ model LECTURAS {
   CORRIENTES        CORRIENTES     @relation(fields: [ID_CORRIENTE], references: [ID_CORRIENTE], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_20")
   AUTORES           AUTORES        @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
   PROGRESOS         PROGRESOS[]
+  PUNTUACIONES      PUNTUACIONES[]
 
   @@index([ID_AUTOR], map: "FK_REFERENCE_3")
   @@index([ID_TEMATICA], map: "FK_REFERENCE_19")
@@ -206,6 +207,7 @@ model USUARIOS {
   RESPUESTAS   RESPUESTAS[]
   SALAS        SALAS[]
   TUTORES      TUTORES[]
+  PUNTUACIONES PUNTUACIONES[]
 }
 
 model ALARMAS {
@@ -238,10 +240,21 @@ model ACTIVACIONES {
   @@index([ID_USUARIO], map: "CODIGOS_USUARIOS_FK")
 }
 
-
 model NACIONALIDADES {
   ID_NACIONALIDAD Int       @id @default(autoincrement())
   CODIGO_ISO      String    @db.VarChar(3)
   DESCRIPCION     String    @db.VarChar(30)
   AUTORES         AUTORES[]
+}
+
+model PUNTUACIONES {
+  ID_PUNTUACION Int      @id @default(autoincrement())
+  ID_USUARIO    Int
+  ID_LECTURA    Int
+  PUNTUACION    Float    @db.Float
+  LECTURAS      LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: Cascade, map: "FK_REFERENCE_21")
+  USUARIOS      USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "FK_REFERENCE_22")
+
+  @@index([ID_LECTURA], map: "FK_REFERENCE_21")
+  @@index([ID_USUARIO], map: "FK_REFERENCE_22")
 }

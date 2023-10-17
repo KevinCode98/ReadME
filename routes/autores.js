@@ -29,7 +29,6 @@ router.post(
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
     validarCampos,
-    existeNacionalidad,
   ],
   autorPost
 );
