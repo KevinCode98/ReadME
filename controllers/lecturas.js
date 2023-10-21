@@ -2,6 +2,10 @@ const { response, text } = require('express');
 const lecturaDB = require('../querys/lecturas');
 const puntuacionesDB = require('../querys/puntuaciones');
 const { subirArchivo } = require('../helpers/subir-archivo');
+const {
+  subirArchivoPdf,
+  eliminarArchivoPdf,
+} = require('../helpers/notificaciones');
 
 const lecturasGet = async (req, res = responese) => {
   try {
@@ -67,9 +71,17 @@ const lecturaPost = async (req, res = response) => {
     const splitPath = pathCompleto.split('/');
     const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
 
-    const response = await fetch(process.env.PATH_OCR + uuidLectura);
+    const urlDownload = await subirArchivoPdf(pathCompleto, uuidLectura);
+
+    const response = await fetch(process.env.PATH_OCR + uuidLectura, {
+      method: 'POST',
+      body: JSON.stringify({
+        URL: urlDownload,
+      }),
+    });
 
     response.text().then(async (text) => {
+      await eliminarArchivoPdf(uuidLectura);
       if (!text) return res.status(400).json('Error de extraccion de texto');
       else {
         res.json(await lecturaDB.postLectura(req.body, text));

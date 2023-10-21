@@ -109,6 +109,15 @@ const existeProfesor = async (req, res = response, next) => {
   next();
 };
 
+const existeProgreso = async (req, res = response, next) => {
+  const id = req.body.id_progreso ? req.body.id_progreso : req.params.id;
+  if (!(await puntuacionesDB.getPuntuacion(id)))
+    return res.status(400).json({
+      msg: 'El progreso no existe en la base de datos',
+    });
+  next();
+};
+
 const existePuntuacion = async (req, res = response, next) => {
   const id = req.body.id_puntuacion ? req.body.id_puntuacion : req.params.id;
   if (!(await puntuacionesDB.getPuntuacion(id)))
@@ -176,6 +185,7 @@ module.exports = {
   existeOpcion,
   existePregunta,
   existeProfesor,
+  existeProgreso,
   existePuntuacion,
   existeQuestionario,
   existeRespuesta,

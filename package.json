@@ -11,6 +11,8 @@
   "author": "Kevin Guillermo Carrillo González - Max Ivan Valencia Ortiz",
   "license": "ISC",
   "dependencies": {
+    "@firebase/app": "^0.9.20",
+    "@firebase/storage": "^0.11.2",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
