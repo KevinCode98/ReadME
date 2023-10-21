@@ -18,23 +18,13 @@ const getProgresoPorLectura = async (id, lectura) => {
   });
 };
 
-const getProgresoPorAlumno = async (id) => {
-  return await prisma.PROGRESOS.findMany({
-    where: {
-      ID_USUARIO: Number(id),
-    },
-  });
-};
-
 const postProgreso = async (progreso, id) => {
-  const { id_lectura, tiempo, fecha } = progreso;
-
   return await prisma.PROGRESOS.create({
     data: {
       ID_USUARIO: Number(id),
-      ID_LECTURA: Number(id_lectura),
-      TIEMPO: Number(tiempo),
-      FECHA: fecha,
+      ID_LECTURA: Number(progreso.id_lectura),
+      TIEMPO: Number(progreso.tiempo),
+      FECHA: progreso.fecha,
     },
   });
 };
@@ -42,6 +32,5 @@ const postProgreso = async (progreso, id) => {
 module.exports = {
   getProgresoPorId,
   getProgresoPorLectura,
-  getProgresoPorAlumno,
   postProgreso,
 };

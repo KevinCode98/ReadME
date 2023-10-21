@@ -11,17 +11,11 @@ const {
 const {
   progresosPost,
   progresosPorIdGet,
-  progresosPorAlumnoGet,
   progresosPorLecturaAlumnoGet,
 } = require('../controllers/progresos');
 
 const router = Router();
 
-router.get(
-  '/mis-progresos',
-  [validarJWT, existeAlumno, existeProgreso],
-  progresosPorAlumnoGet
-);
 router.get(
   '/mi-lectura/:id',
   [validarJWT, existeAlumno, existeLectura],

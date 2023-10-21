@@ -14,21 +14,6 @@ const progresosPorIdGet = async (req, res = response) => {
   }
 };
 
-const progresosPorAlumnoGet = async (req, res = response) => {
-  try {
-    res
-      .status(200)
-      .json(await progresosDB.getProgresoPorAlumno(req.usuario.ID_USUARIO));
-  } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - progresosPorAlumnoGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - progresosPorAlumnoGet',
-    });
-  }
-};
-
 const progresosPorLecturaAlumnoGet = async (req, res = response) => {
   try {
     res
@@ -68,7 +53,6 @@ const progresosPost = async (req, res = response) => {
 
 module.exports = {
   progresosPorIdGet,
-  progresosPorAlumnoGet,
   progresosPorLecturaAlumnoGet,
   progresosPost,
 };
