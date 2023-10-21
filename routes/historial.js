@@ -2,14 +2,14 @@ const { check } = require('express-validator');
 const { Router } = require('express');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
+const { existeUsuario } = require('../middlewares/validar-existe');
 const {
   historialPorIdGet,
   historialPost,
 } = require('../controllers/historial');
-
 const router = Router();
 
-router.get('/', [validarJWT], historialPorIdGet);
+router.get('/', [validarJWT, existeUsuario], historialPorIdGet);
 router.post(
   '/',
   [
