@@ -6,16 +6,17 @@ const {
   existeAlumno,
   existeLectura,
   existeUsuario,
-  existeProgreso,
 } = require('../middlewares/validar-existe');
 const {
   progresosPost,
   progresosPorIdGet,
   progresosPorLecturaAlumnoGet,
+  progresosPorDia,
 } = require('../controllers/progresos');
 
 const router = Router();
 
+router.get('/mi-dia', [validarJWT, existeAlumno], progresosPorDia);
 router.get(
   '/mi-lectura/:id',
   [validarJWT, existeAlumno, existeLectura],
@@ -28,8 +29,6 @@ router.post(
     existeAlumno,
     check('id_lectura', 'El id_lectura es obligatorio').not().isEmpty(),
     check('tiempo', 'El tiempo es obligatorio').not().isEmpty(),
-    check('fecha', 'Formato invalido en la fecha').isISO8601().toDate(),
-    check('fecha', 'La fecha es obligatoria').not().isEmpty(),
     validarCampos,
     existeLectura,
   ],

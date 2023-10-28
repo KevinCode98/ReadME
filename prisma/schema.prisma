@@ -126,7 +126,7 @@ model PROGRESOS {
   ID_USUARIO   Int
   ID_LECTURA   Int
   TIEMPO       Float
-  FECHA        DateTime @db.Date
+  FECHA        DateTime @db.DateTime(0)
   USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_10")
   LECTURAS     LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_11")
 

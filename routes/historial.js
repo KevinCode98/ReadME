@@ -9,7 +9,6 @@ const {
 } = require('../controllers/historial');
 const router = Router();
 
-router.get('/', [validarJWT, existeUsuario], historialPorIdGet);
 router.post(
   '/',
   [
@@ -29,5 +28,6 @@ router.post(
   ],
   historialPost
 );
+router.get('/', [validarJWT, existeUsuario], historialPorIdGet);
 
 module.exports = router;
