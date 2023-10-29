@@ -53,6 +53,25 @@ const getProgresosPorDia = async (id, date = new Date()) => {
   return [...mapHoras.entries()];
 };
 
+const getTiempoTotalPorLibro = async (id_lectura, id_usuario) => {
+  let tiempoTotal = 0;
+  const tiempos = await prisma.PROGRESOS.findMany({
+    where: {
+      ID_USUARIO: Number(id_usuario),
+      ID_LECTURA: Number(id_lectura),
+    },
+    select: {
+      TIEMPO: true,
+    },
+  });
+
+  tiempos.forEach((tiempoProgreso) => {
+    tiempoTotal += tiempoProgreso.TIEMPO;
+  });
+
+  return tiempoTotal;
+};
+
 const postProgreso = async (progreso, id) => {
   return await prisma.PROGRESOS.create({
     data: {
@@ -68,5 +87,6 @@ module.exports = {
   getProgresoPorId,
   getProgresoPorLectura,
   getProgresosPorDia,
+  getTiempoTotalPorLibro,
   postProgreso,
 };

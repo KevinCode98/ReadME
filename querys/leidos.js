@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const progresosDB = require('./progresos');
 
 const getLeido = async (id) => {
   return await prisma.LEIDOS.findFirst({
@@ -15,14 +16,17 @@ const postLeido = async (leido, id_usuario) => {
     },
   });
 
-  const tiempo = 0;
+  const tiempoTotal = await progresosDB.getTiempoTotalPorLibro(
+    leido.id_lectura,
+    id_usuario
+  );
 
   return await prisma.LEIDOS.create({
     data: {
       ID_USUARIO: Number(id_usuario),
       ID_LECTURA: Number(leido.id_lectura),
-      TIEMPO_FINAL: tiempo,
-      FECHA_INICIO: progreso ? progreso.FECHA : new Date(),
+      TIEMPO_FINAL: tiempoTotal,
+      FECHA_INICIO: progreso.FECHA,
       FECHA_FINAL: new Date(),
     },
   });

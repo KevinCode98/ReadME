@@ -6,7 +6,6 @@ const {
   validarActivacionPost,
   actualizarActivacionPost,
 } = require('../controllers/activaciones');
-const { existeUsuario } = require('../middlewares/validar-existe');
 
 const router = Router();
 
