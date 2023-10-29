@@ -11,8 +11,8 @@ model ASIGNACIONES {
   ID_ASIGNACION  Int             @id @default(autoincrement())
   ID_SALA        Int
   ID_LECTURA     Int?
-  TITULO         String          @db.VarChar(30)
-  INDICACION     String?         @db.VarChar(50)
+  TITULO         String          @db.VarChar(150)
+  INDICACION     String?         @db.VarChar(500)
   FECHA_CREACION DateTime        @db.Date
   SALAS          SALAS           @relation(fields: [ID_SALA], references: [ID_SALA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_4")
   LECTURAS       LECTURAS?       @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_5")
@@ -78,7 +78,7 @@ model LECTURAS {
   ID_TEMATICA       Int
   ID_CORRIENTE      Int
   TEXTO             String         @db.LongText
-  TITULO            String         @db.VarChar(100)
+  TITULO            String         @db.VarChar(150)
   FECHA_PUBLICACION DateTime?      @db.Date
   PUNTUACION        Float?         @db.Float
   ASIGNACIONES      ASIGNACIONES[]
