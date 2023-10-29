@@ -52,9 +52,7 @@ model HISTORIAL {
   ID_USUARIO   Int
   ID_LECTURA   Int
   AVANCE       Int
-  TIEMPO_FINAL Float
-  FECHA_INICIO DateTime @db.DateTime(0)
-  FECHA_FINAL  DateTime @db.DateTime(0)
+  FECHA        DateTime @db.DateTime(0)
   USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_8")
   LECTURAS     LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_9")
 
@@ -88,6 +86,7 @@ model LECTURAS {
   TEMATICAS         TEMATICAS      @relation(fields: [ID_TEMATICA], references: [ID_TEMATICA], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_19")
   CORRIENTES        CORRIENTES     @relation(fields: [ID_CORRIENTE], references: [ID_CORRIENTE], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_20")
   AUTORES           AUTORES        @relation(fields: [ID_AUTOR], references: [ID_AUTOR], onDelete: NoAction, onUpdate: NoAction, map: "FK_REFERENCE_3")
+  LEIDOS            LEIDOS[]
   PROGRESOS         PROGRESOS[]
   PUNTUACIONES      PUNTUACIONES[]
 
@@ -203,11 +202,12 @@ model USUARIOS {
   DISPOSITIVOS DISPOSITIVOS[]
   HISTORIAL    HISTORIAL[]
   INSCRITOS    INSCRITOS[]
+  LEIDOS       LEIDOS[]
   PROGRESOS    PROGRESOS[]
+  PUNTUACIONES PUNTUACIONES[]
   RESPUESTAS   RESPUESTAS[]
   SALAS        SALAS[]
   TUTORES      TUTORES[]
-  PUNTUACIONES PUNTUACIONES[]
 }
 
 model ALARMAS {
@@ -257,4 +257,18 @@ model PUNTUACIONES {
 
   @@index([ID_LECTURA], map: "FK_REFERENCE_21")
   @@index([ID_USUARIO], map: "FK_REFERENCE_22")
+}
+
+model LEIDOS {
+  ID_LEIDO     Int      @id @default(autoincrement())
+  ID_USUARIO   Int
+  ID_LECTURA   Int
+  TIEMPO_FINAL Float
+  FECHA_INICIO DateTime @db.Date
+  FECHA_FINAL  DateTime @db.Date
+  LECTURAS     LECTURAS @relation(fields: [ID_LECTURA], references: [ID_LECTURA], onDelete: Cascade, map: "LEIDOS_LECTURAS_ID_LECTURA_fk")
+  USUARIOS     USUARIOS @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: Cascade, map: "LEIDOS_USUARIOS_ID_USUARIO_fk")
+
+  @@index([ID_LECTURA], map: "LEIDOS_LECTURAS_ID_LECTURA_fk")
+  @@index([ID_USUARIO], map: "LEIDOS_USUARIOS_ID_USUARIO_fk")
 }

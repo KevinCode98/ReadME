@@ -24,6 +24,7 @@ const historialPost = async (req, res = response) => {
 
     res.status(200).json(historial);
   } catch (error) {
+    console.log(error);
     console.error('Error en la petición de base de datos - historialPost');
     return res.status(500).json({
       msg: 'Hable con el administrador - historialPost',
