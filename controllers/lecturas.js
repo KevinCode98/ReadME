@@ -110,10 +110,20 @@ const lecturasTextoGet = async (req, res = response) => {
   if (!lectura.TEXTO)
     return res.status(400).json({ msg: 'La lectura no tiene texto.' });
 
+  const anchoDispositivo = req.query.ancho;
+  const altoDispositivo  = req.query.alto;
+
+  const areaDispositivo = parseInt(anchoDispositivo * altoDispositivo);
+
+  const modeloArea     = 341824;
+  const caracteresArea = 135;
+
+  const caracteresDispositivo = parseInt(areaDispositivo * caracteresArea / modeloArea);
+  console.log("caracteres ",caracteresDispositivo);
   let pages = [];
   const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
   const longitud = texto.length;
-  let step = 110;
+  let step = caracteresDispositivo;
   if (longitud <= step) {
     pages.push({
       text: lectura.TEXTO,

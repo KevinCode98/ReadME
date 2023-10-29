@@ -1,0 +1,7 @@
+node_modules
+.env
+.envexample
+.gitignore
+.git
+.DS_Store
+README.md
