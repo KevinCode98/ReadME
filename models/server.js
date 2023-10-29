@@ -20,6 +20,7 @@ class Server {
     this.historialPath = '/api/historial';
     this.inscritosPath = '/api/inscritos';
     this.lecturasPath = '/api/lecturas';
+    this.leidosPath = '/api/leidos';
     this.nacionalidadesPath = '/api/nacionalidades';
     this.opcionesPath = '/api/opciones';
     this.preguntasPath = '/api/preguntas';
@@ -72,6 +73,7 @@ class Server {
     this.app.use(this.historialPath, require('../routes/historial'));
     this.app.use(this.inscritosPath, require('../routes/inscritos'));
     this.app.use(this.lecturasPath, require('../routes/lecturas'));
+    this.app.use(this.leidosPath, require('../routes/leidos'));
     this.app.use(this.nacionalidadesPath, require('../routes/nacionalidades'));
     this.app.use(this.opcionesPath, require('../routes/opciones'));
     this.app.use(this.preguntasPath, require('../routes/preguntas'));

@@ -15,6 +15,7 @@ const getLecturas = async () => {
         },
       },
       ID_LECTURA: true,
+      PUNTUACION: true,
       CORRIENTES: {
         select: {
           ID_CORRIENTE: true,
@@ -32,13 +33,14 @@ const getLecturas = async () => {
   });
 };
 
-const getLectura = async (id, retornaTexto = false) => {
-  return await prisma.LECTURAS.findFirst({
+const getLectura = async (id, retornaTexto = true) => {
+  const lectura = await prisma.LECTURAS.findFirst({
     where: {
       ID_LECTURA: Number(id),
     },
     select: {
       ID_LECTURA: true,
+      PUNTUACION: true,
       TITULO: true,
       TEMATICAS: {
         select: {
@@ -62,6 +64,15 @@ const getLectura = async (id, retornaTexto = false) => {
       },
     },
   });
+  if (lectura) {
+    const texto = lectura.TEXTO;
+    const palabras = texto.split(' ');
+    const primerasPalabras = palabras.slice(0, 100);
+    lectura.TEXTO = primerasPalabras.join(' ');
+
+    return lectura;
+  }
+  return null;
 };
 
 const getLecturaInfo = async (id_lectura) => {

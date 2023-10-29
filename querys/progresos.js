@@ -10,7 +10,7 @@ const getProgresoPorId = async (id) => {
 };
 
 const getProgresoPorLectura = async (id, lectura) => {
-  return await prisma.PROGRESOS.findMany({
+  return await prisma.PROGRESOS.findFirst({
     where: {
       ID_USUARIO: Number(id),
       ID_LECTURA: Number(lectura),

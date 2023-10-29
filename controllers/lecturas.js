@@ -1,5 +1,6 @@
 const { response, text } = require('express');
 const lecturaDB = require('../querys/lecturas');
+const historialDB = require('../querys/historial');
 const puntuacionesDB = require('../querys/puntuaciones');
 const { subirArchivo } = require('../helpers/subir-archivo');
 const {
@@ -20,7 +21,11 @@ const lecturasGet = async (req, res = responese) => {
 
 const lecturaGet = async (req, res = responese) => {
   try {
-    res.json(await lecturaDB.getLectura(req.params.id));
+    const lectura = await lecturaDB.getLectura(req.params.id);
+
+    let arregloUsuarios = await historialDB.getHistorialArregloUsuariosLecura(
+      req.params.id
+    );
   } catch (error) {
     console.error('Error en la petición de base de datos - lecturasGet');
     return res.status(500).json({
