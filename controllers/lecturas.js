@@ -11,6 +11,7 @@ const {
   subirArchivoPdf,
   eliminarArchivoPdf,
 } = require('../helpers/notificaciones');
+const { obtenerCaracteresPorDispositivo } = require('../helpers/caracteres-dispositivos');
 
 const lecturasGet = async (req, res = responese) => {
   try {
@@ -25,7 +26,8 @@ const lecturasGet = async (req, res = responese) => {
 
 const lecturaGet = async (req, res = responese) => {
   try {
-    const lectura = await lecturaDB.getLectura(req.params.id);
+    const id_alumno = req.usuario.ID_USUARIO;
+    const lectura = await lecturaDB.getLectura(req.params.id,false,id_alumno);
 
     let arregloUsuarios = await historialDB.getHistorialArregloUsuariosLecura(
       req.params.id
@@ -117,7 +119,8 @@ const lecturaPost = async (req, res = response) => {
 };
 
 const lecturasTextoGet = async (req, res = response) => {
-  const lectura = await lecturaDB.getLectura(req.params.id, true);
+  const id_alumno = req.usuario.ID_USUARIO;
+  const lectura = await lecturaDB.getLectura(req.params.id, true, id_alumno);
 
   if (!lectura)
     return res.status(400).json({ msg: 'No existe la lectura especificada.' });
@@ -125,22 +128,15 @@ const lecturasTextoGet = async (req, res = response) => {
   if (!lectura.TEXTO)
     return res.status(400).json({ msg: 'La lectura no tiene texto.' });
 
-  const anchoDispositivo = req.query.ancho;
-  const altoDispositivo = req.query.alto;
+  const anchoDispositivo  = req.query.ancho;
+  const altoDispositivo   = req.query.alto;
+  const escalaDispositivo = req.query.escala;
 
-  const areaDispositivo = parseInt(anchoDispositivo * altoDispositivo);
-
-  const modeloArea = 341824;
-  const caracteresArea = 135;
-
-  const caracteresDispositivo = parseInt(
-    (areaDispositivo * caracteresArea) / modeloArea
-  );
-  console.log('caracteres ', caracteresDispositivo);
   let pages = [];
   const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
   const longitud = texto.length;
-  let step = caracteresDispositivo;
+  let step = obtenerCaracteresPorDispositivo(altoDispositivo,anchoDispositivo,escalaDispositivo);
+  
   if (longitud <= step) {
     pages.push({
       text: lectura.TEXTO,
@@ -169,8 +165,17 @@ const lecturaSalirPost = async (req, res = response) => {
     let leidos = {};
     req.body.avance = 100;
 
+    const {
+      ancho,alto,escala,id_lectura,pagina
+    } = req.body;
+
     if (!req.body.termino) {
-      req.body.avance = 65;
+      const caracteresPorPagina = obtenerCaracteresPorDispositivo(alto,ancho,escala);
+      const lectura = await lecturaDB.getLectura(id_lectura,true,id_alumno);
+      const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
+      const longitud = texto.length;
+      const avanceReal = (parseInt(caracteresPorPagina * (pagina - 1) + caracteresPorPagina / 2) * 100 / longitud).toFixed(2);
+      req.body.avance = Number(avanceReal);
     }
 
     const historial = await historialController.historialPost(

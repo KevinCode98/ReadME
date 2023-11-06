@@ -33,7 +33,7 @@ const getLecturas = async () => {
   });
 };
 
-const getLectura = async (id, retornaTexto = false) => {
+const getLectura = async (id, retornaTexto = false,id_alumno=0) => {
   const lectura = await prisma.LECTURAS.findFirst({
     where: {
       ID_LECTURA: Number(id),
@@ -42,6 +42,14 @@ const getLectura = async (id, retornaTexto = false) => {
       ID_LECTURA: true,
       PUNTUACION: true,
       TITULO: true,
+      PUNTUACIONES : {
+        select : {
+          PUNTUACION : true,
+        },
+        where : {
+          ID_USUARIO : Number(id_alumno)
+        }
+      },
       TEMATICAS: {
         select: {
           ID_TEMATICA: true,

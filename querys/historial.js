@@ -15,6 +15,12 @@ const getHistorialPorId = async (id) => {
           ID_LECTURA: true,
           TITULO: true,
           PUNTUACION: true,
+          AUTORES : {
+            select : {
+              NOMBRE    : true,
+              APELLIDOS : true
+            }
+          }
         },
       },
     },
@@ -52,7 +58,7 @@ const postHistorial = async (historial, id) => {
   if (existeHistorial) {
     return await prisma.HISTORIAL.update({
       data: {
-        AVANCE: Number(historial.avance),
+        AVANCE: parseInt(historial.avance),
       },
       where: {
         ID_HISTORIAL: Number(existeHistorial.ID_HISTORIAL),
@@ -63,7 +69,7 @@ const postHistorial = async (historial, id) => {
       data: {
         ID_USUARIO: Number(id),
         ID_LECTURA: Number(historial.id_lectura),
-        AVANCE: Number(historial.avance),
+        AVANCE: parseInt(historial.avance),
         FECHA: new Date(),
       },
     });
