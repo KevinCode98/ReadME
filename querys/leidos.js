@@ -8,25 +8,44 @@ const getLeido = async (id) => {
   });
 };
 
-const postLeido = async (leido, id_usuario) => {
-  const progreso = await prisma.PROGRESOS.findFirst({
+const getLeidoUsuariosPorLectura = async (id_lectura) => {
+  const leidos = await prisma.LEIDOS.findMany({
     where: {
-      ID_USUARIO: Number(id_usuario),
-      ID_LECTURA: Number(leido.id_lectura),
+      ID_LECTURA: Number(id_lectura),
+    },
+    select: {
+      ID_USUARIO: true,
     },
   });
 
+  let usuarios = [];
+  leidos.forEach((usuarioLeidos) => {
+    usuarios.push(usuarioLeidos.ID_USUARIO);
+  });
+
+  return usuarios;
+};
+
+const postLeido = async (id_lectura, id_alumno, id_historial) => {
+  const historial = await prisma.HISTORIAL.findFirst({
+    where: {
+      ID_HISTORIAL: Number(id_historial),
+    },
+  });
+
+  if (!historial) return { msg: 'No existe ningun historial' };
   const tiempoTotal = await progresosDB.getTiempoTotalPorLibro(
-    leido.id_lectura,
-    id_usuario
+    id_lectura,
+    id_alumno,
+    historial.FECHA
   );
 
   return await prisma.LEIDOS.create({
     data: {
-      ID_USUARIO: Number(id_usuario),
-      ID_LECTURA: Number(leido.id_lectura),
-      TIEMPO_FINAL: tiempoTotal,
-      FECHA_INICIO: progreso.FECHA,
+      ID_USUARIO: Number(id_alumno),
+      ID_LECTURA: Number(id_lectura),
+      TIEMPO_FINAL: Number(tiempoTotal),
+      FECHA_INICIO: historial.FECHA,
       FECHA_FINAL: new Date(),
     },
   });
@@ -34,5 +53,6 @@ const postLeido = async (leido, id_usuario) => {
 
 module.exports = {
   getLeido,
+  getLeidoUsuariosPorLectura,
   postLeido,
 };

@@ -52,20 +52,11 @@ const progresosPorLecturaAlumnoGet = async (req, res = response) => {
   }
 };
 
-const progresosPost = async (req, res = response) => {
+const progresosPost = async (dataProgreso, id_alumno) => {
   try {
-    const progreso = await progresosDB.postProgreso(
-      req.body,
-      req.usuario.ID_USUARIO
-    );
-    if (progreso.msg) return res.status(400).json(progreso);
-
-    res.status(200).json(progreso);
+    return await progresosDB.postProgreso(dataProgreso, id_alumno);
   } catch (error) {
-    console.error('Error en la petición de base de datos - progresosPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - progresosPost',
-    });
+    console.log(error);
   }
 };
 

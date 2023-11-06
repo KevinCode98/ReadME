@@ -17,6 +17,7 @@ const {
   lecturaNombreGet,
   lecturasTextoGet,
   lecturasMasPuntuadasGet,
+  lecturaSalirPost,
 } = require('../controllers/lecturas');
 
 const router = Router();
@@ -44,12 +45,28 @@ router.post(
     check('corriente_literaria', 'El corriente_literaria es obliagorio')
       .not()
       .isEmpty(),
+    validarCampos,
     existeAutor,
     existeTematica,
     existeCorriente,
-    validarCampos,
   ],
   lecturaPost
+);
+router.post(
+  '/salir-lectura',
+  [
+    validarJWT,
+    existeUsuario,
+    check('id_lectura', 'El id_lectura es obligatorio').not().isEmpty(),
+    check('tiempo', 'El tiempo es obligatorio').not().isEmpty(),
+    check('pagina', 'La pagina es obligatorio').not().isEmpty(),
+    check('alto', 'El alto es obligatorio').not().isEmpty(),
+    check('ancho', 'El ancho es obligatorio').not().isEmpty(),
+    check('termino', 'El termino es obligatorio').not().isEmpty(),
+    validarCampos,
+    existeLectura,
+  ],
+  lecturaSalirPost
 );
 router.get('/:id', [validarJWT, existeUsuario, existeLectura], lecturaGet);
 

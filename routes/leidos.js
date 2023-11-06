@@ -12,16 +12,5 @@ const {
 const router = Router();
 
 router.get('/:id', [validarJWT, existeUsuario], leidosGet);
-router.post(
-  '/',
-  [
-    validarJWT,
-    existeAlumno,
-    check('id_lectura', 'El id_lectura es obligatorio').not().isEmpty(),
-    validarCampos,
-    existeLectura,
-  ],
-  leidosPost
-);
 
 module.exports = router;

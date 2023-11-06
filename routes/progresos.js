@@ -22,17 +22,5 @@ router.get(
   [validarJWT, existeAlumno, existeLectura],
   progresosPorLecturaAlumnoGet
 );
-router.post(
-  '/',
-  [
-    validarJWT,
-    existeAlumno,
-    check('id_lectura', 'El id_lectura es obligatorio').not().isEmpty(),
-    check('tiempo', 'El tiempo es obligatorio').not().isEmpty(),
-    validarCampos,
-    existeLectura,
-  ],
-  progresosPost
-);
 router.get('/', [validarJWT, existeUsuario], progresosPorIdGet);
 module.exports = router;

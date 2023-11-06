@@ -6,6 +6,18 @@ const getHistorialPorId = async (id) => {
     where: {
       ID_USUARIO: Number(id),
     },
+    select: {
+      ID_HISTORIAL: true,
+      AVANCE: true,
+      FECHA: true,
+      LECTURAS: {
+        select: {
+          ID_LECTURA: true,
+          TITULO: true,
+          PUNTUACION: true,
+        },
+      },
+    },
   });
 
   return historial;
@@ -58,8 +70,17 @@ const postHistorial = async (historial, id) => {
   }
 };
 
+const deleteHistorial = async (id_historial) => {
+  return await prisma.HISTORIAL.delete({
+    where: {
+      ID_HISTORIAL: Number(id_historial),
+    },
+  });
+};
+
 module.exports = {
   getHistorialPorId,
   getHistorialArregloUsuariosLecura,
   postHistorial,
+  deleteHistorial,
 };

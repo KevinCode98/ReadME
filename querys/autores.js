@@ -48,7 +48,16 @@ const getAutor = async (id) => {
       ID_AUTOR: true,
       NOMBRE: true,
       APELLIDOS: true,
-      LECTURAS: true,
+      LECTURAS: {
+        select: {
+          ID_LECTURA: true,
+          ID_AUTOR: true,
+          ID_TEMATICA: true,
+          ID_CORRIENTE: true,
+          TITULO: true,
+          PUNTUACION: true,
+        },
+      },
       BIBLIOGRAFIA: true,
       NACIONALIDADES: {
         select: {

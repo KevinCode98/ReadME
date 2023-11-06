@@ -1,7 +1,11 @@
-const { response, text } = require('express');
+const { response } = require('express');
 const lecturaDB = require('../querys/lecturas');
 const historialDB = require('../querys/historial');
 const puntuacionesDB = require('../querys/puntuaciones');
+const leidosDB = require('../querys/leidos');
+const historialController = require('./historial');
+const progresosController = require('./progresos');
+const leidosController = require('./leidos');
 const { subirArchivo } = require('../helpers/subir-archivo');
 const {
   subirArchivoPdf,
@@ -26,6 +30,17 @@ const lecturaGet = async (req, res = responese) => {
     let arregloUsuarios = await historialDB.getHistorialArregloUsuariosLecura(
       req.params.id
     );
+
+    const usuariosLeidos = await leidosDB.getLeidoUsuariosPorLectura(
+      req.params.id
+    );
+
+    usuariosLeidos.forEach((usuario) => {
+      if (!arregloUsuarios.includes(usuario)) arregloUsuarios.push(usuario);
+    });
+
+    lectura.total = usuariosLeidos.length;
+    res.status(200).json(lectura);
   } catch (error) {
     console.error('Error en la petición de base de datos - lecturasGet');
     return res.status(500).json({
@@ -111,15 +126,17 @@ const lecturasTextoGet = async (req, res = response) => {
     return res.status(400).json({ msg: 'La lectura no tiene texto.' });
 
   const anchoDispositivo = req.query.ancho;
-  const altoDispositivo  = req.query.alto;
+  const altoDispositivo = req.query.alto;
 
   const areaDispositivo = parseInt(anchoDispositivo * altoDispositivo);
 
-  const modeloArea     = 341824;
+  const modeloArea = 341824;
   const caracteresArea = 135;
 
-  const caracteresDispositivo = parseInt(areaDispositivo * caracteresArea / modeloArea);
-  console.log("caracteres ",caracteresDispositivo);
+  const caracteresDispositivo = parseInt(
+    (areaDispositivo * caracteresArea) / modeloArea
+  );
+  console.log('caracteres ', caracteresDispositivo);
   let pages = [];
   const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
   const longitud = texto.length;
@@ -146,11 +163,51 @@ const lecturasTextoGet = async (req, res = response) => {
   res.json(pages);
 };
 
+const lecturaSalirPost = async (req, res = response) => {
+  try {
+    const id_alumno = req.usuario.ID_USUARIO;
+    let leidos = {};
+    req.body.avance = 100;
+
+    if (!req.body.termino) {
+      req.body.avance = 65;
+    }
+
+    const historial = await historialController.historialPost(
+      req.body,
+      id_alumno
+    );
+    const progreso = await progresosController.progresosPost(
+      req.body,
+      id_alumno
+    );
+
+    if (req.body.termino) {
+      leidos = await leidosController.leidosPost(
+        req.body.id_lectura,
+        id_alumno,
+        historial.ID_HISTORIAL
+      );
+
+      await historialController.historialDelete(historial.ID_HISTORIAL);
+    }
+
+    res.json({ historial, progreso, leidos });
+  } catch (error) {
+    console.log(error);
+    console.error('Error en la petición de base de datos - lecturaPost');
+    return res.status(500).json({
+      msg: 'Hable con el administrador - lecturaPost',
+    });
+  }
+};
+
 module.exports = {
   lecturaGet,
-  lecturasGet,
-  lecturasMasPuntuadasGet,
   lecturaNombreGet,
   lecturaPost,
+  lecturaSalirPost,
+  lecturasGet,
+  lecturasMasPuntuadasGet,
   lecturasTextoGet,
 };
