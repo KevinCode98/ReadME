@@ -11,23 +11,22 @@ const {
   subirArchivoPdf,
   eliminarArchivoPdf,
 } = require('../helpers/notificaciones');
-const { obtenerCaracteresPorDispositivo } = require('../helpers/caracteres-dispositivos');
+const {
+  obtenerCaracteresPorDispositivo,
+} = require('../helpers/caracteres-dispositivos');
 
 const lecturasGet = async (req, res = responese) => {
   try {
     res.json(await lecturaDB.getLecturas());
   } catch (error) {
-    console.error('Error en la petición de base de datos - lecturasGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - lecturasGet',
-    });
+    existeError(res, error, 'lecturasGet');
   }
 };
 
 const lecturaGet = async (req, res = responese) => {
   try {
     const id_alumno = req.usuario.ID_USUARIO;
-    const lectura = await lecturaDB.getLectura(req.params.id,false,id_alumno);
+    const lectura = await lecturaDB.getLectura(req.params.id, false, id_alumno);
 
     let arregloUsuarios = await historialDB.getHistorialArregloUsuariosLecura(
       req.params.id
@@ -44,14 +43,12 @@ const lecturaGet = async (req, res = responese) => {
     lectura.total = usuariosLeidos.length;
     res.status(200).json(lectura);
   } catch (error) {
-    console.error('Error en la petición de base de datos - lecturasGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - lecturasGet',
-    });
+    existeError(res, error, 'lecturaGet');
   }
 };
 
 const lecturasMasPuntuadasGet = async (req, res = response) => {
+  // TODO: Terminar
   const mapLecturas = new Map();
   const lecturas = await lecturaDB.getLecturas();
 
@@ -69,14 +66,16 @@ const lecturasMasPuntuadasGet = async (req, res = response) => {
 
 const lecturaNombreGet = async (req, res = response) => {
   try {
-    if (Object.keys(req.query.nombre).length == 0)
+    if (Object.keys(req.query).length == 0)
       return res.json(await lecturaDB.getLecturas());
-    else return res.json(await lecturaDB.getNombreLecturas(req.query.nombre));
+    else if (
+      req.query.nombre !== undefined &&
+      Object.keys(req.query).length == 1
+    )
+      return res.json(await lecturaDB.getNombreLecturas(req.query.nombre));
+    else return res.json(await lecturaDB.getLecturaConFiltros(req.query));
   } catch (error) {
-    console.error('Error en la petición de base de datos - lecturaNombreGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - lecturaNombreGet',
-    });
+    existeError(res, error, 'lecturaNombreGet');
   }
 };
 
@@ -110,11 +109,7 @@ const lecturaPost = async (req, res = response) => {
       }
     });
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de base de datos - lecturaPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - lecturaPost',
-    });
+    existeError(res, error, 'lecturaPost');
   }
 };
 
@@ -128,15 +123,19 @@ const lecturasTextoGet = async (req, res = response) => {
   if (!lectura.TEXTO)
     return res.status(400).json({ msg: 'La lectura no tiene texto.' });
 
-  const anchoDispositivo  = req.query.ancho;
-  const altoDispositivo   = req.query.alto;
+  const anchoDispositivo = req.query.ancho;
+  const altoDispositivo = req.query.alto;
   const escalaDispositivo = req.query.escala;
 
   let pages = [];
   const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
   const longitud = texto.length;
-  let step = obtenerCaracteresPorDispositivo(altoDispositivo,anchoDispositivo,escalaDispositivo);
-  
+  let step = obtenerCaracteresPorDispositivo(
+    altoDispositivo,
+    anchoDispositivo,
+    escalaDispositivo
+  );
+
   if (longitud <= step) {
     pages.push({
       text: lectura.TEXTO,
@@ -165,16 +164,24 @@ const lecturaSalirPost = async (req, res = response) => {
     let leidos = {};
     req.body.avance = 100;
 
-    const {
-      ancho,alto,escala,id_lectura,pagina
-    } = req.body;
+    const { ancho, alto, escala, id_lectura, pagina } = req.body;
 
     if (!req.body.termino) {
-      const caracteresPorPagina = obtenerCaracteresPorDispositivo(alto,ancho,escala);
-      const lectura = await lecturaDB.getLectura(id_lectura,true,id_alumno);
+      const caracteresPorPagina = obtenerCaracteresPorDispositivo(
+        alto,
+        ancho,
+        escala
+      );
+      const lectura = await lecturaDB.getLectura(id_lectura, true, id_alumno);
       const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
       const longitud = texto.length;
-      const avanceReal = (parseInt(caracteresPorPagina * (pagina - 1) + caracteresPorPagina / 2) * 100 / longitud).toFixed(2);
+      const avanceReal = (
+        (parseInt(
+          caracteresPorPagina * (pagina - 1) + caracteresPorPagina / 2
+        ) *
+          100) /
+        longitud
+      ).toFixed(2);
       req.body.avance = Number(avanceReal);
     }
 
@@ -199,11 +206,7 @@ const lecturaSalirPost = async (req, res = response) => {
 
     res.json({ historial, progreso, leidos });
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de base de datos - lecturaPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - lecturaPost',
-    });
+    existeError(res, error, 'lecturaSalirPost');
   }
 };
 

@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const historialDB = require('../querys/historial.js');
 
 const historialPorIdGet = async (req, res = response) => {
@@ -7,11 +8,7 @@ const historialPorIdGet = async (req, res = response) => {
       .status(200)
       .json(await historialDB.getHistorialPorId(req.usuario.ID_USUARIO));
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de base de datos - historialPorIdGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - historialPorIdGet',
-    });
+    existeError(res, error, 'historialPorIdGet');
   }
 };
 

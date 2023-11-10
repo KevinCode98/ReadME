@@ -19,6 +19,14 @@ const existeUsuarioPorId = async (id) => {
   }
 };
 
+const existeError = async (res, error, metodo) => {
+  console.log(error);
+  console.error(`Error en la petición de base de datos - ${metodo}`);
+  return res.status(500).json({
+    msg: `Hable con el administrador - ${metodo}`,
+  });
+};
+
 const existeUsuarioPorEmail = async (email) => {
   // verificar si el usuario existe
   const usuario = await prisma.USUARIOS.findFirst({
@@ -37,6 +45,7 @@ const existeUsuarioPorEmail = async (email) => {
 };
 
 module.exports = {
+  existeError,
   existeUsuarioPorId,
   existeUsuarioPorEmail,
 };

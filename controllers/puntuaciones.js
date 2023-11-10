@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const puntuacionesDB = require('../querys/puntuaciones');
 const lecturasDB = require('../querys/lecturas');
 
@@ -6,10 +7,7 @@ const puntuacionesGet = async (req, res = response) => {
   try {
     res.status(200).json(await puntuacionesDB.getPuntuacion(req.params.id));
   } catch (error) {
-    console.error('Error en la petición de base de datos - puntuacionesGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - puntuacionesGet',
-    });
+    existeError(res, error, 'puntuacionesGet');
   }
 };
 
@@ -39,10 +37,7 @@ const puntuacionesPost = async (req, res = response) => {
 
     res.status(200).json({ puntuacion, nuevoPromedioLectura });
   } catch (error) {
-    console.error('Error en la petición de base de datos - puntuacionesGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - puntuacionesGet',
-    });
+    existeError(res, error, 'puntuacionesPost');
   }
 };
 

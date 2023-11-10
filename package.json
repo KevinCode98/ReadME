@@ -23,6 +23,7 @@
     "firebase-admin": "^11.10.1",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "nodemailer": "^6.9.4",
     "util": "^0.12.5",
     "uuid": "^9.0.0"

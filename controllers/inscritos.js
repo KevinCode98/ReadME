@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const inscritosDB = require('../querys/inscritos');
 const dispositivosDB = require('../querys/dispositivos');
 const Notificaciones = require('../helpers/notificaciones');
@@ -7,10 +8,7 @@ const inscritosGet = async (req, res = response) => {
   try {
     res.json(await inscritosDB.getInscritos(req.params.id));
   } catch (error) {
-    console.error('Error en la petición de base de datos - inscritosGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - inscritosGet',
-    });
+    existeError(res, error, 'inscritosGet');
   }
 };
 
@@ -38,10 +36,7 @@ const inscritosPost = async (req, res = response) => {
 
     res.status(200).json(inscritos);
   } catch (error) {
-    console.error('Error en la petición de base de datos - inscritosPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - inscritosPost',
-    });
+    existeError(res, error, 'inscritosPost');
   }
 };
 
@@ -54,10 +49,7 @@ const inscritosHashPost = async (req, res = response) => {
     if (inscrito.msg) return res.status(400).json(inscrito);
     res.status(200).json(inscrito);
   } catch (error) {
-    console.error('Error en la petición de base de datos - inscritosHashPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - inscritosHashPost',
-    });
+    existeError(res, error, 'inscritosHashPost');
   }
 };
 

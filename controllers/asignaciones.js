@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const asignacionesDB = require('../querys/asignaciones');
 const inscritosDB = require('../querys/inscritos');
 const dispositivosDB = require('../querys/dispositivos');
@@ -8,10 +9,7 @@ const asignacionGet = async (req, res = response) => {
   try {
     res.json(await asignacionesDB.getAsignacion(req.params.id));
   } catch (error) {
-    console.error('Error en la petición de base de datos - asignacionGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - asignacionGet',
-    });
+    existeError(res, error, 'asignacionGet');
   }
 };
 
@@ -40,11 +38,7 @@ const asignacionPost = async (req, res = response) => {
       });
     });
   } catch (error) {
-    console.log(error);
-    console.error('Error en la petición de base de datos - asignacionPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - asignacionPost',
-    });
+    existeError(res, error, 'asignacionPost');
   }
 };
 
@@ -57,13 +51,7 @@ const asignacionesPorSalaGet = async (req, res = response) => {
 
     res.status(200).json(asignacion);
   } catch (error) {
-    console.log(error);
-    console.error(
-      'Error en la petición de base de datos - asignacionesPorSalaGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - asignacionesPorSalaGet',
-    });
+    existeError(res, error, 'asignacionesPorSalaGet');
   }
 };
 

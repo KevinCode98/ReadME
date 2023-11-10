@@ -1,14 +1,12 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const profesoresDB = require('../querys/profesores');
 
 const profesoresGet = async (req, res = response) => {
   try {
     res.status(200).json(await profesoresDB.getProfesores());
   } catch (error) {
-    console.error('Error en la petición de base de datos - profesoresGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - profesoresGet',
-    });
+    existeError(res, error, 'profesoresGet');
   }
 };
 
@@ -18,12 +16,7 @@ const profesoresNombreGet = async (req, res = response) => {
       res.json(await profesoresDB.getProfesores());
     else res.json(await profesoresDB.getNombresProfesores(req.query.nombre));
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - profesoresNombreGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - profesoresNombreGet',
-    });
+    existeError(res, error, 'profesoresNombreGet');
   }
 };
 
@@ -36,10 +29,7 @@ const profesorGet = async (req, res = response) => {
         .json({ msg: 'El Profesor no existe en la base de datos' });
     res.status(200).json(profesor);
   } catch (error) {
-    console.error('Error en la petición de base de datos - profesorGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - profesorGet',
-    });
+    existeError(res, error, 'profesorGet');
   }
 };
 
@@ -47,10 +37,7 @@ const profesorSalasGet = async (req, res = response) => {
   try {
     res.json(await profesoresDB.getProfesorSalas(req.usuario.ID_USUARIO));
   } catch (error) {
-    console.error('Error en la petición de base de datos - profesorSalasGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - profesorSalasGet',
-    });
+    existeError(res, error, 'profesorSalasGet');
   }
 };
 
@@ -64,12 +51,7 @@ const profesorSalaInscritosGet = async (req, res = response) => {
 
     res.status(200).json(alumnos);
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - profesorSalaInscritosGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - profesorSalaInscritosGet',
-    });
+    existeError(res, error, 'profesorSalaInscritosGet');
   }
 };
 
@@ -83,12 +65,7 @@ const profesorEliminarInscritoSalaDelete = async (req, res = response) => {
 
     res.status(200).json(inscritos);
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - profesorEliminarInscritoSalaDelete'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - profesorEliminarInscritoSalaDelete',
-    });
+    existeError(res, error, 'profesorEliminarInscritoSalaDelete');
   }
 };
 

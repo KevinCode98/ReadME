@@ -15,12 +15,12 @@ const getHistorialPorId = async (id) => {
           ID_LECTURA: true,
           TITULO: true,
           PUNTUACION: true,
-          AUTORES : {
-            select : {
-              NOMBRE    : true,
-              APELLIDOS : true
-            }
-          }
+          AUTORES: {
+            select: {
+              NOMBRE: true,
+              APELLIDOS: true,
+            },
+          },
         },
       },
     },

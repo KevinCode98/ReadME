@@ -1,5 +1,6 @@
 const { response } = require('express');
 const progresosDB = require('../querys/progresos');
+const { existeError } = require('../helpers/validator');
 
 const progresosPorIdGet = async (req, res = response) => {
   try {
@@ -7,10 +8,7 @@ const progresosPorIdGet = async (req, res = response) => {
       .status(200)
       .json(await progresosDB.getProgresoPorId(req.usuario.ID_USUARIO));
   } catch (error) {
-    console.error('Error en la petición de base de datos - progresosPorIdGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - progresosPorIdGet',
-    });
+    existeError(res, error, 'progresosPorIdGet');
   }
 };
 
@@ -25,10 +23,37 @@ const progresosPorDia = async (req, res = response) => {
         )
       );
   } catch (error) {
-    console.error('Error en la petición de base de datos - progresosPorDia');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - progresosPorDia',
-    });
+    existeError(res, error, 'progresosPorDia');
+  }
+};
+
+const progresosPorSemana = async (req, res = response) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await progresosDB.getProgresoPorSemana(
+          req.usuario.ID_USUARIO,
+          req.body.fecha
+        )
+      );
+  } catch (error) {
+    existeError(res, error, 'progresosPorSemana');
+  }
+};
+
+const progresosPorMes = async (req, res = response) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await progresosDB.getProgresoPorMes(
+          req.usuario.ID_USUARIO,
+          req.body.fecha
+        )
+      );
+  } catch (error) {
+    existeError(res, error, 'progresosPorMes');
   }
 };
 
@@ -43,12 +68,7 @@ const progresosPorLecturaAlumnoGet = async (req, res = response) => {
         )
       );
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - progresosPorAlumnoGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - progresosPorAlumnoGet',
-    });
+    existeError(res, error, 'progresosPorLecturaAlumnoGet');
   }
 };
 
@@ -61,8 +81,10 @@ const progresosPost = async (dataProgreso, id_alumno) => {
 };
 
 module.exports = {
+  progresosPorDia,
   progresosPorIdGet,
   progresosPorLecturaAlumnoGet,
-  progresosPorDia,
+  progresosPorMes,
+  progresosPorSemana,
   progresosPost,
 };

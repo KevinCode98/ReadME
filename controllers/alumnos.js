@@ -1,14 +1,12 @@
 const { response } = require('express');
 const alumnosDB = require('../querys/alumnos');
+const { existeError } = require('../helpers/validator');
 
 const alumnosGet = async (req, res = response) => {
   try {
     res.status(200).json(await alumnosDB.getAlumnos());
   } catch (error) {
-    console.error('Error en la petición de base de datos - alumnosGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - alumnosGet',
-    });
+    existeError(res, error, 'alumnosGet');
   }
 };
 
@@ -18,10 +16,7 @@ const alumnosNombreGet = async (req, res = response) => {
       res.json(await alumnosDB.getAlumnos());
     else res.json(await alumnosDB.getNombresAlumnos(req.query.nombre));
   } catch (error) {
-    console.error('Error en la petición de base de datos - alumnosNombreGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - alumnosNombreGet',
-    });
+    existeError(res, error, 'alumnosNombreGet');
   }
 };
 
@@ -34,10 +29,7 @@ const alumnoGet = async (req, res = response) => {
         .json({ msg: 'El Alumno no existe en la base de datos' });
     res.status(200).json(alumno);
   } catch (error) {
-    console.error('Error enl a petición de la base de datos - alumnoGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - alumnoGet',
-    });
+    existeError(res, error, 'alumnoGet');
   }
 };
 
@@ -50,12 +42,7 @@ const alumnoSalasInscritasGet = async (req, res = response) => {
 
     res.status(200).json(salas);
   } catch (error) {
-    console.error(
-      'Error enl a petición de la base de datos - alumnoSalasInscritasGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - alumnoSalasInscritasGet',
-    });
+    existeError(res, error, 'alumnoSalasInscritasGet');
   }
 };
 
@@ -69,12 +56,7 @@ const alumnoAceptarSalaPost = async (req, res = response) => {
 
     res.status(200).json(aceptacion);
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - alumnoAceptarSalaPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - alumnoAceptarSalaPost',
-    });
+    existeError(res, error, 'alumnoAceptarSalaPost');
   }
 };
 
@@ -88,12 +70,7 @@ const alumnoCancelarSalaDelete = async (req, res = response) => {
 
     res.status(200).json(aceptacion);
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - alumnoCancelarSalaDelete'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - alumnoCancelarSalaDelete',
-    });
+    existeError(res, error, 'alumnoCancelarSalaDelete');
   }
 };
 

@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const tutoradoDB = require('../querys/tutorados');
 
 const tutoradoGet = async (req, res = response) => {

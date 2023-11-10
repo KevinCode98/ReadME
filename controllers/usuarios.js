@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const usuarioDB = require('../querys/usuarios');
 const activacionDB = require('../querys/activaciones');
 const { subirArchivo } = require('../helpers/subir-archivo');
@@ -8,7 +9,7 @@ const usuariosGet = async (req, res = response) => {
   try {
     res.status(200).json(await usuarioDB.getUsuarios());
   } catch (error) {
-    console.error('Error en la petición de base de datos - usuariosGet');
+    existeError(res, error, 'usuariosGet');
   }
 };
 
@@ -18,10 +19,7 @@ const usuariosNombreGet = async (req, res = response) => {
       return res.json(await usuarioDB.getUsuarios());
     else return res.json(await usuarioDB.getNombresUsuarios(req.query.nombre));
   } catch (error) {
-    console.error('Error en la petición de base de datos - usuariosNombreGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - usuariosNombreGet',
-    });
+    existeError(res, error, 'usuariosNombreGet');
   }
 };
 
@@ -29,7 +27,7 @@ const usuarioGet = async (req, res = response) => {
   try {
     return res.json(await usuarioDB.getUsuario(req.params.id));
   } catch (error) {
-    console.error('Error en la petición de base de datos - usuarioGet');
+    existeError(res, error, 'usuarioGet');
   }
 };
 
@@ -63,11 +61,7 @@ const usuarioPost = async (req, res = response) => {
     enviarCorreo(datosCorreo);
     res.status(200).json(usuario);
   } catch (error) {
-    console.error(error);
-    console.error('Error en la petición de la base de datos - usuarioPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - usuarioPost',
-    });
+    existeError(res, error, 'usuarioPost');
   }
 };
 
@@ -87,12 +81,7 @@ const usuarioActializarPost = async (req, res = response) => {
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
-    console.error(
-      'Error en la petición de la base de datos - usuarioActializarPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - usuarioActializarPost',
-    });
+    existeError(res, error, 'usuarioActializarPost');
   }
 };
 
@@ -112,12 +101,7 @@ const usuarioPasswordPost = async (req, res = response) => {
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
-    console.error(
-      'Error en la petición de la base de datos - usuarioActializarPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - usuarioActializarPost',
-    });
+    existeError(res, error, 'usuarioPasswordPost');
   }
 };
 
@@ -131,10 +115,7 @@ const usuarioDelete = async (req, res = response) => {
 
     res.json(await usuarioDB.deleteUsuario(req.params.id));
   } catch (error) {
-    console.error('Error enl a petición de la base de datos - usuarioDelete');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - usuarioDelete',
-    });
+    existeError(res, error, 'usuarioDelete');
   }
 };
 

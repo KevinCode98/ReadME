@@ -1,14 +1,12 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const salasDB = require('../querys/salas');
 
 const salasGet = async (req, res = response) => {
   try {
     res.json(await salasDB.getSalas());
   } catch (error) {
-    console.error('Error en la petición de base de datos - salasGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - salasGet',
-    });
+    existeError(res, error, 'salasGet');
   }
 };
 
@@ -23,10 +21,7 @@ const salaGet = async (req, res = response) => {
 
     res.status(200).json(sala);
   } catch (error) {
-    console.error('Error en la petición de base de datos - salaGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - salaGet',
-    });
+    existeError(res, error, 'salaGet');
   }
 };
 
@@ -36,10 +31,7 @@ const salasPost = async (req, res = response) => {
       .status(200)
       .json(await salasDB.postSalas(req.usuario.ID_USUARIO, req.body));
   } catch (error) {
-    console.error('Error en la petición de base de datos - salasPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - salasPost',
-    });
+    existeError(res, error, 'salasPost');
   }
 };
 
@@ -51,10 +43,7 @@ const salasActualizarPost = async (req, res = response) => {
         await salasDB.postSalasActualizar(req.usuario.ID_USUARIO, req.body)
       );
   } catch (error) {
-    console.error('Error en la petición de base de datos - salasPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - salasPost',
-    });
+    existeError(res, error, 'salasActualizarPost');
   }
 };
 

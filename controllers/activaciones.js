@@ -1,5 +1,6 @@
 const { response } = require('express');
 const activacionesDB = require('../querys/activaciones');
+const { existeError } = require('../helpers/validator');
 
 const actualizarActivacionPost = async (req, res = response) => {
   try {
@@ -10,12 +11,7 @@ const actualizarActivacionPost = async (req, res = response) => {
 
     res.status(200).json(activacion);
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - actualizarActivacionPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - actualizarActivacionPost',
-    });
+    existeError(res, error, 'actualizarActivacionPost');
   }
 };
 
@@ -29,12 +25,7 @@ const validarActivacionPost = async (req, res = response) => {
 
     res.status(200).json(activacion);
   } catch (error) {
-    console.error(
-      'Error en la petición de base de datos - validarActivacionPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - validarActivacionPost',
-    });
+    existeError(res, error, 'validarActivacionPost');
   }
 };
 

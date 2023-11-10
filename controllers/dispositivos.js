@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const dispositivosDB = require('../querys/dispositivos');
 
 const dispositivosGet = async (req, res = response) => {
@@ -12,10 +13,7 @@ const dispositivosGet = async (req, res = response) => {
         )
       );
   } catch (error) {
-    console.error('Error en la petición de la base de datos - dispositivosGet');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - dispositivosGet',
-    });
+    existeError(res, error, 'dispositivosGet');
   }
 };
 
@@ -28,12 +26,7 @@ const dispositivosPorIdGet = async (req, res = response) => {
 
     res.status(200).json(dispositivos);
   } catch (error) {
-    console.error(
-      'Error en la petición de la base de datos - dispositivosPorIdGet'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - dispositivosPorIdGet',
-    });
+    existeError(res, error, 'dispositivosPorIdGet');
   }
 };
 
@@ -48,12 +41,7 @@ const dispositivosPost = async (req, res = response) => {
         )
       );
   } catch (error) {
-    console.error(
-      'Error en la petición de la base de datos - dispositivosPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - dispositivosPost',
-    });
+    existeError(res, error, 'dispositivosPost');
   }
 };
 
@@ -73,12 +61,7 @@ const dispositivoDelete = async (req, res = response) => {
 
     res.status(200).json(dispositivo);
   } catch (error) {
-    console.error(
-      'Error en la petición de la base de datos - dispositivosPost'
-    );
-    return res.status(500).json({
-      msg: 'Hable con el administrador - dispositivosPost',
-    });
+    existeError(res, error, 'dispositivoDelete');
   }
 };
 

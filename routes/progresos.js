@@ -1,6 +1,4 @@
-const { check } = require('express-validator');
 const { Router } = require('express');
-const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const {
   existeAlumno,
@@ -8,15 +6,17 @@ const {
   existeUsuario,
 } = require('../middlewares/validar-existe');
 const {
-  progresosPost,
+  progresosPorDia,
   progresosPorIdGet,
   progresosPorLecturaAlumnoGet,
-  progresosPorDia,
+  progresosPorMes,
+  progresosPorSemana,
 } = require('../controllers/progresos');
 
 const router = Router();
-
 router.get('/mi-dia', [validarJWT, existeAlumno], progresosPorDia);
+router.get('/mi-semana', [validarJWT, existeAlumno], progresosPorSemana);
+router.get('/mi-mes', [validarJWT, existeAlumno], progresosPorMes);
 router.get(
   '/mi-lectura/:id',
   [validarJWT, existeAlumno, existeLectura],

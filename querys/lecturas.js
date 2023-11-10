@@ -1,10 +1,19 @@
 const { PrismaClient } = require('@prisma/client');
 const autoresDB = require('../querys/autores');
+const tematicasDB = require('../querys/tematicas');
+const { firestore } = require('firebase-admin');
 
 const prisma = new PrismaClient();
 
 const getLecturas = async () => {
-  return await prisma.LECTURAS.findMany({
+  const arrayTematicas = await tematicasDB.getArrayTematicas();
+
+  const librosTematicas = {};
+  for (const tematica of arrayTematicas) {
+    librosTematicas[tematica] = [];
+  }
+
+  const lecturas = await prisma.LECTURAS.findMany({
     select: {
       ID_LECTURA: true,
       TITULO: true,
@@ -31,9 +40,18 @@ const getLecturas = async () => {
       },
     },
   });
+
+  lecturas.forEach((lectura) => {
+    let arrayAux = librosTematicas[lectura.TEMATICAS.NOMBRE];
+    arrayAux.push(lectura);
+
+    Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
+  });
+
+  return librosTematicas;
 };
 
-const getLectura = async (id, retornaTexto = false,id_alumno=0) => {
+const getLectura = async (id, retornaTexto = false, id_alumno = 0) => {
   const lectura = await prisma.LECTURAS.findFirst({
     where: {
       ID_LECTURA: Number(id),
@@ -42,13 +60,13 @@ const getLectura = async (id, retornaTexto = false,id_alumno=0) => {
       ID_LECTURA: true,
       PUNTUACION: true,
       TITULO: true,
-      PUNTUACIONES : {
-        select : {
-          PUNTUACION : true,
+      PUNTUACIONES: {
+        select: {
+          PUNTUACION: true,
         },
-        where : {
-          ID_USUARIO : Number(id_alumno)
-        }
+        where: {
+          ID_USUARIO: Number(id_alumno),
+        },
       },
       TEMATICAS: {
         select: {
@@ -87,6 +105,68 @@ const getLectura = async (id, retornaTexto = false,id_alumno=0) => {
       return lectura;
     }
   }
+};
+
+const getLecturaConFiltros = async (filtros) => {
+  // validar si la tematica existe
+  if (filtros.tematica) {
+    const existeTematica = await prisma.TEMATICAS.findFirst({
+      where: { ID_TEMATICA: Number(filtros.tematica) },
+    });
+
+    if (!existeTematica)
+      return { msg: 'La Tematica no existe en la base de datos' };
+  }
+
+  // validar si el autor existe
+  if (filtros.autor) {
+    const existeAutor = await prisma.AUTORES.findFirst({
+      where: { ID_AUTOR: Number(filtros.autor) },
+    });
+
+    if (!existeAutor) return { msg: 'El Autor no existe en la base de datos' };
+  }
+
+  // validar si la corriente existe
+  if (filtros.corriente) {
+    const existeCorriente = await prisma.CORRIENTES.findFirst({
+      where: { ID_CORRIENTE: Number(filtros.corriente) },
+    });
+
+    if (!existeCorriente)
+      return { msg: 'La Corriente no existe en la base de datos' };
+  }
+
+  return await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+          ID_AUTOR: true,
+        },
+      },
+    },
+    where: {
+      ID_TEMATICA: filtros.tematica ? Number(filtros.tematica) : undefined,
+      ID_AUTOR: filtros.autor ? Number(filtros.autor) : undefined,
+      ID_CORRIENTE: filtros.corriente ? Number(filtros.corriente) : undefined,
+    },
+  });
 };
 
 const getLecturaInfo = async (id_lectura) => {
@@ -299,4 +379,5 @@ module.exports = {
   getLectura,
   postLectura,
   getNombreLecturas,
+  getLecturaConFiltros,
 };

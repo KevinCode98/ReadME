@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const authDB = require('../querys/auth');
 
 const authPost = async (req, res = response) => {
@@ -10,10 +11,7 @@ const authPost = async (req, res = response) => {
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
-    console.error('Error en la petición de base de datos - authPost');
-    return res.status(500).json({
-      msg: 'Hable con el administrador - authPost',
-    });
+    existeError(res, error, 'authPost');
   }
 };
 
