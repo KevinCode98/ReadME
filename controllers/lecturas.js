@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { existeError } = require('../helpers/validator');
 const lecturaDB = require('../querys/lecturas');
 const historialDB = require('../querys/historial');
 const puntuacionesDB = require('../querys/puntuaciones');
@@ -6,7 +7,7 @@ const leidosDB = require('../querys/leidos');
 const historialController = require('./historial');
 const progresosController = require('./progresos');
 const leidosController = require('./leidos');
-const { subirArchivo } = require('../helpers/subir-archivo');
+const { subirArchivo, eliminarArchivo } = require('../helpers/subir-archivo');
 const {
   subirArchivoPdf,
   eliminarArchivoPdf,
@@ -103,6 +104,7 @@ const lecturaPost = async (req, res = response) => {
 
     response.text().then(async (text) => {
       await eliminarArchivoPdf(uuidLectura);
+      eliminarArchivo(uuidLectura, 'lecturas');
       if (!text) return res.status(400).json('Error de extraccion de texto');
       else {
         res.json(await lecturaDB.postLectura(req.body, text));

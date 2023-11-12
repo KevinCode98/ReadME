@@ -56,7 +56,7 @@ const getProgresoPorSemana = async (id_alumno, fecha = new Date()) => {
   for await (let x of [0, 1, 2, 3, 4, 5, 6]) {
     const nuevaFecha = moment(diaSemana).add(x, 'day');
     const progresos = await prisma.PROGRESOS.findMany({
-       where: {
+      where: {
         FECHA: {
           lte: getFinDia(nuevaFecha),
           gte: getInicioDia(nuevaFecha),
@@ -66,7 +66,7 @@ const getProgresoPorSemana = async (id_alumno, fecha = new Date()) => {
       orderBy: {
         FECHA: 'asc',
       },
-   });
+    });
 
     let totalTiempo = 0;
     progresos.forEach((progreso) => {
@@ -80,25 +80,25 @@ const getProgresoPorSemana = async (id_alumno, fecha = new Date()) => {
 };
 
 const getProgresoPorMes = async (id_alumno, fecha = new Date()) => {
-  const diaMes = new Date(moment(fecha).subtract(1, 'month'))
+  const diaMes = new Date(moment(fecha).subtract(1, 'month'));
   const mapMes = new Map();
   let contador = 0;
 
   for (let semana = 0; semana < 4; semana++) {
     const keySemana = `sem-${semana + 1}`;
     let totalTiempo = 0;
-    for (let dia = 0; dia < 7; dia++){
+    for (let dia = 0; dia < 7; dia++) {
       const nuevaFecha = moment(diaMes).add(contador, 'day');
       const progreso = await prisma.PROGRESOS.findMany({
         where: {
-         FECHA: {
-           lte: getFinDia(nuevaFecha),
-           gte: getInicioDia(nuevaFecha),
-         },
-         ID_USUARIO: Number(id_alumno),
+          FECHA: {
+            lte: getFinDia(nuevaFecha),
+            gte: getInicioDia(nuevaFecha),
+          },
+          ID_USUARIO: Number(id_alumno),
         },
         orderBy: {
-         FECHA: 'asc',
+          FECHA: 'asc',
         },
       });
 
@@ -189,7 +189,6 @@ const getFinDia = (fecha) => {
 
   return fechaFin;
 };
-
 
 const getFechaString = (fecha) => {
   fecha = fecha.toString();
