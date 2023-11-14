@@ -19,7 +19,7 @@ const progresosPorDia = async (req, res = response) => {
       .json(
         await progresosDB.getProgresosPorDia(
           req.usuario.ID_USUARIO,
-          req.body.fecha
+          req.query.fecha
         )
       );
   } catch (error) {
@@ -34,7 +34,7 @@ const progresosPorSemana = async (req, res = response) => {
       .json(
         await progresosDB.getProgresoPorSemana(
           req.usuario.ID_USUARIO,
-          req.body.fecha
+          req.query.fecha
         )
       );
   } catch (error) {
@@ -49,7 +49,7 @@ const progresosPorMes = async (req, res = response) => {
       .json(
         await progresosDB.getProgresoPorMes(
           req.usuario.ID_USUARIO,
-          req.body.fecha
+          req.query.fecha
         )
       );
   } catch (error) {

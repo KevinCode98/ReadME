@@ -19,15 +19,13 @@ const getProgresoPorLectura = async (id, lectura) => {
   });
 };
 
-const getProgresosPorDia = async (id_alumno, fecha = new Date()) => {
-  const dia = getInicioDia(new Date(fecha));
-  const finDia = getFinDia(new Date(fecha));
-
+const getProgresosPorDia = async (id_alumno, fecha) => {
+  const dia = new Date(`${fecha}T00:00:00`);
   const progresosDia = await prisma.PROGRESOS.findMany({
     where: {
       FECHA: {
-        lte: finDia,
-        gte: dia,
+        lte: new Date(getFinDia(dia)),
+        gte: new Date(getInicioDia(dia)),
       },
       ID_USUARIO: Number(id_alumno),
     },
@@ -49,17 +47,18 @@ const getProgresosPorDia = async (id_alumno, fecha = new Date()) => {
   return [...mapHoras.entries()];
 };
 
-const getProgresoPorSemana = async (id_alumno, fecha = new Date()) => {
-  const diaSemana = new Date(moment(fecha).subtract(6, 'day'));
+const getProgresoPorSemana = async (id_alumno, fecha) => {
+  const dia = new Date(`${fecha}T00:00:00`);
+  const diaSemana = new Date(moment(dia).subtract(6, 'day'));
   const mapDias = new Map();
 
   for await (let x of [0, 1, 2, 3, 4, 5, 6]) {
-    const nuevaFecha = moment(diaSemana).add(x, 'day');
+    const nuevaFecha = new Date(moment(diaSemana).add(x, 'day'));
     const progresos = await prisma.PROGRESOS.findMany({
       where: {
         FECHA: {
-          lte: getFinDia(nuevaFecha),
-          gte: getInicioDia(nuevaFecha),
+          lte: new Date(getFinDia(nuevaFecha)),
+          gte: new Date(getInicioDia(nuevaFecha)),
         },
         ID_USUARIO: Number(id_alumno),
       },
@@ -79,21 +78,22 @@ const getProgresoPorSemana = async (id_alumno, fecha = new Date()) => {
   return [...mapDias.entries()];
 };
 
-const getProgresoPorMes = async (id_alumno, fecha = new Date()) => {
-  const diaMes = new Date(moment(fecha).subtract(1, 'month'));
+const getProgresoPorMes = async (id_alumno, fecha) => {
+  const dia = new Date(`${fecha}T00:00:00`);
+  const diaMes = new Date(moment(dia).subtract(27, 'day'));
   const mapMes = new Map();
   let contador = 0;
 
   for (let semana = 0; semana < 4; semana++) {
     const keySemana = `sem-${semana + 1}`;
     let totalTiempo = 0;
-    for (let dia = 0; dia < 7; dia++) {
-      const nuevaFecha = moment(diaMes).add(contador, 'day');
-      const progreso = await prisma.PROGRESOS.findMany({
+    for (let diaContador = 0; diaContador < 7; diaContador++) {
+      const nuevaFecha = new Date(moment(diaMes).add(contador, 'day'));
+      const progresos = await prisma.PROGRESOS.findMany({
         where: {
           FECHA: {
-            lte: getFinDia(nuevaFecha),
-            gte: getInicioDia(nuevaFecha),
+            lte: new Date(getFinDia(nuevaFecha)),
+            gte: new Date(getInicioDia(nuevaFecha)),
           },
           ID_USUARIO: Number(id_alumno),
         },
@@ -102,7 +102,7 @@ const getProgresoPorMes = async (id_alumno, fecha = new Date()) => {
         },
       });
 
-      progreso.forEach((progreso) => {
+      progresos.forEach((progreso) => {
         totalTiempo += progreso.TIEMPO;
       });
       contador++;
@@ -164,31 +164,27 @@ const deleteTodosLosProgresos = async (id_alumno, id_lectura) => {
   });
 };
 
-const getInicioDia = (fecha) => {
-  const dia = fecha.toISOString().split('T')[0];
-  const fechaInicio = new Date(dia);
+const getInicioDia = (fecha) =>
+  `${fecha.getFullYear()}-${
+    Number(fecha.getMonth() + 1) < 10
+      ? '0' + Number(fecha.getMonth() + 1)
+      : '' + Number(fecha.getMonth() + 1)
+  }-${
+    Number(fecha.getDate()) < 10
+      ? '0' + Number(fecha.getDate())
+      : '' + Number(fecha.getDate())
+  }T00:00:00`;
 
-  return fechaInicio;
-};
-
-const getFinDia = (fecha) => {
-  const dia = fecha.toISOString().split('T')[0];
-  const fechalocal = new Date(`${dia}T23:59:59`).toLocaleString();
-  const arrayFecha = fechalocal.split(', ');
-  const diasFecha = arrayFecha[0].split('/');
-  for (const pos in diasFecha) {
-    if (Number(diasFecha[pos]) < 10) {
-      diasFecha[pos] = '0' + diasFecha[pos];
-    }
-  }
-
-  const arrayHora = arrayFecha[1].split(' ');
-  const fechaFin = new Date(
-    `${diasFecha[2]}-${diasFecha[0]}-${diasFecha[1]}T${arrayHora[0]}`
-  );
-
-  return fechaFin;
-};
+const getFinDia = (fecha) =>
+  `${fecha.getFullYear()}-${
+    Number(fecha.getMonth() + 1) < 10
+      ? '0' + Number(fecha.getMonth() + 1)
+      : '' + Number(fecha.getMonth() + 1)
+  }-${
+    Number(fecha.getDate()) < 10
+      ? '0' + Number(fecha.getDate())
+      : '' + Number(fecha.getDate())
+  }T23:59:59`;
 
 const getFechaString = (fecha) => {
   fecha = fecha.toString();

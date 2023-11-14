@@ -14,9 +14,9 @@ const {
 } = require('../controllers/progresos');
 
 const router = Router();
-router.get('/mi-dia', [validarJWT, existeUsuario], progresosPorDia);
-router.get('/mi-semana', [validarJWT, existeUsuario], progresosPorSemana);
-router.get('/mi-mes', [validarJWT, existeUsuario], progresosPorMes);
+router.get('/mi-dia/', [validarJWT, existeUsuario], progresosPorDia);
+router.get('/mi-semana/', [validarJWT, existeUsuario], progresosPorSemana);
+router.get('/mi-mes/', [validarJWT, existeUsuario], progresosPorMes);
 router.get(
   '/mi-lectura/:id',
   [validarJWT, existeAlumno, existeLectura],
