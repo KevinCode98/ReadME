@@ -15,6 +15,31 @@ const getCantidadPuntuaciones = async (id_lectura) => {
   ).length;
 };
 
+const getPuntuacionMisLecturas = async (id_alumno) => {
+  return await prisma.PUNTUACIONES.findMany({
+    where: {
+      ID_USUARIO: Number(id_alumno),
+    },
+    select: {
+      ID_PUNTUACION: true,
+      PUNTUACION: true,
+      ID_LECTURA: true,
+      LECTURAS: {
+        select: {
+          TITULO: true,
+          PUNTUACION: true,
+          AUTORES: {
+            select: {
+              NOMBRE: true,
+              APELLIDOS: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
 const getSumaPuntuaciones = async (id_lectura) => {
   const puntuaciones = await prisma.PUNTUACIONES.findMany({
     where: { ID_LECTURA: Number(id_lectura) },
@@ -57,8 +82,9 @@ const postPuntuacion = async (puntuacion, id_usuario) => {
 };
 
 module.exports = {
-  getPuntuacion,
   getCantidadPuntuaciones,
+  getPuntuacion,
+  getPuntuacionMisLecturas,
   getSumaPuntuaciones,
   postPuntuacion,
 };

@@ -1,7 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const autoresDB = require('../querys/autores');
 const tematicasDB = require('../querys/tematicas');
-const { firestore } = require('firebase-admin');
+const historialDB = require('../querys/historial');
 
 const prisma = new PrismaClient();
 
@@ -108,6 +108,14 @@ const getLectura = async (id, retornaTexto = false, id_alumno = 0) => {
 };
 
 const getLecturaConFiltros = async (filtros) => {
+  // TODO: Enviarlas por tematica -> Get lectura normal
+  const arrayTematicas = await tematicasDB.getArrayTematicas();
+
+  const librosTematicas = {};
+  for (const tematica of arrayTematicas) {
+    librosTematicas[tematica] = [];
+  }
+
   // validar si la tematica existe
   if (filtros.tematica) {
     const existeTematica = await prisma.TEMATICAS.findFirst({
@@ -137,7 +145,7 @@ const getLecturaConFiltros = async (filtros) => {
       return { msg: 'La Corriente no existe en la base de datos' };
   }
 
-  return await prisma.LECTURAS.findMany({
+  const lecturas = await prisma.LECTURAS.findMany({
     select: {
       ID_LECTURA: true,
       TITULO: true,
@@ -167,6 +175,15 @@ const getLecturaConFiltros = async (filtros) => {
       ID_CORRIENTE: filtros.corriente ? Number(filtros.corriente) : undefined,
     },
   });
+
+  lecturas.forEach((lectura) => {
+    let arrayAux = librosTematicas[lectura.TEMATICAS.NOMBRE];
+    arrayAux.push(lectura);
+
+    Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
+  });
+
+  return librosTematicas;
 };
 
 const getLecturaInfo = async (id_lectura) => {
@@ -199,6 +216,40 @@ const getLecturaInfo = async (id_lectura) => {
       ID_LECTURA: Number(id_lectura),
     },
   });
+};
+
+const getLecturasLeidas = async (id_alumno) => {
+  const lecturasDB = await prisma.LEIDOS.findMany({
+    where: {
+      ID_USUARIO: Number(id_alumno),
+    },
+    select: {
+      ID_LEIDO: true,
+      FECHA_INICIO: true,
+      FECHA_FINAL: true,
+      ID_LECTURA: true,
+      LECTURAS: {
+        select: {
+          TITULO: true,
+          PUNTUACION: true,
+          AUTORES: {
+            select: {
+              NOMBRE: true,
+              APELLIDOS: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  let lecturas = [];
+  lecturasDB.forEach((lectura) => {
+    if (!lecturas.some((obj) => obj.ID_LECTURA === lectura.ID_LECTURA))
+      lecturas.push(lectura);
+  });
+
+  return lecturas;
 };
 
 const getNombreLecturas = async (buscar) => {
@@ -374,10 +425,11 @@ const actualizarPuntuacionLectura = async (id_lectura, promedio) => {
 
 module.exports = {
   actualizarPuntuacionLectura,
+  getLectura,
+  getLecturaConFiltros,
   getLecturaInfo,
   getLecturas,
-  getLectura,
-  postLectura,
+  getLecturasLeidas,
   getNombreLecturas,
-  getLecturaConFiltros,
+  postLectura,
 };

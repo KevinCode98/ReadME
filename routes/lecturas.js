@@ -18,6 +18,7 @@ const {
   lecturasTextoGet,
   lecturasMasPuntuadasGet,
   lecturaSalirPost,
+  lecturasLeidasGet,
 } = require('../controllers/lecturas');
 
 const router = Router();
@@ -28,6 +29,7 @@ router.get(
   [validarJWT, existeUsuario],
   lecturasMasPuntuadasGet
 );
+router.get('/leidas', [validarJWT, existeUsuario], lecturasLeidasGet);
 router.get(
   '/texto/:id',
   [validarJWT, existeUsuario, existeLectura],

@@ -144,13 +144,6 @@ const postUsuario = async (usuario, pathCompleto) => {
 const postUsuarioActializar = async (usuario, id) => {
   const { apodo } = usuario;
 
-  // Verificar si el apodo existe
-  const usuarioExiste = await prisma.USUARIOS.findFirst({
-    where: {
-      ID_USUARIO: Number(id),
-    },
-  });
-
   const usuarioExisteApodo = await prisma.USUARIOS.findFirst({
     where: {
       APODO: apodo,
@@ -161,6 +154,8 @@ const postUsuarioActializar = async (usuario, id) => {
     return {
       msg: 'El apodo ya se encuentra en la base de datos',
     };
+
+  // TODO: Actualizar foto
 
   //Guardar en BD
   const usuarioDB = await prisma.USUARIOS.update({

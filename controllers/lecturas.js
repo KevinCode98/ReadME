@@ -80,6 +80,16 @@ const lecturaNombreGet = async (req, res = response) => {
   }
 };
 
+const lecturasLeidasGet = async (req, res = responese) => {
+  try {
+    return res
+      .status(200)
+      .json(await lecturaDB.getLecturasLeidas(req.usuario.ID_USUARIO));
+  } catch (error) {
+    existeError(res, error, 'lecturasLeidasGet');
+  }
+};
+
 const lecturaPost = async (req, res = response) => {
   try {
     if (
@@ -218,6 +228,7 @@ module.exports = {
   lecturaPost,
   lecturaSalirPost,
   lecturasGet,
+  lecturasLeidasGet,
   lecturasMasPuntuadasGet,
   lecturasTextoGet,
 };

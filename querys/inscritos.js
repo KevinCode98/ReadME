@@ -50,6 +50,21 @@ const postInscritos = async (inscrito) => {
   if (inscripcionExiste)
     return { msg: 'La invitacion ya existe en la base de datos' };
 
+  // Validar que el usuario no este como eliminado
+  // const inscritoEliminado = await prisma.INSCRITOS.findFirst({
+  //   where: {
+  //     ID_SALA: Number(inscrito.id_sala),
+  //     ID_USUARIO: Number(inscrito.id_alumno),
+  //     ACEPTADO: 'ELIMINADO',
+  //   },
+  // });
+
+  // if (inscritoEliminado)
+  //   return await prisma.INSCRITOS.update({
+  //     data: { ACEPTADO: 'NO_ACEPTADO' },
+  //     where: { ID_INSCRITO: Number(inscritoEliminado.ID_INSCRITO) },
+  //   });
+
   const salaExiste = await prisma.SALAS.findFirst({
     where: { ID_SALA: Number(inscrito.id_sala) },
   });
@@ -64,24 +79,39 @@ const postInscritos = async (inscrito) => {
   return { inscritoDB, salaExiste };
 };
 
-const postEliminarInscritos = async (inscrito, id_profesor) => {
-  // Validar que el usuario que se incribira solamente puede ser Alumno
+const postEliminarInscritosProfesor = async (inscrito, id_profesor) => {
+  // Validar que el usuario que se elimine sea Alumno
   const alumnoExiste = await prisma.USUARIOS.findFirst({
     where: {
-      ID_USUARIO: Number(inscrito.id_usuario),
+      ID_USUARIO: Number(inscrito.id_alumno),
       TIPO_USUARIO: 'Alumno',
     },
   });
+
   if (!alumnoExiste) return { msg: 'El Alumno no existe en la base de datos' };
 
-  await prisma.INSCRITOS.update({
-    data: {
-      ACEPTADO: 'ELIMINADO',
+  // Validar que el profesor sea propietario de la sala
+  const existeSala = await prisma.SALAS.findFirst({
+    where: {
+      ID_SALA: Number(inscrito.id_sala),
+      ID_RESPONSABLE: Number(id_profesor),
     },
   });
 
-  // Eliminar los datos del Alumno dentro de la Sala
-  // TODO: Eliminar todos los valores del alumno
+  if (!existeSala) return { msg: 'El profesor no tiene persimos en la sala' };
+
+  // Encontrar el valor del inscrito
+  const inscritoDB = await prisma.INSCRITOS.findFirst({
+    where: {
+      ID_USUARIO: Number(inscrito.id_alumno),
+      ID_SALA: Number(inscrito.id_sala),
+    },
+  });
+
+  // Eliminar el inscrito
+  return await prisma.INSCRITOS.delete({
+    where: { ID_INSCRITOS: Number(inscritoDB.ID_INSCRITOS) },
+  });
 };
 
 const postInscritosHash = async (hash, id_alumno) => {
@@ -108,5 +138,5 @@ module.exports = {
   getInscritosAceptados,
   postInscritos,
   postInscritosHash,
-  postEliminarInscritos,
+  postEliminarInscritosProfesor,
 };

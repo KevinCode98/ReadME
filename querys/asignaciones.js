@@ -47,6 +47,16 @@ const postAsignacion = async (asignacion, id_profesor) => {
       ID_SALA: Number(asignacion.id_sala),
       ID_LECTURA: Number(asignacion.id_lectura) || null,
     },
+    select: {
+      ID_ASIGNACION: true,
+      TITULO: true,
+      SALAS: {
+        select: {
+          ID_SALA: true,
+          DESCRIPCION: true,
+        },
+      },
+    },
   });
 };
 

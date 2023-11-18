@@ -7,11 +7,15 @@ const {
   alumnoSalasInscritasGet,
   alumnoAceptarSalaPost,
   alumnoCancelarSalaDelete,
+  alumnoEliminarInscritoSalaDelete,
 } = require('../controllers/alumnos');
 const {
   existeAlumno,
   existeUsuario,
+  existeSala,
 } = require('../middlewares/validar-existe');
+const { check } = require('express-validator');
+const { validarCampos } = require('../middlewares/validar-campos');
 
 const router = Router();
 
@@ -32,6 +36,17 @@ router.delete(
   '/cancelacion/:sala',
   [validarJWT, existeAlumno],
   alumnoCancelarSalaDelete
+);
+router.delete(
+  '/salir-sala',
+  [
+    validarJWT,
+    existeAlumno,
+    check('id_sala', 'El id_sala es obligatorio').not().isEmpty(),
+    validarCampos,
+    existeSala,
+  ],
+  alumnoEliminarInscritoSalaDelete
 );
 
 module.exports = router;

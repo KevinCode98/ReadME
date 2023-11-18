@@ -11,6 +11,18 @@ const puntuacionesGet = async (req, res = response) => {
   }
 };
 
+const puntuacionesMisLecturasGet = async (req, res = response) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await puntuacionesDB.getPuntuacionMisLecturas(req.usuario.ID_USUARIO)
+      );
+  } catch (error) {
+    existeError(res, error, 'puntuacionesMisLecturasGet');
+  }
+};
+
 const puntuacionesPost = async (req, res = response) => {
   try {
     const id_lectura = req.body.id_lectura;
@@ -41,4 +53,8 @@ const puntuacionesPost = async (req, res = response) => {
   }
 };
 
-module.exports = { puntuacionesGet, puntuacionesPost };
+module.exports = {
+  puntuacionesGet,
+  puntuacionesPost,
+  puntuacionesMisLecturasGet,
+};

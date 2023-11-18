@@ -10,9 +10,9 @@ const getHistorialPorId = async (id) => {
       ID_HISTORIAL: true,
       AVANCE: true,
       FECHA: true,
+      ID_LECTURA: true,
       LECTURAS: {
         select: {
-          ID_LECTURA: true,
           TITULO: true,
           PUNTUACION: true,
           AUTORES: {

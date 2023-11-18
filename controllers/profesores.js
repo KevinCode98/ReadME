@@ -1,6 +1,7 @@
 const { response } = require('express');
 const { existeError } = require('../helpers/validator');
 const profesoresDB = require('../querys/profesores');
+const inscritosDB = require('../querys/inscritos');
 
 const profesoresGet = async (req, res = response) => {
   try {
@@ -57,7 +58,7 @@ const profesorSalaInscritosGet = async (req, res = response) => {
 
 const profesorEliminarInscritoSalaDelete = async (req, res = response) => {
   try {
-    const inscritos = await profesoresDB.postProfesorEliminarInscrito(
+    const inscritos = await inscritosDB.postEliminarInscritosProfesor(
       req.body,
       req.usuario.ID_USUARIO
     );

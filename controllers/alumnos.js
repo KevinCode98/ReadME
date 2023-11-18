@@ -74,6 +74,20 @@ const alumnoCancelarSalaDelete = async (req, res = response) => {
   }
 };
 
+const alumnoEliminarInscritoSalaDelete = async (req, res = response) => {
+  try {
+    const salirSala = await alumnosDB.delteAlumnoEliminarInscritoSala(
+      req.body,
+      req.usuario.ID_USUARIO
+    );
+
+    if (salirSala.msg) return res.status(400).json(salirSala);
+    res.status(200).json(salirSala);
+  } catch (error) {
+    existeError(res, error, 'alumnoEliminarInscritoSalaDelete');
+  }
+};
+
 module.exports = {
   alumnoGet,
   alumnosGet,
@@ -81,4 +95,5 @@ module.exports = {
   alumnoSalasInscritasGet,
   alumnoAceptarSalaPost,
   alumnoCancelarSalaDelete,
+  alumnoEliminarInscritoSalaDelete,
 };

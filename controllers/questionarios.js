@@ -23,15 +23,6 @@ const questionarioContestadoGet = async (req, res = response) => {
   }
 };
 
-const questionarioRespuestasPorAlumno = async (questionario) => {
-  // TODO: Terminar
-  try {
-    // res.json(await )
-  } catch (error) {
-    existeError(res, error, 'questionarioRespuestasPorAlumno');
-  }
-};
-
 const questionarioConPreguntasGet = async (req, res = response) => {
   try {
     res.json(await questionarioDB.getQuestionarioConPreguntas(req.params.id));
@@ -54,7 +45,6 @@ const questionarioPost = async (req, res = response) => {
 module.exports = {
   questionarioGet,
   questionarioContestadoGet,
-  questionarioRespuestasPorAlumno,
   questionarioConPreguntasGet,
   questionarioPost,
 };

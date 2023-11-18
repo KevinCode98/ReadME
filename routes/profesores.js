@@ -13,6 +13,8 @@ const {
 const {
   existeProfesor,
   existeUsuario,
+  existeSala,
+  existeAlumno,
 } = require('../middlewares/validar-existe');
 
 const router = Router();
@@ -30,13 +32,15 @@ router.get(
   profesoresNombreGet
 );
 
-router.post(
-  '/eliminar/:id',
+router.delete(
+  '/salir-sala',
   [
     validarJWT,
+    existeProfesor,
     check('id_sala', 'El id_sala es obligatorio').not().isEmpty(),
-    check('id_usuario', 'El id_usuario es obligatorio').not().isEmpty(),
+    check('id_alumno', 'El id_alumno es obligatorio').not().isEmpty(),
     validarCampos,
+    existeSala,
   ],
   profesorEliminarInscritoSalaDelete
 );

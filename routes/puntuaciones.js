@@ -8,6 +8,7 @@ const {
 const {
   puntuacionesGet,
   puntuacionesPost,
+  puntuacionesMisLecturasGet,
 } = require('../controllers/puntuaciones.js');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
@@ -15,9 +16,9 @@ const { validarCampos } = require('../middlewares/validar-campos');
 const router = Router();
 
 router.get(
-  '/:id',
-  [validarJWT, existeUsuario, existePuntuacion],
-  puntuacionesGet
+  '/mis-puntuaciones',
+  [validarJWT, existeUsuario],
+  puntuacionesMisLecturasGet
 );
 router.post(
   '/',
@@ -30,6 +31,11 @@ router.post(
     existeLectura,
   ],
   puntuacionesPost
+);
+router.get(
+  '/:id',
+  [validarJWT, existeUsuario, existePuntuacion],
+  puntuacionesGet
 );
 
 module.exports = router;

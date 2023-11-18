@@ -137,6 +137,21 @@ const deleteAlumnoCancelarSala = async (id, sala) => {
   });
 };
 
+const delteAlumnoEliminarInscritoSala = async (salir, id_alumno) => {
+  // Encontrar el valor del inscrito
+  const inscritoDB = await prisma.INSCRITOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id_alumno),
+      ID_SALA: Number(salir.id_sala),
+    },
+  });
+
+  // Eliminar el inscrito
+  return await prisma.INSCRITOS.delete({
+    where: { ID_INSCRITOS: Number(inscritoDB.ID_INSCRITOS) },
+  });
+};
+
 module.exports = {
   getAlumno,
   getAlumnos,
@@ -144,4 +159,5 @@ module.exports = {
   getAlumnoSalasInscritas,
   postAlumnoAceptarSala,
   deleteAlumnoCancelarSala,
+  delteAlumnoEliminarInscritoSala,
 };
