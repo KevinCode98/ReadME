@@ -46,8 +46,10 @@ const usuarioPost = async (req, res = response) => {
 
     // Ingresar el codigo de validacion
     const activacion = await activacionDB.postActualizarCodigo(
-      usuario.usuarioDB.ID_USUARIO
+      usuario.usuarioDB.ID_USUARIO,
+      usuario.usuarioDB.FECHA_ALTA
     );
+
     if (activacion.msg) return res.status(400).json(usuario);
 
     // Enviar correo
@@ -78,10 +80,37 @@ const usuarioActializarPost = async (req, res = response) => {
       req.body,
       req.params.id
     );
+
     if (usuario.msg) return res.status(400).json(usuario);
     res.status(200).json(usuario);
   } catch (error) {
     existeError(res, error, 'usuarioActializarPost');
+  }
+};
+
+const usuarioPasswordSolicitudPost = async (req, res = response) => {
+  try {
+    // Obtener los datos del usuario
+    const usuario = await usuarioDB.getUsuario(req.usuario.ID_USUARIO);
+
+    // Ingresar el codigo de validacion
+    const activacion = await activacionDB.postActualizarCodigo(
+      req.usuario.ID_USUARIO,
+      req.body.tiempoCliente
+    );
+
+    // Enviar correo
+    const datosCorreo = {
+      from: process.env.EMAIL_GMAIL,
+      to: usuario.EMAIL,
+      subject: 'Validacion de codigo',
+      text: `Codigo de confirmacion: ${activacion.CODIGO}`,
+    };
+
+    enviarCorreo(datosCorreo);
+    res.status(200).json(activacion);
+  } catch (error) {
+    existeError(res, error, 'usuarioPasswordSolicitudPost');
   }
 };
 
@@ -92,6 +121,11 @@ const usuarioPasswordPost = async (req, res = response) => {
         msg: `El ID ${req.usuario.ID_USUARIO} no es el propietario de la cuenta`,
       });
     }
+
+    if (await activacionDB.getValidacion(req.usuario.ID_USUARIO))
+      return res.status(400).json({
+        msg: `El Usuario cuenta con una activacion`,
+      });
 
     // Ingresar el usuario a la Base de Datos
     const usuario = await usuarioDB.postPasswordActializar(
@@ -123,8 +157,9 @@ module.exports = {
   usuarioActializarPost,
   usuarioDelete,
   usuarioGet,
+  usuarioPasswordPost,
+  usuarioPasswordSolicitudPost,
   usuarioPost,
   usuariosGet,
   usuariosNombreGet,
-  usuarioPasswordPost,
 };

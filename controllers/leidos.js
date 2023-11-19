@@ -10,9 +10,14 @@ const leidosGet = async (req, res = response) => {
   }
 };
 
-const leidosPost = async (dataLeidos, id_alumno, id_historial) => {
+const leidosPost = async (dataLeidos, id_alumno, id_historial, tiempo) => {
   try {
-    return await leidosDB.postLeido(dataLeidos, id_alumno, id_historial);
+    return await leidosDB.postLeido(
+      dataLeidos,
+      id_alumno,
+      id_historial,
+      tiempo
+    );
   } catch (error) {
     console.log(error);
   }

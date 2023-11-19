@@ -28,6 +28,9 @@ router.post(
     existeProfesor,
     check('id_sala', 'El id_sala es obligatorio').not().isEmpty(),
     check('titulo', 'El titulo es obligatorio').not().isEmpty(),
+    check('tiempoCliente', 'La tiempoCliente no es válida')
+      .isISO8601()
+      .toDate(),
     validarCampos,
     existeSala,
   ],

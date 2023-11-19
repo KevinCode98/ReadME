@@ -59,7 +59,7 @@ const getNombresUsuarios = async (buscar) => {
 };
 
 const getUsuario = async (id) => {
-  const usuario = await prisma.USUARIOS.findMany({
+  const usuario = await prisma.USUARIOS.findFirst({
     select: {
       ID_USUARIO: true,
       NOMBRE: true,
@@ -86,7 +86,6 @@ const getUsuarioOnline = async (id) => {
 };
 
 const postUsuario = async (usuario, pathCompleto) => {
-  //
   const { email, password, apodo } = usuario;
 
   // Verificar si el correo existe
@@ -126,7 +125,7 @@ const postUsuario = async (usuario, pathCompleto) => {
       TIPO_USUARIO: usuario.tipo_usuario,
       EMAIL: usuario.email,
       PWD: usuario.password,
-      FECHA_ALTA: new Date(),
+      FECHA_ALTA: new Date(usuario.tiempoCliente),
       APODO: usuario.apodo,
       FOTO: pathCompleto,
       NIVEL: 'BRONCE',
@@ -135,6 +134,7 @@ const postUsuario = async (usuario, pathCompleto) => {
   });
 
   delete usuarioDB.PWD;
+
   // Generar el JWT
   const token = await generarJWT(usuarioDB.ID_USUARIO);
 
@@ -142,36 +142,30 @@ const postUsuario = async (usuario, pathCompleto) => {
 };
 
 const postUsuarioActializar = async (usuario, id) => {
-  const { apodo } = usuario;
+  const usuarioDB = await getUsuario(id);
 
   const usuarioExisteApodo = await prisma.USUARIOS.findFirst({
     where: {
-      APODO: apodo,
+      APODO: usuario.apodo,
     },
   });
 
-  if (usuarioExiste.APODO != apodo && usuarioExisteApodo)
-    return {
-      msg: 'El apodo ya se encuentra en la base de datos',
-    };
-
-  // TODO: Actualizar foto
+  if (usuarioExisteApodo)
+    if (usuarioDB.ID_USUARIO !== usuarioExisteApodo.ID_USUARIO)
+      return { msg: 'El apodo ya se encuentra en la base de datos' };
 
   //Guardar en BD
-  const usuarioDB = await prisma.USUARIOS.update({
+  return await prisma.USUARIOS.update({
     data: {
       NOMBRE: usuario.nombre,
       APELLIDOS: usuario.apellidos,
       FECHA_NAC: new Date(usuario.nacimiento),
       APODO: usuario.apodo,
-      FOTO: usuario.foto,
     },
     where: {
       ID_USUARIO: Number(id),
     },
   });
-
-  return { valiacion: true };
 };
 
 const postPasswordActializar = async ({ password }, id) => {

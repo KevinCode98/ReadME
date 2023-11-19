@@ -15,17 +15,17 @@ const getValidacion = async (id) => {
   });
 };
 
-const postGenerarActivacion = async (id) => {
+const postGenerarActivacion = async (id, tiempo) => {
   return await prisma.ACTIVACIONES.create({
     data: {
       ID_USUARIO: id,
       CODIGO: genearCodigo(),
-      TIEMPO: new Date(),
+      TIEMPO: new Date(tiempo),
     },
   });
 };
 
-const postValidarActivacion = async (id, codigo) => {
+const postValidarActivacion = async (id, codigo, tiempo) => {
   const valoresCodigo = await getValidacion(id);
 
   // Validar si existe un codigo de validacion
@@ -36,7 +36,7 @@ const postValidarActivacion = async (id, codigo) => {
 
   // Validar si el codigo tiene menos de 15 minutos
   var fechaDB = new Date(valoresCodigo.TIEMPO);
-  var fechaActual = new Date();
+  var fechaActual = new Date(tiempo);
   var tiempo = fechaActual.getTime() - fechaDB.getTime();
   var minutos = Math.round(tiempo / 60000);
 
@@ -72,24 +72,24 @@ const postValidarActivacion = async (id, codigo) => {
   });
 };
 
-const postActualizarCodigo = async (id) => {
+const postActualizarCodigo = async (id, tiempo) => {
   const valoresCodigo = await getValidacion(id);
 
   if (!valoresCodigo) {
-    return postGenerarActivacion(id);
+    return postGenerarActivacion(id, tiempo);
   }
 
-  await prisma.ACTIVACIONES.update({
+  const activacion = await prisma.ACTIVACIONES.update({
     data: {
       CODIGO: genearCodigo(),
-      TIEMPO: new Date(),
+      TIEMPO: new Date(tiempo),
     },
     where: {
       ID_CODIGO: Number(valoresCodigo.ID_CODIGO),
     },
   });
 
-  return { validacion: 'ACTUALIZADO' };
+  return activacion;
 };
 
 const genearCodigo = () => {
@@ -101,6 +101,7 @@ const genearCodigo = () => {
 };
 
 module.exports = {
+  getValidacion,
   postActualizarCodigo,
   postValidarActivacion,
 };

@@ -47,7 +47,7 @@ const getHistorialArregloUsuariosLecura = async (id) => {
   return usuarios;
 };
 
-const postHistorial = async (historial, id) => {
+const postHistorial = async (historial, id, tiempo) => {
   const existeHistorial = await prisma.HISTORIAL.findFirst({
     where: {
       ID_USUARIO: Number(id),
@@ -70,7 +70,7 @@ const postHistorial = async (historial, id) => {
         ID_USUARIO: Number(id),
         ID_LECTURA: Number(historial.id_lectura),
         AVANCE: parseInt(historial.avance),
-        FECHA: new Date(),
+        FECHA: new Date(tiempo),
       },
     });
   }

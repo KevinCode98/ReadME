@@ -10,14 +10,41 @@ const {
   usuarioPost,
   usuariosGet,
   usuariosNombreGet,
+  usuarioPasswordPost,
+  usuarioPasswordSolicitudPost,
 } = require('../controllers/usuarios');
 const { existeUsuario } = require('../middlewares/validar-existe');
 
 const router = Router();
 
 router.get('/', [validarJWT, existeUsuario], usuariosGet);
-router.get('/:id', [validarJWT, existeUsuario], usuarioGet);
 router.get('/buscador/nombre/', [validarJWT, existeUsuario], usuariosNombreGet);
+router.post(
+  '/solicitud-password',
+  [
+    validarJWT,
+    existeUsuario,
+    check('tiempoCliente', 'La tiempoCliente no es válida')
+      .isISO8601()
+      .toDate(),
+    validarCampos,
+  ],
+  usuarioPasswordSolicitudPost
+);
+router.post('/actualizar-password/:id', [
+  validarJWT,
+  existeUsuario,
+  [
+    validarJWT,
+    existeUsuario,
+    check('password', 'El password es obligatorio').not().isEmpty(),
+    check('password', 'El password debe ser más de 6 caracteres').isLength({
+      min: 6,
+    }),
+    validarCampos,
+  ],
+  usuarioPasswordPost,
+]);
 router.post(
   '/',
   [
@@ -31,6 +58,9 @@ router.post(
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('apellidos', 'El apellido es obligatorio').not().isEmpty(),
     check('nacimiento', 'La fecha no es válida').isISO8601().toDate(),
+    check('tiempoCliente', 'La tiempoCliente no es válida')
+      .isISO8601()
+      .toDate(),
     check('tipo_usuario', 'El tipo_usuario no es válido').isIn([
       'Alumno',
       'Profesor',
@@ -59,5 +89,6 @@ router.delete(
   [validarJWT, check('id').custom(existeUsuarioPorId), validarCampos],
   usuarioDelete
 );
+router.get('/:id', [validarJWT, existeUsuario], usuarioGet);
 
 module.exports = router;

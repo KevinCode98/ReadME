@@ -12,9 +12,9 @@ const historialPorIdGet = async (req, res = response) => {
   }
 };
 
-const historialPost = async (dataHistorial, id_alumno) => {
+const historialPost = async (dataHistorial, id_alumno, tiempo) => {
   try {
-    return await historialDB.postHistorial(dataHistorial, id_alumno);
+    return await historialDB.postHistorial(dataHistorial, id_alumno, tiempo);
   } catch (error) {
     console.log(error);
   }

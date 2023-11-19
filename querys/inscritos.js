@@ -124,6 +124,15 @@ const postInscritosHash = async (hash, id_alumno) => {
   if (!salaExiste)
     return { msg: 'El hash no se encuentra en la base de datos' };
 
+  const alumnoExiste = await prisma.INSCRITOS.findFirst({
+    where: {
+      ID_USUARIO: Number(id_alumno),
+      ID_SALA: Number(salaExiste.ID_SALA),
+    },
+  });
+
+  if (alumnoExiste) return { msg: 'El alumno ya se encuentra en la sala' };
+
   return await prisma.INSCRITOS.create({
     data: {
       ID_SALA: Number(salaExiste.ID_SALA),

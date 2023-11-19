@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const autoresDB = require('../querys/autores');
 const tematicasDB = require('../querys/tematicas');
-const historialDB = require('../querys/historial');
 
 const prisma = new PrismaClient();
 

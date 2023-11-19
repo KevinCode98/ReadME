@@ -23,6 +23,9 @@ router.post(
     validarJWT,
     existeProfesor,
     check('descripcion', 'La descripcion es obligatoria').not().isEmpty(),
+    check('tiempoCliente', 'La tiempoCliente no es válida')
+      .isISO8601()
+      .toDate(),
     validarCampos,
   ],
   salasPost

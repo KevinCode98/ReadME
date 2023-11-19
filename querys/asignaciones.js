@@ -43,7 +43,7 @@ const postAsignacion = async (asignacion, id_profesor) => {
     data: {
       TITULO: asignacion.titulo,
       INDICACION: asignacion.indicaciones,
-      FECHA_CREACION: new Date(),
+      FECHA_CREACION: new Date(asignacion.tiempoCliente),
       ID_SALA: Number(asignacion.id_sala),
       ID_LECTURA: Number(asignacion.id_lectura) || null,
     },

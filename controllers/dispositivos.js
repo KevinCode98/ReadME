@@ -49,7 +49,7 @@ const dispositivoDelete = async (req, res = response) => {
   try {
     if (Number(req.params.id) !== Number(req.usuario.ID_USUARIO)) {
       return res.status(401).json({
-        msg: `El ID ${usuarioAutenticado.ID_USUARIO} no es propietario de la cuenta`,
+        msg: `El ID ${req.usuario.ID_USUARIO} no es propietario de la cuenta`,
       });
     }
 

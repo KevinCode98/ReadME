@@ -14,11 +14,24 @@ router.post(
   [
     validarJWT,
     check('codigo', 'El codigo es obligatorio').not().isEmpty(),
+    check('tiempoCliente', 'La tiempoCliente no es válida')
+      .isISO8601()
+      .toDate(),
     validarCampos,
   ],
   validarActivacionPost
 );
 
-router.post('/generar', [validarJWT], actualizarActivacionPost);
+router.post(
+  '/generar',
+  [
+    validarJWT,
+    check('tiempoCliente', 'La tiempoCliente no es válida')
+      .isISO8601()
+      .toDate(),
+    validarCampos,
+  ],
+  actualizarActivacionPost
+);
 
 module.exports = router;

@@ -34,6 +34,7 @@ router.delete(
   '/:id',
   [
     validarJWT,
+    existeUsuario,
     check('uuid_dispositivo', 'El uuid_dispositivo es obligatorio')
       .not()
       .isEmpty(),

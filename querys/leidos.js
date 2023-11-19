@@ -26,7 +26,7 @@ const getLeidoUsuariosPorLectura = async (id_lectura) => {
   return usuarios;
 };
 
-const postLeido = async (id_lectura, id_alumno, id_historial) => {
+const postLeido = async (id_lectura, id_alumno, id_historial, tiempo) => {
   const historial = await prisma.HISTORIAL.findFirst({
     where: {
       ID_HISTORIAL: Number(id_historial),
@@ -46,7 +46,7 @@ const postLeido = async (id_lectura, id_alumno, id_historial) => {
       ID_LECTURA: Number(id_lectura),
       TIEMPO_FINAL: Number(tiempoTotal),
       FECHA_INICIO: historial.FECHA,
-      FECHA_FINAL: new Date(),
+      FECHA_FINAL: new Date(tiempo),
     },
   });
 };

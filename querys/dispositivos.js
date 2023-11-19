@@ -64,7 +64,7 @@ const deleteDispositivo = async (uuid_dispositivo, id) => {
 
   const dispositivo = await prisma.DISPOSITIVOS.delete({
     where: {
-      ID: Number(dispositivoExiste.ID),
+      ID_DISPOSITIVO: Number(dispositivoExiste.ID_DISPOSITIVO),
     },
   });
 

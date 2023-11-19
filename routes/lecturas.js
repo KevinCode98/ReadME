@@ -66,6 +66,7 @@ router.post(
     check('ancho', 'El ancho es obligatorio').not().isEmpty(),
     check('escala', 'La escala es obligatoria').not().isEmpty(),
     check('termino', 'El termino es obligatorio').not().isEmpty(),
+    check('tiempoCliente', 'El tiempoCliente es obligatorio').not().isEmpty(),
     validarCampos,
     existeLectura,
   ],

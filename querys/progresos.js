@@ -136,13 +136,13 @@ const getTiempoTotalPorLibro = async (id_lectura, id_usuario, fechaInicio) => {
   return tiempoTotal;
 };
 
-const postProgreso = async (progreso, id) => {
+const postProgreso = async (progreso, id, tiempo) => {
   return await prisma.PROGRESOS.create({
     data: {
       ID_USUARIO: Number(id),
       ID_LECTURA: Number(progreso.id_lectura),
       TIEMPO: Number(progreso.tiempo),
-      FECHA: new Date(),
+      FECHA: new Date(tiempo),
     },
   });
 };

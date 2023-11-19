@@ -54,7 +54,7 @@ const postSalas = async (id, sala) => {
   return await prisma.SALAS.create({
     data: {
       DESCRIPCION: sala.descripcion,
-      FECHA_CREACION: new Date(),
+      FECHA_CREACION: new Date(sala.tiempoCliente),
       HASH: hash,
       ID_RESPONSABLE: Number(id),
     },

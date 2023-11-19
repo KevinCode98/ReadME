@@ -72,9 +72,9 @@ const progresosPorLecturaAlumnoGet = async (req, res = response) => {
   }
 };
 
-const progresosPost = async (dataProgreso, id_alumno) => {
+const progresosPost = async (dataProgreso, id_alumno, tiempo) => {
   try {
-    return await progresosDB.postProgreso(dataProgreso, id_alumno);
+    return await progresosDB.postProgreso(dataProgreso, id_alumno, tiempo);
   } catch (error) {
     console.log(error);
   }

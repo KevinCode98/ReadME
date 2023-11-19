@@ -176,7 +176,7 @@ const lecturaSalirPost = async (req, res = response) => {
     let leidos = {};
     req.body.avance = 100;
 
-    const { ancho, alto, escala, id_lectura, pagina } = req.body;
+    const { ancho, alto, escala, id_lectura, pagina, tiempoCliente } = req.body;
 
     if (!req.body.termino) {
       const caracteresPorPagina = obtenerCaracteresPorDispositivo(
@@ -199,18 +199,21 @@ const lecturaSalirPost = async (req, res = response) => {
 
     const historial = await historialController.historialPost(
       req.body,
-      id_alumno
+      id_alumno,
+      tiempoCliente
     );
     const progreso = await progresosController.progresosPost(
       req.body,
-      id_alumno
+      id_alumno,
+      tiempoCliente
     );
 
     if (req.body.termino) {
       leidos = await leidosController.leidosPost(
         req.body.id_lectura,
         id_alumno,
-        historial.ID_HISTORIAL
+        historial.ID_HISTORIAL,
+        tiempoCliente
       );
 
       await historialController.historialDelete(historial.ID_HISTORIAL);
