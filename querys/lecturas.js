@@ -47,7 +47,15 @@ const getLecturas = async () => {
     Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
   });
 
-  return librosTematicas;
+  const libros = []
+  for(const key in librosTematicas){
+    const objAux = {
+      "TEMATICA" : key,
+      "LECTURAS" : librosTematicas[key]
+    }
+    libros.push(objAux);
+  }
+  return libros;
 };
 
 const getLectura = async (id, retornaTexto = false, id_alumno = 0) => {
@@ -182,7 +190,15 @@ const getLecturaConFiltros = async (filtros) => {
     Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
   });
 
-  return librosTematicas;
+  const libros = []
+  for(const key in librosTematicas){
+    const objAux = {
+      "TEMATICA" : key,
+      "LECTURAS" : librosTematicas[key]
+    }
+    libros.push(objAux);
+  }
+  return libros;
 };
 
 const getLecturaInfo = async (id_lectura) => {

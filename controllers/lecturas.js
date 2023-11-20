@@ -104,11 +104,12 @@ const lecturaPost = async (req, res = response) => {
     const uuidLectura = splitPath[splitPath.length - 1].split('.')[0];
 
     const urlDownload = await subirArchivoPdf(pathCompleto, uuidLectura);
-
     const response = await fetch(process.env.PATH_OCR + uuidLectura, {
       method: 'POST',
       body: JSON.stringify({
         URL: urlDownload,
+        header : false,
+        footer : false
       }),
     });
 
