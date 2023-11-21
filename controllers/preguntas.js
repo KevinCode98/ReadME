@@ -26,8 +26,17 @@ const preguntaPost = async (req, res = response) => {
   }
 };
 
+const preguntaDelete = async (req, res = response) => {
+  try {
+    res.json(await preguntaDB.deletePregunta(req.params.id));
+  } catch (error) {
+    console.log('Error - preguntaDelete');
+  }
+};
+
 module.exports = {
   preguntaGet,
   preguntaPost,
   preguntaConOpcionesGet,
+  preguntaDelete,
 };

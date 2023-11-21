@@ -90,8 +90,28 @@ const getAsignacionesPorSala = async (sala) => {
   return { asignaciones, responsable: salaExiste.ID_RESPONSABLE };
 };
 
+const deleteAsignacion = async (asignacion, id_profesor) => {
+  // Validar que el profesor sea duenio de la sala
+  const profesorExiste = await prisma.SALAS.findFirst({
+    where: {
+      ID_RESPONSABLE: Number(id_profesor),
+      ID_SALA: Number(asignacion.id_sala),
+    },
+  });
+
+  if (!profesorExiste)
+    return { msg: 'El Profesor no tiene permisos en la sala' };
+
+  return await prisma.ASIGNACIONES.delete({
+    where: {
+      ID_ASIGNACION: Number(asignaciones.id_asignacion),
+    },
+  });
+};
+
 module.exports = {
   getAsignacion,
   postAsignacion,
   getAsignacionesPorSala,
+  deleteAsignacion,
 };

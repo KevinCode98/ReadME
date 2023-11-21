@@ -18,7 +18,16 @@ const opcionPost = async (req, res = response) => {
   }
 };
 
+const opcionDelete = async (req, res = response) => {
+  try {
+    return await opcionesDB(req.query.id);
+  } catch (error) {
+    console.log('Error - opcionDelete');
+  }
+};
+
 module.exports = {
   opcionGet,
   opcionPost,
+  opcionDelete,
 };

@@ -14,6 +14,7 @@ router.post(
   [
     validarJWT,
     check('codigo', 'El codigo es obligatorio').not().isEmpty(),
+    check('tiempoCliente', 'El tiempoCliente es obligatorio').not().isEmpty(),
     check('tiempoCliente', 'La tiempoCliente no es válida')
       .isISO8601()
       .toDate(),
@@ -26,6 +27,7 @@ router.post(
   '/generar',
   [
     validarJWT,
+    check('tiempoCliente', 'El tiempoCliente es obligatorio').not().isEmpty(),
     check('tiempoCliente', 'La tiempoCliente no es válida')
       .isISO8601()
       .toDate(),

@@ -5,11 +5,13 @@ const {
   preguntaGet,
   preguntaPost,
   preguntaConOpcionesGet,
+  preguntaDelete,
 } = require('../controllers/preguntas');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const {
   existeUsuario,
   existePregunta,
+  existeProfesor,
 } = require('../middlewares/validar-existe');
 
 const router = Router();
@@ -36,6 +38,11 @@ router.post(
     validarCampos,
   ],
   preguntaPost
+);
+router.delete(
+  '/:id',
+  [validarJWT, existeProfesor, existePregunta],
+  preguntaDelete
 );
 router.get('/:id', [validarJWT, existeUsuario, existePregunta], preguntaGet);
 

@@ -18,7 +18,14 @@ const postOpcion = async (opcion, id_pregunta) => {
   });
 };
 
+const deleteOpcion = async (id_opcion) => {
+  return await prisma.OPCIONES.delete({
+    where: { ID_OPCION: Number(id_opcion) },
+  });
+};
+
 module.exports = {
   getOpcion,
   postOpcion,
+  deleteOpcion,
 };

@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const opcionesDB = require('../querys/opciones');
 
 const prisma = new PrismaClient();
 
@@ -19,7 +20,8 @@ const getPregunta = async (id) => {
 };
 
 const getPreguntaConOpciones = async (id) => {
-  return await prisma.PREGUNTAS.findMany({
+  // IMPORTANTE -> CAMBIO DE findMany a findFist
+  return await prisma.PREGUNTAS.findFirst({
     select: {
       ID_PREGUNTA: true,
       DESCRIPCION: true,
@@ -45,8 +47,17 @@ const postPregunta = async (descripcion, id_questionario) => {
   });
 };
 
+const deletePregunta = async (id_pregunta) => {
+  const preguntaDB = await getPreguntaConOpciones(id_pregunta);
+  const opcionesArray = preguntaDB.OPCIONES;
+  opcionesArray.forEach((opcion) => {});
+
+  return { msg: 'holi' };
+};
+
 module.exports = {
   getPregunta,
   postPregunta,
   getPreguntaConOpciones,
+  deletePregunta,
 };

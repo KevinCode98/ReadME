@@ -19,7 +19,8 @@ router.post(
   [
     validarJWT,
     existeUsuario,
-    check('hora', 'La hora es obligatoria').isISO8601().toDate(),
+    check('hora', 'La hora es obligatoria').not().isEmpty(),
+    check('hora', 'No tiene formato la hora').isISO8601().toDate(),
     validarCampos,
   ],
   alarmaPost

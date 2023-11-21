@@ -25,6 +25,8 @@ const asignacionPost = async (req, res = response) => {
       asignacion.SALAS.ID_SALA
     );
 
+    if (alumnos.length === 0) return res.status(200).json(asignacion);
+
     alumnos.forEach(async (alumno) => {
       const dispositivosUsuario = await dispositivosDB.getDispositivosPorId(
         alumno.ID_USUARIO
@@ -58,8 +60,23 @@ const asignacionesPorSalaGet = async (req, res = response) => {
   }
 };
 
+const asignacionDelete = async (req, res = response) => {
+  try {
+    const asignacion = asignacionesDB.deleteAsignacion(
+      req.body,
+      req.usuario.ID_USUARIO
+    );
+
+    if (asignacion.msg) return res.status(400).json(asignacion);
+    res.status(200).json(asignacion);
+  } catch (error) {
+    existeError(res, error, 'asignacionDelete');
+  }
+};
+
 module.exports = {
   asignacionGet,
   asignacionesPorSalaGet,
   asignacionPost,
+  asignacionDelete,
 };

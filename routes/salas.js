@@ -42,6 +42,6 @@ router.post(
   ],
   salasActualizarPost
 );
-router.get('/:id', [validarJWT, existeUsuario], salaGet);
+router.get('/:id', [validarJWT, existeUsuario, existeSala], salaGet);
 
 module.exports = router;
