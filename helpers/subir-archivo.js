@@ -34,10 +34,10 @@ const subirArchivo = (files, extensionesValidas, carpeta) => {
   });
 };
 
-const eliminarArchivo = (uuid_file, carpeta) => {
+const eliminarArchivo = (uuid_file, carpeta, extension = 'pdf') => {
   const pathArchivo = path.join(__dirname, '../archivos/', carpeta, uuid_file);
 
-  fs.unlink(`${pathArchivo}.pdf`, (err) => {
+  fs.unlink(`${pathArchivo}.${extension}`, (err) => {
     if (err) {
       console.log(err);
       return;

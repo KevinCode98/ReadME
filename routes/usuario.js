@@ -12,6 +12,7 @@ const {
   usuariosNombreGet,
   usuarioPasswordPost,
   usuarioPasswordSolicitudPost,
+  usuarioActualizarFotoPost,
 } = require('../controllers/usuarios');
 const { existeUsuario } = require('../middlewares/validar-existe');
 
@@ -45,6 +46,11 @@ router.post('/actualizar-password/:id', [
   ],
   usuarioPasswordPost,
 ]);
+router.post(
+  '/actualizar-foto/:id',
+  [validarJWT, existeUsuario],
+  usuarioActualizarFotoPost
+);
 router.post(
   '/',
   [

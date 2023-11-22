@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { existeError } = require('../helpers/validator');
+const { existeError, existeUsuarioPorEmail } = require('../helpers/validator');
 const lecturaDB = require('../querys/lecturas');
 const historialDB = require('../querys/historial');
 const puntuacionesDB = require('../querys/puntuaciones');
@@ -49,20 +49,30 @@ const lecturaGet = async (req, res = responese) => {
 };
 
 const lecturasMasPuntuadasGet = async (req, res = response) => {
-  // TODO: Terminar
-  const mapLecturas = new Map();
-  const lecturas = await lecturaDB.getLecturas();
+  try {
+    const mapLecturas = new Map();
+    const librosPuntuados = [];
+    const lecturas = await lecturaDB.getLecturasSinTematica();
 
-  for (const lectura of lecturas) {
-    mapLecturas.set(
-      await lecturaDB.getLecturaInfo(lectura.ID_LECTURA),
-      await puntuacionesDB.getCantidadPuntuaciones(lectura.ID_LECTURA)
-    );
+    for (const lectura of lecturas) {
+      mapLecturas.set(
+        await lecturaDB.getLecturaInfoRecomendacion(lectura.ID_LECTURA),
+        await puntuacionesDB.getCantidadPuntuaciones(lectura.ID_LECTURA)
+      );
+    }
+
+    const auxMap = Array.from(mapLecturas).sort((b, a) => a[1] - b[1]);
+
+    auxMap.forEach((libro) => {
+      const libroAux = libro[0][0];
+      libroAux.PUNTUADOS = libro[1];
+      librosPuntuados.push(libroAux);
+    });
+
+    res.status(200).json(librosPuntuados);
+  } catch (error) {
+    existeError(res, error, 'lecturasMasPuntuadasGet');
   }
-
-  const auxMap = Array.from(mapLecturas).sort((b, a) => a[1] - b[1]);
-
-  res.json(auxMap);
 };
 
 const lecturaNombreGet = async (req, res = response) => {
@@ -108,8 +118,8 @@ const lecturaPost = async (req, res = response) => {
       method: 'POST',
       body: JSON.stringify({
         URL: urlDownload,
-        header : false,
-        footer : false
+        header: false,
+        footer: false,
       }),
     });
 

@@ -46,16 +46,36 @@ const getLecturas = async () => {
 
     Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
   });
+};
 
-  const libros = []
-  for(const key in librosTematicas){
-    const objAux = {
-      "TEMATICA" : key,
-      "LECTURAS" : librosTematicas[key]
-    }
-    libros.push(objAux);
-  }
-  return libros;
+const getLecturasSinTematica = async () => {
+  return await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
+      TEMATICAS: {
+        select: {
+          ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      ID_LECTURA: true,
+      PUNTUACION: true,
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
+      PUNTUACION: true,
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+        },
+      },
+    },
+  });
 };
 
 const getLectura = async (id, retornaTexto = false, id_alumno = 0) => {
@@ -190,12 +210,12 @@ const getLecturaConFiltros = async (filtros) => {
     Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
   });
 
-  const libros = []
-  for(const key in librosTematicas){
+  const libros = [];
+  for (const key in librosTematicas) {
     const objAux = {
-      "TEMATICA" : key,
-      "LECTURAS" : librosTematicas[key]
-    }
+      TEMATICA: key,
+      LECTURAS: librosTematicas[key],
+    };
     libros.push(objAux);
   }
   return libros;
@@ -219,6 +239,25 @@ const getLecturaInfo = async (id_lectura) => {
           NOMBRE: true,
         },
       },
+      PUNTUACION: true,
+      AUTORES: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+        },
+      },
+    },
+    where: {
+      ID_LECTURA: Number(id_lectura),
+    },
+  });
+};
+
+const getLecturaInfoRecomendacion = async (id_lectura) => {
+  return await prisma.LECTURAS.findMany({
+    select: {
+      ID_LECTURA: true,
+      TITULO: true,
       PUNTUACION: true,
       AUTORES: {
         select: {
@@ -443,8 +482,10 @@ module.exports = {
   getLectura,
   getLecturaConFiltros,
   getLecturaInfo,
+  getLecturaInfoRecomendacion,
   getLecturas,
   getLecturasLeidas,
+  getLecturasSinTematica,
   getNombreLecturas,
   postLectura,
 };

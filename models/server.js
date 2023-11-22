@@ -33,6 +33,7 @@ class Server {
     this.tematicasPath = '/api/tematicas';
     this.tutoradosPath = '/api/tutorados';
     this.usuariosPath = '/api/usuarios';
+    // this.imagenesPath = '/archivos/perfil';
 
     // Middlewares
     this.middlewares();
@@ -86,6 +87,7 @@ class Server {
     this.app.use(this.tematicasPath, require('../routes/tematicas'));
     this.app.use(this.tutoradosPath, require('../routes/tutorados'));
     this.app.use(this.usuariosPath, require('../routes/usuario'));
+    // this.app.use(this.imagenesPath, express.static('../archivos/perfil'));
   }
 
   listen() {

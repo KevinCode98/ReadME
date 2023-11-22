@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client');
+const { NIL } = require('uuid');
 const prisma = new PrismaClient();
 
 const getProgresoPorId = async (id) => {
@@ -20,6 +21,13 @@ const getProgresoPorLectura = async (id, lectura) => {
 };
 
 const getProgresosPorDia = async (id_alumno, fecha) => {
+  // validar que exista el alumno
+  const existeAlumno = await prisma.USUARIOS.findFirst({
+    where: { ID_USUARIO: Number(id_alumno), TIPO_USUARIO: 'Alumno' },
+  });
+
+  if (!existeAlumno) return { msg: 'No existe el alumno en la base de datos' };
+
   const dia = new Date(`${fecha}T00:00:00`);
   const progresosDia = await prisma.PROGRESOS.findMany({
     where: {
@@ -48,6 +56,13 @@ const getProgresosPorDia = async (id_alumno, fecha) => {
 };
 
 const getProgresoPorSemana = async (id_alumno, fecha) => {
+  // validar que exista el alumno
+  const existeAlumno = await prisma.USUARIOS.findFirst({
+    where: { ID_USUARIO: Number(id_alumno), TIPO_USUARIO: 'Alumno' },
+  });
+
+  if (!existeAlumno) return { msg: 'No existe el alumno en la base de datos' };
+
   const dia = new Date(`${fecha}T00:00:00`);
   const diaSemana = new Date(moment(dia).subtract(6, 'day'));
   const mapDias = new Map();
@@ -79,6 +94,13 @@ const getProgresoPorSemana = async (id_alumno, fecha) => {
 };
 
 const getProgresoPorMes = async (id_alumno, fecha) => {
+  // validar que exista el alumno
+  const existeAlumno = await prisma.USUARIOS.findFirst({
+    where: { ID_USUARIO: Number(id_alumno), TIPO_USUARIO: 'Alumno' },
+  });
+
+  if (!existeAlumno) return { msg: 'No existe el alumno en la base de datos' };
+
   const dia = new Date(`${fecha}T00:00:00`);
   const diaMes = new Date(moment(dia).subtract(27, 'day'));
   const mapMes = new Map();

@@ -14,14 +14,14 @@ const progresosPorIdGet = async (req, res = response) => {
 
 const progresosPorDia = async (req, res = response) => {
   try {
-    res
-      .status(200)
-      .json(
-        await progresosDB.getProgresosPorDia(
-          req.usuario.ID_USUARIO,
-          req.query.fecha
-        )
-      );
+    const id = req.query.id ? req.query.id : req.usuario.ID_USUARIO;
+    const progreso = await progresosDB.getProgresosPorDia(
+      Number(id),
+      req.query.fecha
+    );
+
+    if (progreso.msg) return res.status(400).json(progreso);
+    res.status(200).json(progreso);
   } catch (error) {
     existeError(res, error, 'progresosPorDia');
   }
@@ -29,14 +29,14 @@ const progresosPorDia = async (req, res = response) => {
 
 const progresosPorSemana = async (req, res = response) => {
   try {
-    res
-      .status(200)
-      .json(
-        await progresosDB.getProgresoPorSemana(
-          req.usuario.ID_USUARIO,
-          req.query.fecha
-        )
-      );
+    const id = req.query.id ? req.query.id : req.usuario.ID_USUARIO;
+    const progreso = await progresosDB.getProgresoPorSemana(
+      Number(id),
+      req.query.fecha
+    );
+
+    if (progreso.msg) return res.status(400).json(progreso);
+    res.status(200).json(progreso);
   } catch (error) {
     existeError(res, error, 'progresosPorSemana');
   }
@@ -44,14 +44,14 @@ const progresosPorSemana = async (req, res = response) => {
 
 const progresosPorMes = async (req, res = response) => {
   try {
-    res
-      .status(200)
-      .json(
-        await progresosDB.getProgresoPorMes(
-          req.usuario.ID_USUARIO,
-          req.query.fecha
-        )
-      );
+    const id = req.query.id ? req.query.id : req.usuario.ID_USUARIO;
+    const progreso = await progresosDB.getProgresoPorMes(
+      Number(id),
+      req.query.fecha
+    );
+
+    if (progreso.msg) return res.status(400).json(progreso);
+    res.status(200).json(progreso);
   } catch (error) {
     existeError(res, error, 'progresosPorMes');
   }

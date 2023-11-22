@@ -2,7 +2,7 @@ const { response } = require('express');
 const { existeError } = require('../helpers/validator');
 const usuarioDB = require('../querys/usuarios');
 const activacionDB = require('../querys/activaciones');
-const { subirArchivo } = require('../helpers/subir-archivo');
+const { subirArchivo, eliminarArchivo } = require('../helpers/subir-archivo');
 const { enviarCorreo } = require('../helpers/enviar-correo');
 
 const usuariosGet = async (req, res = response) => {
@@ -139,6 +139,43 @@ const usuarioPasswordPost = async (req, res = response) => {
   }
 };
 
+const usuarioActualizarFotoPost = async (req, res = response) => {
+  try {
+    if (Number(req.params.id) !== Number(req.usuario.ID_USUARIO)) {
+      return res.status(401).json({
+        msg: `El ID ${req.usuario.ID_USUARIO} no es el propietario de la cuenta`,
+      });
+    }
+
+    const usuario = await usuarioDB.getUsuario(req.usuario.ID_USUARIO);
+
+    const fotoPath = usuario.FOTO;
+    const arrayFoto = fotoPath.split('/');
+    const pathUsuarioDB = arrayFoto[arrayFoto.length - 1].split('.');
+    const uuid_foto = pathUsuarioDB[0];
+
+    if (uuid_foto !== 'no-image') {
+      eliminarArchivo(uuid_foto, 'perfil', pathUsuarioDB[1]);
+    }
+    const pathCompleto = await subirArchivo(
+      req.files,
+      ['png', 'jpg', 'jpeg'],
+      'perfil'
+    );
+
+    res
+      .status(200)
+      .json(
+        await usuarioDB.postUsuarioActializarFoto(
+          pathCompleto,
+          req.usuario.ID_USUARIO
+        )
+      );
+  } catch (error) {
+    existeError(res, error, 'usuarioActualizarFotoPost');
+  }
+};
+
 const usuarioDelete = async (req, res = response) => {
   try {
     if (Number(req.params.id) !== Number(req.usuario.ID_USUARIO)) {
@@ -155,6 +192,7 @@ const usuarioDelete = async (req, res = response) => {
 
 module.exports = {
   usuarioActializarPost,
+  usuarioActualizarFotoPost,
   usuarioDelete,
   usuarioGet,
   usuarioPasswordPost,

@@ -67,6 +67,7 @@ const getUsuario = async (id) => {
       TIPO_USUARIO: true,
       EMAIL: true,
       APODO: true,
+      FOTO: true,
     },
     where: {
       ID_USUARIO: Number(id),
@@ -223,6 +224,26 @@ const deleteUsuario = async (id) => {
   return usuario;
 };
 
+const postUsuarioActializarFoto = async (uuid_foto, id_usuario) => {
+  return await prisma.USUARIOS.update({
+    data: {
+      FOTO: uuid_foto,
+    },
+    where: {
+      ID_USUARIO: Number(id_usuario),
+    },
+    select: {
+      ID_USUARIO: true,
+      NOMBRE: true,
+      APELLIDOS: true,
+      TIPO_USUARIO: true,
+      EMAIL: true,
+      APODO: true,
+      FOTO: true,
+    },
+  });
+};
+
 module.exports = {
   deleteUsuario,
   getNombresUsuarios,
@@ -232,4 +253,5 @@ module.exports = {
   postPasswordActializar,
   postUsuario,
   postUsuarioActializar,
+  postUsuarioActializarFoto,
 };

@@ -8,6 +8,7 @@ const {
   autoresNombreGet,
   autorGet,
   autorPost,
+  autoresLeidosGet,
 } = require('../controllers/autores');
 const {
   existeAutor,
@@ -19,8 +20,8 @@ const {
 const router = Router();
 
 router.get('/', [validarJWT, existeUsuario], autoresGet);
-router.get('/:id', [validarCampos, existeUsuario, existeAutor], autorGet);
 router.get('/buscador/nombre/', [validarJWT, existeUsuario], autoresNombreGet);
+router.get('/mis-autores', [validarJWT, existeUsuario], autoresLeidosGet);
 router.post(
   '/',
   [
@@ -45,5 +46,6 @@ router.post(
   ],
   autorActualizarPost
 );
+router.get('/:id', [validarCampos, existeUsuario, existeAutor], autorGet);
 
 module.exports = router;

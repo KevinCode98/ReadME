@@ -8,6 +8,39 @@ const getLeido = async (id) => {
   });
 };
 
+const getLeidosPorUsuario = async (id) => {
+  return await prisma.LEIDOS.findMany({
+    where: { ID_USUARIO: Number(id) },
+    select: {
+      ID_LEIDO: true,
+      LECTURAS: {
+        select: {
+          ID_LECTURA: true,
+          AUTORES: {
+            select: {
+              ID_AUTOR: true,
+              NOMBRE: true,
+              APELLIDOS: true,
+            },
+          },
+          TEMATICAS: {
+            select: {
+              ID_TEMATICA: true,
+              NOMBRE: true,
+            },
+          },
+          CORRIENTES: {
+            select: {
+              ID_CORRIENTE: true,
+              NOMBRE: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
 const getLeidoUsuariosPorLectura = async (id_lectura) => {
   const leidos = await prisma.LEIDOS.findMany({
     where: {
@@ -53,6 +86,7 @@ const postLeido = async (id_lectura, id_alumno, id_historial, tiempo) => {
 
 module.exports = {
   getLeido,
+  getLeidosPorUsuario,
   getLeidoUsuariosPorLectura,
   postLeido,
 };
