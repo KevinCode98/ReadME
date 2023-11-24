@@ -167,6 +167,8 @@ const existeTematica = async (req, res = response, next) => {
 
 const existeUsuario = async (req, res = response, next) => {
   const id = req.usuario ? req.usuario.ID_USUARIO : req.params.id;
+  console.log("id que me llego");
+  console.log(id)
   if (!(await usuariosDB.getUsuarioOnline(id)))
     return res.status(400).json({
       msg: 'El Usuario no existe en la base de datos',

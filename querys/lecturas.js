@@ -46,6 +46,15 @@ const getLecturas = async () => {
 
     Object.assign(librosTematicas[lectura.TEMATICAS.NOMBRE], arrayAux);
   });
+  const libros = []
+  for(const key in librosTematicas){
+    const objAux = {
+      "TEMATICA" : key,
+      "LECTURAS" : librosTematicas[key]
+    }
+    libros.push(objAux);
+  }
+  return libros;
 };
 
 const getLecturasSinTematica = async () => {

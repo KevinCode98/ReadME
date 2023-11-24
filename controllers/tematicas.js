@@ -13,7 +13,7 @@ const tematicasGet = async (req, res = response) => {
 
 const tematicasLeidosGet = async (req, res = response) => {
   try {
-    const histoial = await leidosDB.getLeidosPorUsuario(req.body.id_alumno);
+    const histoial = await leidosDB.getLeidosPorUsuario(req.query.id_alumno);
 
     const tematicas = {};
     const mapTematicas = new Map();

@@ -13,7 +13,7 @@ const corrientesGet = async (req, res = response) => {
 
 const corrienteLeidosGet = async (req, res = response) => {
   try {
-    const histoial = await leidosDB.getLeidosPorUsuario(req.body.id_alumno);
+    const histoial = await leidosDB.getLeidosPorUsuario(req.query.id_alumno);
 
     const corrientes = {};
     const mapCorrientes = new Map();
