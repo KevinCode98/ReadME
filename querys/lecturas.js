@@ -22,6 +22,12 @@ const getLecturas = async () => {
           NOMBRE: true,
         },
       },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
       ID_LECTURA: true,
       PUNTUACION: true,
       CORRIENTES: {
@@ -65,6 +71,12 @@ const getLecturasSinTematica = async () => {
       TEMATICAS: {
         select: {
           ID_TEMATICA: true,
+          NOMBRE: true,
+        },
+      },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
           NOMBRE: true,
         },
       },
@@ -273,6 +285,12 @@ const getLecturaInfoRecomendacion = async (id_lectura) => {
           NOMBRE: true,
         },
       },
+      CORRIENTES: {
+        select: {
+          ID_CORRIENTE: true,
+          NOMBRE: true,
+        },
+      },
       AUTORES: {
         select: {
           NOMBRE: true,
@@ -303,6 +321,12 @@ const getLecturasLeidas = async (id_alumno) => {
           TEMATICAS: {
             select: {
               ID_TEMATICA: true,
+              NOMBRE: true,
+            },
+          },
+          CORRIENTES: {
+            select: {
+              ID_CORRIENTE: true,
               NOMBRE: true,
             },
           },

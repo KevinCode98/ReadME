@@ -21,6 +21,12 @@ const getHistorialPorId = async (id) => {
               NOMBRE: true,
             },
           },
+          CORRIENTES: {
+            select: {
+              ID_CORRIENTE: true,
+              NOMBRE: true,
+            },
+          },
           AUTORES: {
             select: {
               NOMBRE: true,

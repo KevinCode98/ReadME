@@ -1,6 +1,5 @@
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client');
-const { NIL } = require('uuid');
 const prisma = new PrismaClient();
 
 const getProgresoPorId = async (id) => {

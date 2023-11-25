@@ -1,7 +1,8 @@
 /node_modules
 /public/imagenes/*.jpg
+/public/imagenes/*.jpeg
+/public/imagenes/*.png
 /archivos/lecturas/*.pdf
 .env
 /test
 /key/*json
-/public/*

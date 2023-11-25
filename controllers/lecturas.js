@@ -115,8 +115,8 @@ const lecturaPost = async (req, res = response) => {
       method: 'POST',
       body: JSON.stringify({
         URL: urlDownload,
-        header: false,
-        footer: false,
+        header: req.body.header,
+        footer: req.body.footer,
       }),
     });
 

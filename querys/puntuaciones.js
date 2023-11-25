@@ -34,6 +34,12 @@ const getPuntuacionMisLecturas = async (id_alumno) => {
               NOMBRE: true,
             },
           },
+          CORRIENTES: {
+            select: {
+              ID_CORRIENTE: true,
+              NOMBRE: true,
+            },
+          },
           AUTORES: {
             select: {
               NOMBRE: true,

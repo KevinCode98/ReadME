@@ -8,6 +8,12 @@ const getInscritos = async (id) => {
       ID_SALA: true,
       ID_USUARIO: true,
       ACEPTADO: true,
+      USUARIOS: {
+        select: {
+          NOMBRE: true,
+          APELLIDOS: true,
+        },
+      },
     },
     where: {
       ID_SALA: Number(id),
@@ -49,21 +55,6 @@ const postInscritos = async (inscrito) => {
 
   if (inscripcionExiste)
     return { msg: 'La invitacion ya existe en la base de datos' };
-
-  // Validar que el usuario no este como eliminado
-  // const inscritoEliminado = await prisma.INSCRITOS.findFirst({
-  //   where: {
-  //     ID_SALA: Number(inscrito.id_sala),
-  //     ID_USUARIO: Number(inscrito.id_alumno),
-  //     ACEPTADO: 'ELIMINADO',
-  //   },
-  // });
-
-  // if (inscritoEliminado)
-  //   return await prisma.INSCRITOS.update({
-  //     data: { ACEPTADO: 'NO_ACEPTADO' },
-  //     where: { ID_INSCRITO: Number(inscritoEliminado.ID_INSCRITO) },
-  //   });
 
   const salaExiste = await prisma.SALAS.findFirst({
     where: { ID_SALA: Number(inscrito.id_sala) },
