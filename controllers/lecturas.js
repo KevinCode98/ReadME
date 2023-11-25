@@ -37,11 +37,8 @@ const lecturaGet = async (req, res = responese) => {
       req.params.id
     );
 
-    usuariosLeidos.forEach((usuario) => {
-      if (!arregloUsuarios.includes(usuario)) arregloUsuarios.push(usuario);
-    });
+    lectura.total = arregloUsuarios.length + usuariosLeidos.length;
 
-    lectura.total = usuariosLeidos.length;
     res.status(200).json(lectura);
   } catch (error) {
     existeError(res, error, 'lecturaGet');
@@ -137,48 +134,64 @@ const lecturaPost = async (req, res = response) => {
 };
 
 const lecturasTextoGet = async (req, res = response) => {
-  const id_alumno = req.usuario.ID_USUARIO;
-  const lectura = await lecturaDB.getLectura(req.params.id, true, id_alumno);
+  try {
+    const id_alumno = req.usuario.ID_USUARIO;
+    const lectura = await lecturaDB.getLectura(req.params.id, true, id_alumno);
 
-  if (!lectura)
-    return res.status(400).json({ msg: 'No existe la lectura especificada.' });
+    if (!lectura)
+      return res
+        .status(400)
+        .json({ msg: 'No existe la lectura especificada.' });
 
-  if (!lectura.TEXTO)
-    return res.status(400).json({ msg: 'La lectura no tiene texto.' });
+    if (!lectura.TEXTO)
+      return res.status(400).json({ msg: 'La lectura no tiene texto.' });
 
-  const anchoDispositivo = req.query.ancho;
-  const altoDispositivo = req.query.alto;
-  const escalaDispositivo = req.query.escala;
+    const anchoDispositivo = req.query.ancho;
+    const altoDispositivo = req.query.alto;
+    const escalaDispositivo = req.query.escala;
 
-  let pages = [];
-  const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
-  const longitud = texto.length;
-  let step = obtenerCaracteresPorDispositivo(
-    altoDispositivo,
-    anchoDispositivo,
-    escalaDispositivo
-  );
+    let pages = [];
+    const texto = lectura.TEXTO.replace(/\n\n/gi, '\n').split(' ');
+    const longitud = texto.length;
+    let step = obtenerCaracteresPorDispositivo(
+      altoDispositivo,
+      anchoDispositivo,
+      escalaDispositivo
+    );
 
-  if (longitud <= step) {
-    pages.push({
-      text: lectura.TEXTO,
-    });
-  } else {
-    let cortar = true;
-    while (cortar) {
-      const textAux = texto.splice(0, step);
+    if (longitud <= step) {
       pages.push({
-        text: textAux.join(' '),
+        text: lectura.TEXTO,
       });
-      if (texto.length <= step) {
-        cortar = false;
+    } else {
+      let cortar = true;
+      while (cortar) {
+        const textAux = texto.splice(0, step);
         pages.push({
-          text: texto.join(' '),
+          text: textAux.join(' '),
         });
+        if (texto.length <= step) {
+          cortar = false;
+          pages.push({
+            text: texto.join(' '),
+          });
+        }
       }
     }
+    const historialExiste = await historialDB.getHistorialLecturaPorUsuario(
+      req.usuario.ID_USUARIO,
+      req.params.id
+    );
+    let avance = 0;
+    if (historialExiste) avance = historialExiste.AVANCE;
+
+    const pagainaLectura = parseInt((avance * pages.length) / 100);
+    if (pagainaLectura > pages.length - 1) pagainaLectura = pages.length - 1;
+
+    res.json({ pages, pagainaLectura });
+  } catch (error) {
+    existeError(res, error, 'lecturasTextoGet');
   }
-  res.json(pages);
 };
 
 const lecturaSalirPost = async (req, res = response) => {

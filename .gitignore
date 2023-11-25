@@ -1,7 +1,6 @@
 /node_modules
-/archivos/*.jpg
-/archivos/lecturas/
-/archivos/perfil/
+/public/imagenes/*.jpg
+/archivos/lecturas/*.pdf
 .env
 /test
 /key/*json

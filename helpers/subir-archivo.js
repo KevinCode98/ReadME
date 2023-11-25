@@ -2,10 +2,15 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
-const subirArchivo = (files, extensionesValidas, carpeta) => {
+const subirArchivo = (
+  files,
+  extensionesValidas,
+  carpeta,
+  fotografia = false
+) => {
   return new Promise((resolve, reject) => {
-    if (!files) {
-      return resolve(path.join(__dirname, '../archivos/no-image.jpeg'));
+    if (!files && fotografia) {
+      return resolve(path.join(__dirname, '../public/imagenes/no-image.jpeg'));
     } else {
       const { archivo } = files;
       const nombreCortado = archivo.name.split('.');
@@ -18,12 +23,21 @@ const subirArchivo = (files, extensionesValidas, carpeta) => {
         );
       }
       const nombreTemporal = uuidv4() + '.' + extension;
-      const subidaPath = path.join(
-        __dirname,
-        '../archivos/',
-        carpeta,
-        nombreTemporal
-      );
+      let subidaPath = '';
+
+      if (!fotografia)
+        subidaPath = path.join(
+          __dirname,
+          '../archivos/',
+          carpeta,
+          nombreTemporal
+        );
+      else
+        subidaPath = path.join(
+          __dirname,
+          '../public/imagenes/',
+          nombreTemporal
+        );
 
       archivo.mv(subidaPath, (err) => {
         if (err) return reject(err);
@@ -34,8 +48,17 @@ const subirArchivo = (files, extensionesValidas, carpeta) => {
   });
 };
 
-const eliminarArchivo = (uuid_file, carpeta, extension = 'pdf') => {
-  const pathArchivo = path.join(__dirname, '../archivos/', carpeta, uuid_file);
+const eliminarArchivo = (
+  uuid_file,
+  carpeta,
+  extension = 'pdf',
+  fotografia = false
+) => {
+  let pathArchivo = '';
+
+  if (!fotografia)
+    pathArchivo = path.join(__dirname, '../archivos/', carpeta, uuid_file);
+  else pathArchivo = path.join(__dirname, '../public/imagenes/', uuid_file);
 
   fs.unlink(`${pathArchivo}.${extension}`, (err) => {
     if (err) {

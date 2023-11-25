@@ -38,7 +38,8 @@ const usuarioPost = async (req, res = response) => {
     const pathCompleto = await subirArchivo(
       req.files,
       ['png', 'jpg', 'jpeg'],
-      'perfil'
+      'perfil',
+      true
     );
 
     const usuario = await usuarioDB.postUsuario(req.body, pathCompleto);
@@ -155,12 +156,13 @@ const usuarioActualizarFotoPost = async (req, res = response) => {
     const uuid_foto = pathUsuarioDB[0];
 
     if (uuid_foto !== 'no-image') {
-      eliminarArchivo(uuid_foto, 'perfil', pathUsuarioDB[1]);
+      eliminarArchivo(uuid_foto, 'perfil', pathUsuarioDB[1], true);
     }
     const pathCompleto = await subirArchivo(
       req.files,
       ['png', 'jpg', 'jpeg'],
-      'perfil'
+      'perfil',
+      true
     );
 
     res

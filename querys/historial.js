@@ -15,6 +15,12 @@ const getHistorialPorId = async (id) => {
         select: {
           TITULO: true,
           PUNTUACION: true,
+          TEMATICAS: {
+            select: {
+              ID_TEMATICA: true,
+              NOMBRE: true,
+            },
+          },
           AUTORES: {
             select: {
               NOMBRE: true,
@@ -27,6 +33,15 @@ const getHistorialPorId = async (id) => {
   });
 
   return historial;
+};
+
+const getHistorialLecturaPorUsuario = async (id_alumno, id_lectura) => {
+  return prisma.HISTORIAL.findFirst({
+    where: {
+      ID_USUARIO: Number(id_alumno),
+      ID_LECTURA: Number(id_lectura),
+    },
+  });
 };
 
 const getHistorialArregloUsuariosLecura = async (id) => {
@@ -85,8 +100,9 @@ const deleteHistorial = async (id_historial) => {
 };
 
 module.exports = {
-  getHistorialPorId,
-  getHistorialArregloUsuariosLecura,
-  postHistorial,
   deleteHistorial,
+  getHistorialArregloUsuariosLecura,
+  getHistorialLecturaPorUsuario,
+  getHistorialPorId,
+  postHistorial,
 };

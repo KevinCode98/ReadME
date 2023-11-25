@@ -28,6 +28,12 @@ const getPuntuacionMisLecturas = async (id_alumno) => {
         select: {
           TITULO: true,
           PUNTUACION: true,
+          TEMATICAS: {
+            select: {
+              ID_TEMATICA: true,
+              NOMBRE: true,
+            },
+          },
           AUTORES: {
             select: {
               NOMBRE: true,
