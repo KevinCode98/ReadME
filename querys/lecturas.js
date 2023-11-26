@@ -134,6 +134,7 @@ const getLectura = async (id, retornaTexto = false, id_alumno = 0) => {
         select: {
           NOMBRE: true,
           APELLIDOS: true,
+          ID_AUTOR : true
         },
       },
     },

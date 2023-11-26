@@ -46,6 +46,6 @@ router.post(
   ],
   autorActualizarPost
 );
-router.get('/:id', [validarCampos, existeUsuario, existeAutor], autorGet);
+router.get('/:id', [validarJWT, existeUsuario, existeAutor], autorGet);
 
 module.exports = router;
